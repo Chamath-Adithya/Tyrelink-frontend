@@ -1,0 +1,183 @@
+---
+// Animated Flowing Tread-Line Background — Pure Canvas 2D
+// Lightweight, matte, mouse-reactive flowing wave lines
+---
+
+<div
+  id="bg-canvas-wrap"
+  class="fixed inset-0 pointer-events-none -z-10 overflow-hidden select-none"
+  aria-hidden="true"
+>
+  <canvas id="bg-canvas" class="w-full h-full block"></canvas>
+</div>
+
+<script>
+  (function initAnimatedBackground() {
+    const canvas = document.getElementById('bg-canvas') as HTMLCanvasElement | null;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Respect reduced-motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let W = 0;
+    let H = 0;
+    let dpr = 1;
+
+    function resize() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = window.innerWidth;
+      H = window.innerHeight;
+      canvas!.width = W * dpr;
+      canvas!.height = H * dpr;
+      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    resize();
+
+    let resizeTimer: ReturnType<typeof setTimeout> | null = null;
+    window.addEventListener('resize', () => {
+      if (resizeTimer) clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(resize, 120);
+    }, { passive: true });
+
+    // Mouse tracking (smooth lerp)
+    let mouseX = W * 0.5;
+    let mouseY = H * 0.5;
+    let targetMX = mouseX;
+    let targetMY = mouseY;
+
+    window.addEventListener('pointermove', (e: PointerEvent) => {
+      targetMX = e.clientX;
+      targetMY = e.clientY;
+    }, { passive: true });
+
+    // Scroll tracking
+    let scrollY = 0;
+    let targetScrollY = 0;
+    window.addEventListener('scroll', () => {
+      targetScrollY = window.scrollY;
+    }, { passive: true });
+
+    // Tab visibility
+    let visible = !document.hidden;
+    document.addEventListener('visibilitychange', () => {
+      visible = !document.hidden;
+    });
+
+    // Wave configuration — flowing horizontal tread lines
+    const LINE_COUNT = 18;         // number of flowing lines
+    const POINTS_PER_LINE = 80;    // resolution of each line
+    const BASE_SPEED = 0.35;       // base animation speed
+
+    // Pre-compute per-line offsets for organic variation
+    const lineSeeds: number[] = [];
+    for (let i = 0; i < LINE_COUNT; i++) {
+      lineSeeds.push(Math.random() * 1000);
+    }
+
+    let time = 0;
+    let frameId = 0;
+
+    function draw() {
+      frameId = requestAnimationFrame(draw);
+      if (!visible || !ctx) return;
+
+      // Smooth lerp mouse
+      mouseX += (targetMX - mouseX) * 0.06;
+      mouseY += (targetMY - mouseY) * 0.06;
+      scrollY += (targetScrollY - scrollY) * 0.08;
+
+      const dt = prefersReducedMotion ? 0 : 0.016;
+      time += dt * BASE_SPEED;
+
+      // Normalized mouse position (0–1)
+      const mx = mouseX / W;
+      const my = mouseY / H;
+
+      ctx.clearRect(0, 0, W, H);
+
+      for (let i = 0; i < LINE_COUNT; i++) {
+        const t = i / (LINE_COUNT - 1);                 // 0→1 across lines
+        const seed = lineSeeds[i];
+        const baseY = H * 0.08 + t * H * 0.88;         // distribute vertically
+        const scrollShift = Math.sin(t * 3.14 + scrollY * 0.0015) * 12;
+
+        // Line color: subtle slate tone, alternating opacity for depth
+        const isEven = i % 2 === 0;
+        const alpha = isEven ? 0.07 : 0.045;
+        ctx.strokeStyle = `rgba(100, 116, 139, ${alpha})`;   // slate-500
+        ctx.lineWidth = isEven ? 1.5 : 1;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        ctx.beginPath();
+
+        for (let p = 0; p <= POINTS_PER_LINE; p++) {
+          const px = (p / POINTS_PER_LINE) * W;
+          const xNorm = p / POINTS_PER_LINE;            // 0→1
+
+          // Multi-frequency sine waves for organic flowing motion
+          const wave1 = Math.sin(xNorm * 4.5 + time * 1.2 + seed) * 18;
+          const wave2 = Math.sin(xNorm * 7.0 - time * 0.8 + seed * 0.7) * 8;
+          const wave3 = Math.cos(xNorm * 2.2 + time * 0.5 + seed * 1.3) * 12;
+
+          // Mouse proximity influence — gentle push away
+          const dx = px - mouseX;
+          const dy = baseY - mouseY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const mouseInfluence = dist < 220
+            ? (1 - dist / 220) * 28 * Math.sin(dist * 0.04 - time * 3)
+            : 0;
+
+          // Mouse horizontal tilt effect
+          const tiltShift = (mx - 0.5) * 8 * Math.sin(xNorm * 3.14 + t * 2);
+
+          const py = baseY + wave1 + wave2 + wave3 + mouseInfluence + scrollShift + tiltShift;
+
+          if (p === 0) {
+            ctx.moveTo(px, py);
+          } else {
+            ctx.lineTo(px, py);
+          }
+        }
+
+        ctx.stroke();
+      }
+
+      // Draw a few accent "nodes" (subtle dots at wave intersections)
+      for (let i = 0; i < LINE_COUNT; i += 3) {
+        const t = i / (LINE_COUNT - 1);
+        const seed = lineSeeds[i];
+        const baseY = H * 0.08 + t * H * 0.88;
+
+        // Pick 2-3 positions along the line
+        for (let n = 0; n < 3; n++) {
+          const xNorm = 0.2 + n * 0.3 + Math.sin(time * 0.4 + seed + n) * 0.08;
+          const px = xNorm * W;
+          const wave1 = Math.sin(xNorm * 4.5 + time * 1.2 + seed) * 18;
+          const wave2 = Math.sin(xNorm * 7.0 - time * 0.8 + seed * 0.7) * 8;
+          const wave3 = Math.cos(xNorm * 2.2 + time * 0.5 + seed * 1.3) * 12;
+          const scrollShift = Math.sin(t * 3.14 + scrollY * 0.0015) * 12;
+          const py = baseY + wave1 + wave2 + wave3 + scrollShift;
+
+          // Pulse size with time
+          const radius = 1.5 + Math.sin(time * 2 + seed + n) * 0.8;
+
+          ctx.beginPath();
+          ctx.arc(px, py, radius, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(148, 163, 184, 0.12)';  // slate-400
+          ctx.fill();
+        }
+      }
+    }
+
+    draw();
+
+    // Cleanup
+    window.addEventListener('beforeunload', () => {
+      cancelAnimationFrame(frameId);
+    });
+  })();
+</script>

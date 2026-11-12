@@ -5,6 +5,7 @@ import SEOHead from '../components/SEOHead.astro';
 import CartAndOrderModal from '../components/CartAndOrderModal';
 import WhatsAppChatWidget from '../components/WhatsAppChatWidget';
 import AdminControlBar from '../components/admin/AdminControlBar';
+import Matte3DBackground from '../components/Matte3DBackground.astro';
 import type { Product } from '../types';
 import '../styles/global.css';
 
@@ -73,7 +74,10 @@ const { title, description, image, product, faq, breadcrumbs, itemList } = Astro
       </script>
     )}
   </head>
-  <body class="min-h-screen flex flex-col text-slate-900 font-sans antialiased">
+  <body class="min-h-screen flex flex-col text-slate-900 font-sans antialiased relative">
+    <!-- Interactive Three.js Matte 3D Topographic Tread Waves Canvas -->
+    <Matte3DBackground />
+
     <!-- Merchant Live Edit Mode & Control HUD Bar (Loads dynamically for logged-in admin) -->
     <AdminControlBar client:load />
     

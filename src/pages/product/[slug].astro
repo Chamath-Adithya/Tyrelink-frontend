@@ -8,7 +8,6 @@ import ProductPurchaseActions from '../../components/ProductPurchaseActions';
 import ProductStickyBuyBar from '../../components/ProductStickyBuyBar';
 import ProductAdminBar from '../../components/admin/ProductAdminBar';
 import ProductKokoBanner from '../../components/ProductKokoBanner';
-import ProductStockBadge from '../../components/ProductStockBadge';
 
 import productsData from '../../data/products.json';
 import type { Product } from '../../types';
@@ -137,11 +136,6 @@ const breadcrumbs = [
                 </span>
               )}
             </div>
-
-            {/* Stock Availability Status Badge (Dedicated row with proper spacing, cannot collide) */}
-            <div>
-              <ProductStockBadge client:load product={product} />
-            </div>
           </div>
 
           {/* Koko BNPL Widget (Dedicated block with clean margin) */}
@@ -227,11 +221,6 @@ const breadcrumbs = [
           <div class="flex items-center gap-2 text-xs">
             <span class="font-black text-brand-600 font-mono">
               Rs. {product.price.toLocaleString('en-US')}
-            </span>
-            <span class={`hidden sm:inline-block text-[10px] font-bold px-2 py-0.5 rounded-md ${
-              product.inStock !== false ? 'text-emerald-600 bg-emerald-50' : 'text-rose-600 bg-rose-50'
-            }`}>
-              {product.inStock !== false ? 'In Stock' : 'Out of Stock'}
             </span>
           </div>
         </div>

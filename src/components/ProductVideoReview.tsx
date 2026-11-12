@@ -100,9 +100,9 @@ export default function ProductVideoReview({
             {/* Subtle Ambient Dark Gradient Scrim */}
             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300 pointer-events-none" />
 
-            {/* Center Glowing YouTube Play Button */}
+            {/* Center YouTube Play Button (Matte Finish) */}
             <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-red-600 group-hover:bg-red-500 text-white flex items-center justify-center shadow-[0_0_35px_rgba(239,68,68,0.7)] group-hover:scale-115 active:scale-95 transition-all duration-300">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-red-600 group-hover:bg-red-500 text-white flex items-center justify-center shadow-xl group-hover:scale-110 active:scale-95 transition-all duration-300">
                 <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-current ml-1" />
               </div>
             </div>

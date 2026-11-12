@@ -153,26 +153,7 @@ export default function ProductCarousel({
             </div>
           </div>
       )}
-          {/* Dynamic ambient lighting spheres that scale and ignite into blazing warmth */}
-          <div
-            className="absolute -top-32 right-1/4 w-[550px] h-[550px] rounded-full blur-3xl pointer-events-none"
-            style={{
-              transform: isRedGlow ? 'scale(1.25)' : 'scale(0.95)',
-              opacity: isRedGlow ? 0.8 : 0.3,
-              backgroundColor: 'rgba(237, 28, 36, 0.40)',
-              transition: 'transform 1800ms cubic-bezier(0.16, 1, 0.3, 1), opacity 1800ms cubic-bezier(0.16, 1, 0.3, 1)',
-            }}
-          />
-          <div
-            className="absolute -bottom-32 left-1/4 w-[550px] h-[550px] rounded-full blur-3xl pointer-events-none"
-            style={{
-              transform: isRedGlow ? 'scale(1.25)' : 'scale(0.95)',
-              opacity: isRedGlow ? 0.75 : 0.2,
-              backgroundColor: 'rgba(220, 38, 38, 0.35)',
-              transition: 'transform 1800ms cubic-bezier(0.16, 1, 0.3, 1), opacity 1800ms cubic-bezier(0.16, 1, 0.3, 1)',
-            }}
-          />
-          <div className="absolute inset-0 tech-dot-grid-dark opacity-15 pointer-events-none" />
+          <div className="absolute inset-0 tech-dot-grid-dark opacity-10 pointer-events-none" />
 
           {/* Seamless Zero-Line Dark Obsidian Crossfade Layer (luxuriously dissolves without any lines) */}
           <div

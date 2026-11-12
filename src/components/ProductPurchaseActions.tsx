@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Zap, ShoppingBag, Check, ShieldCheck, Truck, MessageCircle, Minus, Plus, AlertCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import { Zap, ShoppingBag, Check, ShieldCheck, Truck, MessageCircle, Minus, Plus } from 'lucide-react';
 import { addToCart, openCheckoutModal } from '../utils/cartStore';
-import { getLiveProducts, ADMIN_EVENT_PRODUCTS } from '../utils/adminStore';
 import type { Product } from '../types';
 
 interface ProductPurchaseActionsProps {
@@ -11,38 +10,10 @@ interface ProductPurchaseActionsProps {
 export default function ProductPurchaseActions({ product }: ProductPurchaseActionsProps) {
   const [added, setAdded] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const [inStock, setInStock] = useState<boolean>(product.inStock !== false);
 
-  useEffect(() => {
-    const sync = () => {
-      if (typeof window !== 'undefined') {
-        const liveList = getLiveProducts();
-        const found = liveList.find((p) => p.id === product.id || p.slug === product.slug);
-        if (found && typeof found.inStock === 'boolean') {
-          setInStock(found.inStock);
-        }
-      }
-    };
-    sync();
-
-    const handleUpdate = (e: any) => {
-      if (Array.isArray(e.detail)) {
-        const found = e.detail.find((p: any) => p.id === product.id || p.slug === product.slug);
-        if (found && typeof found.inStock === 'boolean') {
-          setInStock(found.inStock);
-        }
-      }
-    };
-
-    window.addEventListener(ADMIN_EVENT_PRODUCTS, handleUpdate);
-    return () => window.removeEventListener(ADMIN_EVENT_PRODUCTS, handleUpdate);
-  }, [product.id, product.slug]);
-
-  const isAvailable = inStock;
   const maxLimit = product.maxOrderQuantity && product.maxOrderQuantity > 0 ? product.maxOrderQuantity : 3;
 
   const handleOrderNow = () => {
-    if (!isAvailable) return;
     openCheckoutModal({
       items: [
         {
@@ -57,7 +28,6 @@ export default function ProductPurchaseActions({ product }: ProductPurchaseActio
   };
 
   const handleAddToCart = () => {
-    if (!isAvailable) return;
     addToCart({
       id: product.id,
       slug: product.slug,
@@ -73,25 +43,19 @@ export default function ProductPurchaseActions({ product }: ProductPurchaseActio
   };
 
   const whatsappInquiryUrl = `https://wa.me/94783724920?text=${encodeURIComponent(
-    isAvailable
-      ? `Hi Tyrelink, I would like to verify product availability for: ${product.title} (Rs. ${product.price.toLocaleString('en-US')})`
-      : `Hi Tyrelink, I noticed "${product.title}" is currently Out of Stock. When will new stock arrive?`
+    `Hi Tyrelink, I would like to inquire about: ${product.title} (Rs. ${product.price.toLocaleString('en-US')})`
   )}`;
 
   return (
     <div className="space-y-3.5">
-      {/* WhatsApp Product Availability Verification Banner */}
+      {/* WhatsApp Product Fitment & Assistance Banner */}
       <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-slate-900 via-slate-850 to-slate-900 text-white flex flex-col sm:flex-row items-center justify-between gap-3 border border-slate-800 shadow-md">
         <div className="flex items-center gap-3 text-left w-full sm:w-auto">
           <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0 text-emerald-400">
             <MessageCircle className="w-5 h-5 fill-current/20" />
           </div>
           <p className="text-xs text-slate-300 font-medium leading-snug">
-            {isAvailable ? (
-              <>Please verify <span className="text-emerald-400 font-bold">product availability</span> before placing your order via WhatsApp.</>
-            ) : (
-              <>Item is currently <span className="text-rose-400 font-bold">Out of Stock</span>. Contact us on WhatsApp for stock alerts.</>
-            )}
+            Direct assistance & fitment confirmation available 7 days a week via WhatsApp.
           </p>
         </div>
         <a
@@ -114,9 +78,8 @@ export default function ProductPurchaseActions({ product }: ProductPurchaseActio
           <span className="text-[11px] text-slate-500 font-mono">
             Rs. {(product.price * quantity).toLocaleString('en-US')}
           </span>
-          {quantity >= maxLimit && isAvailable && (
+          {quantity >= maxLimit && (
             <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-              <AlertCircle className="w-3 h-3" />
               Max limit: {maxLimit}
             </span>
           )}
@@ -126,7 +89,7 @@ export default function ProductPurchaseActions({ product }: ProductPurchaseActio
           <button
             type="button"
             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-            disabled={quantity <= 1 || !isAvailable}
+            disabled={quantity <= 1}
             aria-label="Decrease quantity"
             className="w-8 h-8 flex items-center justify-center text-slate-600 hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
           >
@@ -138,7 +101,7 @@ export default function ProductPurchaseActions({ product }: ProductPurchaseActio
           <button
             type="button"
             onClick={() => setQuantity((q) => Math.min(maxLimit, q + 1))}
-            disabled={quantity >= maxLimit || !isAvailable}
+            disabled={quantity >= maxLimit}
             aria-label="Increase quantity"
             className="w-8 h-8 flex items-center justify-center text-brand-600 hover:bg-brand-50 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
           >
@@ -149,61 +112,34 @@ export default function ProductPurchaseActions({ product }: ProductPurchaseActio
 
       {/* Primary & Secondary Dual Action Buttons */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {isAvailable ? (
-          <>
-            {/* 1. Order Now (Direct Checkout) */}
-            <button
-              onClick={handleOrderNow}
-              type="button"
-              className="w-full flex items-center justify-center gap-2.5 py-4 px-6 rounded-2xl bg-gradient-to-r from-brand-600 via-brand-500 to-red-600 hover:from-brand-500 hover:to-red-500 text-white font-extrabold text-sm sm:text-base shadow-lg shadow-brand-500/30 transition-all hover:scale-[1.02] active:scale-98 cursor-pointer"
-            >
-              <Zap className="w-5 h-5 fill-current" />
-              <span>Order Now (ඇණවුම් කරන්න)</span>
-            </button>
+        {/* 1. Order Now (Direct Checkout) */}
+        <button
+          onClick={handleOrderNow}
+          type="button"
+          className="w-full flex items-center justify-center gap-2.5 py-4 px-6 rounded-2xl bg-gradient-to-r from-brand-600 via-brand-500 to-red-600 hover:from-brand-500 hover:to-red-500 text-white font-extrabold text-sm sm:text-base shadow-lg shadow-brand-500/20 transition-all hover:scale-[1.02] active:scale-98 cursor-pointer"
+        >
+          <Zap className="w-5 h-5 fill-current" />
+          <span>Order Now (ඇණවුම් කරන්න)</span>
+        </button>
 
-            {/* 2. Add to Cart */}
-            <button
-              onClick={handleAddToCart}
-              type="button"
-              className="w-full flex items-center justify-center gap-2.5 py-4 px-6 rounded-2xl bg-white/80 hover:bg-white backdrop-blur-xl text-slate-800 font-bold text-sm sm:text-base border border-slate-200/80 hover:border-brand-500/50 shadow-sm hover:shadow-md transition-all hover:scale-[1.02] active:scale-98 cursor-pointer"
-            >
-              {added ? (
-                <>
-                  <Check className="w-5 h-5 text-emerald-600 stroke-[3]" />
-                  <span className="text-emerald-700 font-extrabold">Added to Cart!</span>
-                </>
-              ) : (
-                <>
-                  <ShoppingBag className="w-5 h-5 text-slate-600" />
-                  <span>Add to Cart (බාස්කට් එකට)</span>
-                </>
-              )}
-            </button>
-          </>
-        ) : (
-          <>
-            {/* Out of Stock - Disabled order button */}
-            <button
-              type="button"
-              disabled
-              className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-2xl bg-slate-200 text-slate-500 font-bold text-sm sm:text-base cursor-not-allowed"
-            >
-              <AlertCircle className="w-5 h-5" />
-              <span>Out of Stock (තොග අවසන්)</span>
-            </button>
-
-            {/* Out of Stock - WhatsApp Stock Inquiry */}
-            <a
-              href={whatsappInquiryUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2.5 py-4 px-6 rounded-2xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-extrabold text-sm sm:text-base shadow-md transition-all hover:scale-[1.02] active:scale-98"
-            >
-              <MessageCircle className="w-5 h-5" />
-              <span>Request Restock Alert</span>
-            </a>
-          </>
-        )}
+        {/* 2. Add to Cart */}
+        <button
+          onClick={handleAddToCart}
+          type="button"
+          className="w-full flex items-center justify-center gap-2.5 py-4 px-6 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm sm:text-base border border-slate-200 hover:border-brand-500 shadow-sm transition-all hover:scale-[1.02] active:scale-98 cursor-pointer"
+        >
+          {added ? (
+            <>
+              <Check className="w-5 h-5 text-emerald-600 stroke-[3]" />
+              <span className="text-emerald-700 font-extrabold">Added to Cart!</span>
+            </>
+          ) : (
+            <>
+              <ShoppingBag className="w-5 h-5 text-slate-600" />
+              <span>Add to Cart (බාස්කට් එකට)</span>
+            </>
+          )}
+        </button>
       </div>
 
       {/* Trust & Guarantee Strip */}

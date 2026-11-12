@@ -51,7 +51,6 @@ export default function ProductCatalogFilter({
   const [sortBy, setSortBy] = useState<string>('featured');
   const [isSortOpen, setIsSortOpen] = useState<boolean>(false);
   const [isPriceOpen, setIsPriceOpen] = useState<boolean>(false);
-  const [inStockOnly, setInStockOnly] = useState<boolean>(false);
   const [flashOnly, setFlashOnly] = useState<boolean>(false);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState<boolean>(false);
 
@@ -192,7 +191,7 @@ export default function ProductCatalogFilter({
     updateUrlParams();
     // Reset visible count to first batch on any filter alteration
     setVisibleCount(BATCH_SIZE);
-  }, [searchQuery, selectedCategory, selectedBrands, priceRange, sortBy, inStockOnly, flashOnly]);
+  }, [searchQuery, selectedCategory, selectedBrands, priceRange, sortBy, flashOnly]);
 
   // Extract all distinct available brands with item counts (O(N) indexed once)
   const allBrandsWithCounts = useMemo(() => {
@@ -281,10 +280,7 @@ export default function ProductCatalogFilter({
     // 4. Price range filter
     list = list.filter(p => p.price >= priceRange[0] && p.price <= priceRange[1]);
 
-    // 5. Stock & Flash deals toggles
-    if (inStockOnly) {
-      list = list.filter(p => p.inStock !== false && (p.stockCount === undefined || p.stockCount > 0));
-    }
+    // 5. Flash deals toggle
     if (flashOnly) {
       list = list.filter(p => p.isFlashDeal);
     }
@@ -311,7 +307,7 @@ export default function ProductCatalogFilter({
     }
 
     return sorted;
-  }, [products, searchQuery, selectedCategory, selectedBrands, priceRange, sortBy, inStockOnly, flashOnly, fuse]);
+  }, [products, searchQuery, selectedCategory, selectedBrands, priceRange, sortBy, flashOnly, fuse]);
 
   // Sliced Visible Products for Progressive Step-by-Step Batch Loading
   const visibleProducts = useMemo(() => {
@@ -383,7 +379,6 @@ export default function ProductCatalogFilter({
     setMinInputStr('0');
     setMaxInputStr('300000');
     setSortBy('featured');
-    setInStockOnly(false);
     setFlashOnly(false);
     setVisibleCount(BATCH_SIZE);
   };
@@ -394,7 +389,6 @@ export default function ProductCatalogFilter({
     selectedCategory !== 'all' ||
     selectedBrands.length > 0 ||
     isPriceFiltered ||
-    inStockOnly ||
     flashOnly;
 
   const currentCategoryInfo = categoriesData.find(c => c.id === selectedCategory);
@@ -792,13 +786,6 @@ export default function ProductCatalogFilter({
                     </span>
                   )}
 
-                  {inStockOnly && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-50 text-emerald-700 text-xs font-bold">
-                      In Stock Only
-                      <X className="w-3 h-3 cursor-pointer" onClick={() => setInStockOnly(false)} />
-                    </span>
-                  )}
-
                   {flashOnly && (
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-red-50 text-red-700 text-xs font-bold">
                       Flash Deals Only
@@ -889,13 +876,9 @@ export default function ProductCatalogFilter({
                           </div>
                         </a>
 
-                        {/* Brand & In-Stock Micro-Strip */}
+                        {/* Brand Strip */}
                         <div className="flex items-center justify-between text-[11px] mb-1.5">
                           <span className="text-brand-600 uppercase tracking-widest font-mono text-[10px] font-extrabold bg-brand-50/80 px-2 py-0.5 rounded-md border border-brand-100/60">{product.brand}</span>
-                          <span className="text-[10px] font-bold text-emerald-600 flex items-center gap-1">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                            In Stock
-                          </span>
                         </div>
 
                         {/* Info */}

@@ -51,11 +51,7 @@ export default function AdminGatewayForm() {
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <div className="relative rounded-xl bg-slate-900/90 border border-slate-800 shadow-[0_25px_70px_rgba(0,0,0,0.6)] backdrop-blur-2xl p-8 sm:p-10 overflow-hidden text-left">
-        {/* Glow ambient sphere */}
-        <div className="absolute -top-24 -right-24 w-56 h-56 rounded-full bg-brand-500/20 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-56 h-56 rounded-full bg-brand-600/15 blur-3xl pointer-events-none" />
-
+      <div className="relative rounded-xl bg-slate-900 border border-slate-800 shadow-2xl p-8 sm:p-10 overflow-hidden text-left">
         {/* Security Badge Header */}
         <div className="relative z-10 flex flex-col items-center text-center space-y-4 mb-8">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-600 to-brand-500 p-0.5 shadow-lg shadow-brand-500/30 flex items-center justify-center">
