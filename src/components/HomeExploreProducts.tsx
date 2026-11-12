@@ -141,7 +141,7 @@ export default function HomeExploreProducts() {
         </div>
 
         {/* Products Grid: balanced presentation (centered when < 5 or uneven rows) */}
-        <div className="max-w-[1440px] mx-auto flex flex-wrap justify-center items-stretch gap-4 sm:gap-5 lg:gap-6">
+        <div className="max-w-[1440px] mx-auto flex flex-wrap justify-center items-stretch gap-4 sm:gap-5">
           {displayedProducts.map((product, idx) => {
             const kokoCount = product.kokoInstallmentCount || product.installmentCount || 3;
             const kokoMonthly = product.kokoInstallmentAmount || product.installmentAmount || Math.round(product.price / kokoCount);
@@ -149,17 +149,18 @@ export default function HomeExploreProducts() {
             const payzyMonthly = product.payzyInstallmentAmount || Math.round(product.price / payzyCount);
             const isAdded = !!addedItemIds[product.id];
             const savings = product.originalPrice ? product.originalPrice - product.price : null;
+            const tyreSize = product.specs?.['Tyre Size'] || product.specs?.['Size'] || product.specs?.['Rim Size'] || '';
 
             return (
               <div
                 key={product.id}
-                className="product-card tyrelink-product-card w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-14px)] lg:w-[calc(20%-19.2px)] max-w-[320px] lg:max-w-none flex flex-col justify-between p-4 sm:p-4.5 rounded-xl border hover:border-brand-500 transition-all duration-300 hover:-translate-y-1 text-left group relative overflow-hidden shrink-0"
+                className="product-card tyrelink-product-card bg-white w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-13.33px)] lg:w-[calc(20%-16px)] max-w-[320px] lg:max-w-none h-[420px] flex flex-col justify-between p-4 rounded-xl border border-slate-200 hover:border-brand-500 transition-all duration-300 hover:-translate-y-1 text-left group relative overflow-hidden shrink-0 select-none"
               >
-                <div>
-                  {/* Product Thumbnail Frame with Frosted Glass Canvas */}
+                <div className="flex-1 flex flex-col min-h-0">
+                  {/* Uniform Fixed-Height Image Stage */}
                   <a
                     href={`/product/${product.slug}`}
-                    className="product-image-stage block relative aspect-[4/3] sm:aspect-square max-h-[250px] sm:max-h-none w-full rounded-lg overflow-hidden border border-slate-200/80 mb-3 flex items-center justify-center p-3 cursor-pointer"
+                    className="product-image-stage block relative h-[190px] w-full rounded-lg overflow-hidden border border-slate-200/80 mb-2.5 flex items-center justify-center p-3 cursor-pointer bg-slate-50/50 shrink-0"
                   >
                     <img
                       src={product.featuredImage}
@@ -184,43 +185,52 @@ export default function HomeExploreProducts() {
                     </div>
                   </a>
 
-                  {/* Brand Micro-Strip */}
-                  <div className="flex items-center justify-between text-[11px] mb-1.5">
-                    <span className="text-brand-600 uppercase tracking-widest font-mono text-[10px] font-extrabold bg-brand-50/80 px-2 py-0.5 rounded-md border border-brand-100/60">{product.brand}</span>
+                  {/* Brand & Spec Strip (Standardized 24px Height) */}
+                  <div className="flex items-center justify-between text-[11px] h-6 mb-1.5 shrink-0">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span className="text-brand-600 uppercase tracking-widest font-mono text-[10px] font-extrabold bg-brand-50/80 px-2 py-0.5 rounded-md border border-brand-100/60 shrink-0">{product.brand}</span>
+                      {tyreSize ? (
+                        <span className="text-[10px] font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 truncate">{tyreSize}</span>
+                      ) : (
+                        <span className="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/80 truncate">GENUINE</span>
+                      )}
+                    </div>
                   </div>
 
-                  {/* Title & Sinhala Title */}
-                  <div className="space-y-0.5 sm:space-y-1">
+                  {/* Title & Sinhala Title (Standardized 52px Slot) */}
+                  <div className="h-[52px] flex flex-col justify-start overflow-hidden">
                     <a
                       href={`/product/${product.slug}`}
-                      className="block text-sm font-bold text-slate-900 line-clamp-2 hover:text-brand-600 transition-colors leading-snug font-sans"
+                      className="block text-xs sm:text-sm font-bold text-slate-900 line-clamp-2 hover:text-brand-600 transition-colors leading-snug font-sans"
                     >
                       {product.title}
                     </a>
-                    {product.sinhalaTitle && (
-                      <p className="text-xs sm:text-[11px] text-slate-400 font-sinhala line-clamp-1">
-                        {product.sinhalaTitle}
-                      </p>
-                    )}
+                    <p className="text-[11px] text-slate-400 font-sinhala truncate mt-0.5">
+                      {product.sinhalaTitle || 'සත්‍ය සමාගම් වගකීම'}
+                    </p>
                   </div>
                 </div>
 
-                {/* Price & Full-Width Cart Action */}
-                <div className="mt-3.5 pt-3 sm:mt-3.5 sm:pt-3 border-t border-slate-100 space-y-2.5">
-                  <div className="space-y-1">
-                    <div className="flex items-baseline gap-2 flex-wrap">
-                      <span className="text-base sm:text-lg font-black text-slate-900 font-display tracking-tight leading-none">
+                {/* Price & Full-Width Cart Action Footer (Standardized 88px Slot) */}
+                <div className="pt-2.5 border-t border-slate-100 space-y-2 shrink-0">
+                  <div className="space-y-0.5">
+                    <div className="flex items-baseline gap-1.5 flex-nowrap">
+                      <span className="text-base sm:text-lg font-black text-slate-900 font-display tracking-tight leading-none truncate">
                         Rs. {product.price.toLocaleString('en-US')}
                       </span>
-                      {product.originalPrice && (
-                        <span className="text-xs sm:text-[11px] text-slate-400 line-through font-mono">
+                      {product.originalPrice ? (
+                        <span className="text-[11px] text-slate-400 line-through font-mono shrink-0">
                           Rs. {product.originalPrice.toLocaleString('en-US')}
+                        </span>
+                      ) : (
+                        <span className="text-[9px] text-emerald-600 font-bold uppercase tracking-wider font-mono shrink-0">
+                          In Stock
                         </span>
                       )}
                     </div>
 
-                    <div className="flex items-center gap-1 text-[10px] text-slate-500 font-medium flex-wrap">
-                      <span>or 3× <b className="text-slate-800 font-mono font-bold">Rs. {kokoMonthly.toLocaleString('en-US')}</b></span>
+                    <div className="flex items-center gap-1 text-[10px] text-slate-500 font-medium truncate">
+                      <span className="truncate">or 3× <b className="text-slate-800 font-mono font-bold">Rs. {kokoMonthly.toLocaleString('en-US')}</b></span>
                       <div className="flex items-center gap-0.5 shrink-0">
                         <a
                           href="https://paykoko.com/"
@@ -230,10 +240,10 @@ export default function HomeExploreProducts() {
                           className="inline-flex items-center gap-0.5 hover:opacity-80 transition-opacity"
                           title="Pay with Koko (opens paykoko.com)"
                         >
-                          <img src="/images/payments/koko-logo.png" alt="Koko" className="h-3 object-contain" />
-                          <span className="w-3 h-3 rounded-full bg-slate-800 text-white inline-flex items-center justify-center text-[8px] font-serif font-bold">i</span>
+                          <img src="/images/payments/koko-logo.png" alt="Koko" className="h-2.5 sm:h-3 object-contain" />
+                          <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-slate-800 text-white inline-flex items-center justify-center text-[7px] sm:text-[8px] font-serif font-bold">i</span>
                         </a>
-                        <span className="text-slate-300">/</span>
+                        <span className="text-slate-300 text-[10px]">/</span>
                         <a
                           href="https://payzy.lk/"
                           target="_blank"
@@ -242,8 +252,8 @@ export default function HomeExploreProducts() {
                           className="inline-flex items-center gap-0.5 hover:opacity-80 transition-opacity"
                           title="Pay with PayZy (opens payzy.lk)"
                         >
-                          <img src="/images/payments/payzy-logo.png" alt="PayZy" className="h-2.5 object-contain" />
-                          <span className="w-3 h-3 rounded-full bg-slate-800 text-white inline-flex items-center justify-center text-[8px] font-serif font-bold">i</span>
+                          <img src="/images/payments/payzy-logo.png" alt="PayZy" className="h-2 sm:h-2.5 object-contain" />
+                          <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-slate-800 text-white inline-flex items-center justify-center text-[7px] sm:text-[8px] font-serif font-bold">i</span>
                         </a>
                       </div>
                     </div>
@@ -254,7 +264,7 @@ export default function HomeExploreProducts() {
                     type="button"
                     onClick={(e) => handleQuickAddToCart(e, product)}
                     aria-label={`Add ${product.title} to cart`}
-                    className={`w-full py-2.5 sm:py-2.5 px-4 rounded-xl sm:rounded-2xl text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${isAdded
+                    className={`w-full py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${isAdded
                         ? 'bg-emerald-600 text-white shadow-sm'
                         : 'bg-brand-50 hover:bg-brand-500 text-brand-600 hover:text-white border border-brand-200/60 hover:border-transparent active:scale-95 shadow-2xs'
                       }`}

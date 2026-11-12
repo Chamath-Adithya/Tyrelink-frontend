@@ -79,12 +79,6 @@ const filteredCategories = categories;
             >
               Shop tyres & tools
             </a>
-            <a
-              href="/about"
-              class={`hover:text-brand-500 transition-colors ${currentPath.startsWith('/about') ? 'text-brand-500 font-extrabold' : ''}`}
-            >
-              About Us
-            </a>
             
             <div class="relative group py-2">
               <button class="flex items-center gap-1.5 hover:text-brand-500 transition-colors cursor-pointer">
@@ -107,6 +101,13 @@ const filteredCategories = categories;
                 ))}
               </div>
             </div>
+
+            <a
+              href="/about"
+              class={`hover:text-brand-500 transition-colors ${currentPath.startsWith('/about') ? 'text-brand-500 font-extrabold' : ''}`}
+            >
+              About Us
+            </a>
           </nav>
 
           <!-- Shopping Cart Nav Island Button -->
