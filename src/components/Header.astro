@@ -60,7 +60,7 @@ const filteredCategories = categories;
     <div class="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8">
       <div id="main-navbar-inner" class="flex items-center justify-between h-20 gap-6 transition-[height] duration-300 ease-out">
         
-        <!-- Official Brand Logo (Sharp Dark Text + Brand Orange Accents on Light Navbar) -->
+        <!-- Official Brand Logo (Sharp Dark Text + Racing Red Chevrons & Accents) -->
         <a href="/" class="flex items-center shrink-0 group py-1" aria-label="Tyrelink Home">
           <span class="tyrelink-mark" aria-hidden="true">›››</span>
           <span class="tyrelink-wordmark">TYRE<span>LINK</span></span>
@@ -75,7 +75,7 @@ const filteredCategories = categories;
 
         <!-- Desktop Navigation Links -->
         <div class="hidden md:flex items-center gap-6">
-          <nav class="flex items-center gap-6 text-xs font-bold text-slate-700">
+          <nav class="flex items-center gap-5 text-xs font-bold text-slate-700">
             <a 
               href="/" 
               class={`hover:text-brand-500 transition-colors ${currentPath === '/' ? 'text-brand-500 font-extrabold' : ''}`}
@@ -86,30 +86,38 @@ const filteredCategories = categories;
               href="/shop" 
               class={`hover:text-brand-500 transition-colors ${currentPath.startsWith('/shop') ? 'text-brand-500 font-extrabold' : ''}`}
             >
-              Shop tyres & tools
+              Shop tyres
             </a>
-            
-            <div class="relative group py-2">
-              <button class="flex items-center gap-1.5 hover:text-brand-500 transition-colors cursor-pointer">
-                <span>Categories</span>
-                <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-brand-500 group-hover:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              
-              <!-- Refined Dropdown Menu -->
-              <div class="absolute top-full -left-4 w-64 bg-white rounded-2xl shadow-card border border-slate-200 p-2 hidden group-hover:block animate-in fade-in duration-150 z-50">
-                {filteredCategories.map((cat) => (
-                  <a
-                    href={`/category/${cat.id}`}
-                    class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-red-50 hover:text-brand-600 transition-all"
-                  >
-                    <span>{cat.name}</span>
-                    <span class="text-[10px] text-slate-400 font-normal">{cat.sinhalaName}</span>
-                  </a>
-                ))}
-              </div>
-            </div>
+            <a 
+              href="/#finder" 
+              class="hover:text-brand-500 transition-colors"
+            >
+              Tyre finder
+            </a>
+            <a 
+              href="/#garages" 
+              class="hover:text-brand-500 transition-colors"
+            >
+              Garage solutions
+            </a>
+            <a 
+              href="/#learn" 
+              class="hover:text-brand-500 transition-colors"
+            >
+              Learn
+            </a>
+            <a 
+              href="/warranty-check" 
+              class={`hover:text-brand-500 transition-colors ${currentPath.startsWith('/warranty-check') ? 'text-brand-500 font-extrabold' : ''}`}
+            >
+              Warranty
+            </a>
+            <a 
+              href="/track-order" 
+              class={`hover:text-brand-500 transition-colors ${currentPath.startsWith('/track-order') ? 'text-brand-500 font-extrabold' : ''}`}
+            >
+              Track order
+            </a>
           </nav>
 
           <!-- Shopping Cart Nav Island Button -->
@@ -158,7 +166,10 @@ const filteredCategories = categories;
     <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 bg-white px-4 pt-3 pb-6 space-y-3">
       <nav class="flex flex-col space-y-1.5 text-sm font-semibold text-slate-700">
         <a href="/" class="px-3 py-2 rounded-xl hover:bg-slate-50 hover:text-brand-500">Home</a>
-        <a href="/shop" class="px-3 py-2 rounded-xl hover:bg-slate-50 hover:text-brand-500">Shop tyres & tools</a>
+        <a href="/shop" class="px-3 py-2 rounded-xl hover:bg-slate-50 hover:text-brand-500">Shop tyres</a>
+        <a href="/#finder" class="px-3 py-2 rounded-xl hover:bg-slate-50 hover:text-brand-500">Tyre finder</a>
+        <a href="/#garages" class="px-3 py-2 rounded-xl hover:bg-slate-50 hover:text-brand-500">Garage solutions</a>
+        <a href="/#learn" class="px-3 py-2 rounded-xl hover:bg-slate-50 hover:text-brand-500">Learn</a>
         <a href="/warranty-check" class="px-3 py-2 rounded-xl hover:bg-slate-50">Warranty Verification</a>
         <a href="/track-order" class="px-3 py-2 rounded-xl hover:bg-slate-50">Track Courier Order</a>
         <a href="/about" class="px-3 py-2 rounded-xl hover:bg-slate-50">About Tyrelink</a>

@@ -1,0 +1,168 @@
+---
+const trustPoints = [
+  'Verified stock & manufacture date (DOT)',
+  'Transparent fitted pricing',
+  'Human fitment confirmation via WhatsApp'
+];
+
+const vehicleQuickLinks = [
+  { label: 'Passenger Car', icon: '🚗', link: '/category/car-tyres' },
+  { label: 'SUV & 4x4', icon: '🚙', link: '/category/suv-4x4' },
+  { label: 'Motorcycle', icon: '🏍️', link: '/category/motorcycle' },
+  { label: 'Commercial & Van', icon: '🚐', link: '/category/commercial' },
+  { label: 'Workshop Systems', icon: '🔧', link: '/category/garage-equipment' }
+];
+
+const popularSizes = [
+  '155/70 R13',
+  '175/65 R14',
+  '185/65 R15',
+  '195/65 R15',
+  '205/55 R16',
+  '215/55 R17',
+  '225/45 R18'
+];
+
+const whatsapp = '94783724920';
+---
+
+<section class="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-12 sm:pt-8 sm:pb-16" id="finder">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+    
+    <!-- Left Column: High-Impact Editorial Tyrelink Typography & Actions -->
+    <div class="lg:col-span-6 space-y-6 text-left reveal-left">
+      
+      <!-- Eyebrow with pulsating racing red dot -->
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 border border-red-200/80 text-brand-600 text-[11px] font-black uppercase tracking-widest shadow-2xs">
+        <span class="w-2 h-2 rounded-full bg-[#ed1c24] animate-pulse"></span>
+        <span>Sri Lanka's islandwide tyre partner</span>
+      </div>
+
+      <!-- Main High-Impact Heading (The beloved dummy style) -->
+      <div class="space-y-3">
+        <h1 class="text-5xl sm:text-6xl lg:text-7xl xl:text-[5.2rem] font-black text-slate-900 tracking-[-0.04em] leading-[0.93] font-display">
+          The right tyre.<br />
+          <em class="text-[#ed1c24] not-italic drop-shadow-[0_2px_15px_rgba(237,28,36,0.25)]">Made simple.</em>
+        </h1>
+        
+        <!-- Authentic Sinhala Translation -->
+        <p class="font-sinhala text-base sm:text-lg text-slate-600 font-semibold tracking-tight pt-1">
+          ඔබේ වාහනයට ගැළපෙන ටයරය පහසුවෙන් සොයාගන්න.
+        </p>
+      </div>
+
+      <!-- Crisp Lede Description -->
+      <p class="text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl">
+        Find, compare and fit tyres with confidence. Public prices, islandwide Cash on Delivery (COD), verified manufacture dates (DOT), and expert help on WhatsApp—24 hours a day.
+      </p>
+
+      <!-- Primary Action Buttons (Red & WhatsApp) -->
+      <div class="flex flex-wrap items-center gap-3 pt-2">
+        <a 
+          href="/shop" 
+          class="inline-flex items-center gap-2.5 px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl bg-[#ed1c24] hover:bg-[#c9141b] text-white text-xs sm:text-sm font-black tracking-wide uppercase shadow-[0_10px_25px_rgba(237,28,36,0.32)] hover:shadow-[0_14px_32px_rgba(237,28,36,0.42)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer"
+        >
+          <span>Shop tyres</span>
+          <span class="text-base leading-none">↗</span>
+        </a>
+
+        <a 
+          href={`https://wa.me/${whatsapp}?text=${encodeURIComponent('Hello Tyrelink, I need help choosing the right tyre for my vehicle.')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2.5 px-6 sm:px-7 py-3.5 sm:py-4 rounded-xl bg-white hover:bg-slate-50 text-slate-900 border border-slate-300 hover:border-brand-500 text-xs sm:text-sm font-black tracking-wide shadow-xs hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer"
+        >
+          <span class="w-2 h-2 rounded-full bg-[#25D366] shrink-0"></span>
+          <span>WhatsApp an expert</span>
+          <span class="text-slate-400 group-hover:text-brand-500 text-base leading-none">↗</span>
+        </a>
+      </div>
+
+      <!-- Trust Proof Row with Red Checkmarks -->
+      <div class="flex flex-wrap items-center gap-x-5 gap-y-2 pt-2 text-xs text-slate-600 font-medium border-t border-slate-200/80">
+        {trustPoints.map((point) => (
+          <span class="inline-flex items-center gap-1.5">
+            <b class="text-[#ed1c24] text-sm">✓</b>
+            <span>{point}</span>
+          </span>
+        ))}
+      </div>
+
+      <!-- Quick Sidewall Size Selector (Instant Tyre Jump) -->
+      <div class="pt-2">
+        <div class="flex items-center gap-2 mb-2 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+          <span>Search by Popular Rim Sizes:</span>
+        </div>
+        <div class="flex flex-wrap items-center gap-1.5">
+          {popularSizes.map((size) => (
+            <a 
+              href={`/shop?q=${encodeURIComponent(size)}#catalog-products`}
+              class="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-900 text-slate-700 hover:text-white border border-slate-200 hover:border-slate-900 text-[11px] font-mono font-bold transition-all shadow-2xs hover:scale-105 active:scale-95"
+            >
+              {size}
+            </a>
+          ))}
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Column: Iconic Carbon Halo Visual with Floating Tyre & Real-Time Trust Cards -->
+    <div class="lg:col-span-6 reveal-right">
+      <div class="hero-visual-stage">
+        
+        <!-- Pulsing Red Ambient Glow Orb -->
+        <div class="hero-glow-stage"></div>
+
+        <!-- Animated Road Curvature Lines -->
+        <div class="road-line-stage"></div>
+
+        <!-- Floating Performance Tyre Illustration -->
+        <img 
+          class="hero-tyre-img" 
+          src="/hero-tyre.png" 
+          alt="Tyrelink High-Performance Tyre Visual"
+          loading="eager"
+        />
+
+        <!-- Floating Trust Card 1: Islandwide Delivery -->
+        <div class="absolute top-14 sm:top-18 right-4 sm:right-8 z-10 bg-white/95 backdrop-blur-md p-3 sm:p-3.5 rounded-xl flex items-center gap-3 shadow-[0_14px_35px_rgba(0,0,0,0.25)] border border-white/60 text-left hover:scale-105 transition-transform duration-300">
+          <div class="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center font-black text-sm shrink-0 border border-emerald-200">
+            ✓
+          </div>
+          <div>
+            <strong class="block text-xs font-black text-slate-900 font-display">Islandwide delivery</strong>
+            <small class="block text-[10px] text-slate-500 font-medium">Order through WhatsApp · COD</small>
+          </div>
+        </div>
+
+        <!-- Floating Trust Card 2: Fitment Guidance -->
+        <div class="absolute bottom-12 sm:bottom-16 left-4 sm:left-8 z-10 bg-white/95 backdrop-blur-md p-3 sm:p-3.5 rounded-xl flex items-center gap-3 shadow-[0_14px_35px_rgba(0,0,0,0.25)] border border-white/60 text-left hover:scale-105 transition-transform duration-300">
+          <div class="w-8 h-8 rounded-full bg-red-50 text-[#ed1c24] flex items-center justify-center font-black text-base shrink-0 border border-red-200">
+            ◉
+          </div>
+          <div>
+            <strong class="block text-xs font-black text-slate-900 font-display">Fitment guidance</strong>
+            <small class="block text-[10px] text-slate-500 font-medium">By a Tyrelink expert · 24/7</small>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Quick Vehicle Category Strip directly under visual -->
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 mt-4">
+        {vehicleQuickLinks.map((item) => (
+          <a 
+            href={item.link} 
+            class="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-white hover:bg-slate-900 text-slate-800 hover:text-white border border-slate-200/80 hover:border-slate-900 text-xs font-bold transition-all shadow-2xs hover:-translate-y-0.5 active:translate-y-0"
+          >
+            <span>{item.icon}</span>
+            <span class="truncate">{item.label}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</section>
+

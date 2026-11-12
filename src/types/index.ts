@@ -7,21 +7,14 @@ export type ProductCategory =
   | 'garage-tools'
   | 'garage-equipment';
 
-export type ProductCondition = 'brand-new' | 'pre-owned-like-new' | 'open-box';
+export type ProductCondition = 'brand-new' | 'commercial-new';
 
-export interface LaptopUpgradeOption {
-  id: string;
-  name: string;
-  priceDelta: number;
-}
-
-export interface LaptopConfig {
-  ramOptions?: LaptopUpgradeOption[];
-  storageOptions?: LaptopUpgradeOption[];
-  purpose: ('study' | 'office' | 'graphic-design' | 'gaming')[];
-  display: string;
-  batteryLife: string;
-  condition: ProductCondition;
+export interface TyreFitmentOption {
+  rimSize?: string;
+  speedRating?: string;
+  loadIndex?: string;
+  season?: 'all-season' | 'summer' | 'highway-terrain' | 'all-terrain' | 'mud-terrain';
+  dotYear?: string;
 }
 
 export interface Product {
@@ -56,7 +49,7 @@ export interface Product {
   youtubeReviewId?: string;
   rating: number;
   reviewCount: number;
-  laptopConfig?: LaptopConfig;
+  fitmentConfig?: TyreFitmentOption;
 }
 
 export interface CategoryInfo {

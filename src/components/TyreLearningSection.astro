@@ -1,0 +1,78 @@
+---
+const guides = [
+  {
+    number: 'GUIDE 01',
+    title: 'What do the numbers on a tyre mean?',
+    summary: 'Decode 205/55 R16 91V: Width in millimeters, aspect ratio, radial construction, rim diameter, load index, and speed rating.',
+    readTime: '3 min read',
+    link: '/faq#tyre-numbers'
+  },
+  {
+    number: 'GUIDE 02',
+    title: 'When should you replace your tyres?',
+    summary: 'Spot tread wear indicator bars, evaluate sidewall cracking, check the 4-digit DOT manufacture date code, and prevent dangerous aquaplaning.',
+    readTime: '4 min read',
+    link: '/faq#when-to-replace'
+  },
+  {
+    number: 'GUIDE 03',
+    title: 'How to choose tyres for Sri Lankan roads',
+    summary: 'Comparing wet monsoon traction, pothole sidewall reinforcement, heat dissipation, and fuel economy on city vs highway routes.',
+    readTime: '5 min read',
+    link: '/faq#sri-lanka-roads'
+  }
+];
+---
+
+<section class="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 reveal" id="learn">
+  <!-- Section Heading -->
+  <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 text-left border-b border-slate-200/80 pb-5">
+    <div>
+      <p class="text-[10px] font-black uppercase tracking-widest text-[#ed1c24] mb-1">
+        Learn before you buy
+      </p>
+      <h2 class="text-3xl sm:text-4xl font-black text-slate-900 font-display tracking-tight">
+        Tyre knowledge,<br />
+        <span class="text-slate-400">without the jargon.</span>
+      </h2>
+    </div>
+    <a href="/faq" class="text-xs font-black text-[#ed1c24] hover:underline flex items-center gap-1">
+      <span>Visit the learning centre</span>
+      <span>→</span>
+    </a>
+  </div>
+
+  <!-- Guides Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+    {guides.map((guide) => (
+      <article class="p-7 rounded-2xl bg-white border border-slate-200/80 hover:border-[#ed1c24] shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between text-left group">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[10px] font-black font-mono tracking-widest text-[#ed1c24] uppercase">
+              {guide.number}
+            </span>
+            <span class="text-[10px] font-mono text-slate-400">
+              {guide.readTime}
+            </span>
+          </div>
+
+          <h3 class="text-lg font-black text-slate-900 font-display tracking-tight leading-snug group-hover:text-[#ed1c24] transition-colors mb-2.5">
+            {guide.title}
+          </h3>
+
+          <p class="text-xs text-slate-500 leading-relaxed">
+            {guide.summary}
+          </p>
+        </div>
+
+        <div class="pt-5 border-t border-slate-100 mt-5">
+          <a href={guide.link} class="text-xs font-black text-slate-900 group-hover:text-[#ed1c24] flex items-center justify-between transition-colors">
+            <span>Read guide</span>
+            <span class="group-hover:translate-x-1 transition-transform">→</span>
+          </a>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
