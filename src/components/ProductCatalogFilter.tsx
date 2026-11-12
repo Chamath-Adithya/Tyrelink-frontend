@@ -819,7 +819,7 @@ export default function ProductCatalogFilter({
 
           {filteredProducts.length > 0 ? (
             <div className="space-y-8">
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-4.5">
+              <div className="flex flex-wrap justify-center items-stretch gap-4 sm:gap-4.5">
                 {visibleProducts.map((product, idx) => {
                   const bnpl = bnplMap[product.id] ?? {
                     kokoCount: product.kokoInstallmentCount || product.installmentCount || 3,
@@ -836,7 +836,7 @@ export default function ProductCatalogFilter({
                         window.location.href = `/product/${product.slug}`;
                       }}
                       style={{ animationDelay: `${(idx % 8) * 60}ms` }}
-                      className="product-card tyrelink-product-card bg-white flex flex-col justify-between p-4 sm:p-4.5 group relative text-left rounded-xl border border-slate-200 hover:border-brand-500 transition-all duration-300 hover:-translate-y-1 overflow-hidden animate-[fadeIn_0.45s_ease_both] cursor-pointer"
+                      className="product-card tyrelink-product-card bg-white w-full sm:w-[calc(50%-9px)] md:w-[calc(33.333%-12px)] lg:w-[calc(25%-13.5px)] xl:w-[calc(20%-14.4px)] max-w-[320px] xl:max-w-none flex flex-col justify-between p-4 sm:p-4.5 group relative text-left rounded-xl border border-slate-200 hover:border-brand-500 transition-all duration-300 hover:-translate-y-1 overflow-hidden animate-[fadeIn_0.45s_ease_both] cursor-pointer shrink-0"
                     >
                       {/* Admin Quick Edit Button */}
                       <button
@@ -952,11 +952,11 @@ export default function ProductCatalogFilter({
                       {/* Skeletons rendered during batch loading */}
                       {isLoadingBatch && (
                         <>
-                          <ProductCardSkeleton />
-                          <ProductCardSkeleton />
-                          <ProductCardSkeleton />
-                          <ProductCardSkeleton />
-                          <ProductCardSkeleton />
+                          <div className="w-full sm:w-[calc(50%-9px)] md:w-[calc(33.333%-12px)] lg:w-[calc(25%-13.5px)] xl:w-[calc(20%-14.4px)] max-w-[320px] xl:max-w-none shrink-0"><ProductCardSkeleton /></div>
+                          <div className="w-full sm:w-[calc(50%-9px)] md:w-[calc(33.333%-12px)] lg:w-[calc(25%-13.5px)] xl:w-[calc(20%-14.4px)] max-w-[320px] xl:max-w-none shrink-0"><ProductCardSkeleton /></div>
+                          <div className="w-full sm:w-[calc(50%-9px)] md:w-[calc(33.333%-12px)] lg:w-[calc(25%-13.5px)] xl:w-[calc(20%-14.4px)] max-w-[320px] xl:max-w-none shrink-0"><ProductCardSkeleton /></div>
+                          <div className="w-full sm:w-[calc(50%-9px)] md:w-[calc(33.333%-12px)] lg:w-[calc(25%-13.5px)] xl:w-[calc(20%-14.4px)] max-w-[320px] xl:max-w-none shrink-0"><ProductCardSkeleton /></div>
+                          <div className="w-full sm:w-[calc(50%-9px)] md:w-[calc(33.333%-12px)] lg:w-[calc(25%-13.5px)] xl:w-[calc(20%-14.4px)] max-w-[320px] xl:max-w-none shrink-0"><ProductCardSkeleton /></div>
                         </>
                       )}
                     </div>

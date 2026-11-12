@@ -21,7 +21,7 @@ const waOrderMsg = `Hello Tyrelink, I want to order ${product.brand} ${product.t
 
 <div
   onclick={`if (!event.target.closest('a, button')) window.location.href='/product/${product.slug}'`}
-  class="product-card tyrelink-product-card bg-white reveal-scale flex flex-col justify-between p-4 group relative text-left rounded-xl border border-slate-200 hover:border-brand-500 transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden"
+  class="product-card tyrelink-product-card bg-white reveal-scale w-full h-full flex flex-col justify-between p-4 group relative text-left rounded-xl border border-slate-200 hover:border-brand-500 transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden"
 >
   <!-- Admin Edit Quick Button (Shown only when Edit Mode is active) -->
   <button

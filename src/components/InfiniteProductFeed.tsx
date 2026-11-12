@@ -8,7 +8,7 @@ interface InfiniteProductFeedProps {
   currentProductId: string;
 }
 
-const BATCH_SIZE = 4;
+const BATCH_SIZE = 5;
 
 export default function InfiniteProductFeed({ currentProductId }: InfiniteProductFeedProps) {
   // Initialize with non-empty list so SSR and initial client state render immediately
@@ -111,8 +111,8 @@ export default function InfiniteProductFeed({ currentProductId }: InfiniteProduc
         </div>
       </div>
 
-      {/* Grid of Dynamic Products & Skeletons */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      {/* Grid of Dynamic Products & Skeletons (Centered when < 5 or uneven rows) */}
+      <div className="flex flex-wrap justify-center items-stretch gap-4 sm:gap-4.5">
         {visibleProducts.map((product, idx) => {
           const bnpl = bnplMap[product.id] ?? {
             kokoCount: product.kokoInstallmentCount || product.installmentCount || 3,
@@ -128,14 +128,14 @@ export default function InfiniteProductFeed({ currentProductId }: InfiniteProduc
                 if (target.closest('a, button')) return;
                 window.location.href = `/product/${product.slug}`;
               }}
-              style={{ animationDelay: `${(idx % 4) * 70}ms` }}
-              className="flex flex-col justify-between product-card tyrelink-product-card bg-white p-4 sm:p-4.5 group relative text-left rounded-xl border border-slate-200 hover:border-brand-500 transition-all duration-300 hover:-translate-y-1 overflow-hidden animate-[fadeIn_0.4s_ease_both] cursor-pointer"
+              style={{ animationDelay: `${(idx % 5) * 60}ms` }}
+              className="product-card tyrelink-product-card bg-white w-full sm:w-[calc(50%-9px)] md:w-[calc(33.333%-12px)] lg:w-[calc(20%-14.4px)] max-w-[320px] lg:max-w-none flex flex-col justify-between p-4 sm:p-4.5 group relative text-left rounded-xl border border-slate-200 hover:border-brand-500 transition-all duration-300 hover:-translate-y-1 overflow-hidden animate-[fadeIn_0.45s_ease_both] cursor-pointer shrink-0"
             >
               <div>
                 {/* Full-bleed Product Thumbnail with Frosted Canvas */}
                 <a
                   href={`/product/${product.slug}`}
-                  className="block relative aspect-[4/3] sm:aspect-square max-h-[250px] sm:max-h-none w-full rounded-xl sm:rounded-2xl overflow-hidden bg-gradient-to-b from-slate-100/60 to-slate-50/40 backdrop-blur-md border border-white/70 mb-3 sm:mb-3.5 flex items-center justify-center p-3 sm:p-4"
+                  className="block relative aspect-[4/3] sm:aspect-square max-h-[250px] sm:max-h-none w-full rounded-xl sm:rounded-2xl overflow-hidden bg-gradient-to-b from-slate-100/60 to-slate-50/40 backdrop-blur-md border border-white/70 mb-3 sm:mb-3.5 flex items-center justify-center p-3 sm:p-3"
                 >
                   <img
                     src={product.featuredImage}
@@ -230,10 +230,11 @@ export default function InfiniteProductFeed({ currentProductId }: InfiniteProduc
         {/* Shimmering Skeletons during batch loading */}
         {isLoadingBatch && (
           <>
-            <ProductCardSkeleton />
-            <ProductCardSkeleton />
-            <ProductCardSkeleton />
-            <ProductCardSkeleton />
+            <div className="w-full sm:w-[calc(50%-9px)] md:w-[calc(33.333%-12px)] lg:w-[calc(20%-14.4px)] max-w-[320px] lg:max-w-none shrink-0"><ProductCardSkeleton /></div>
+            <div className="w-full sm:w-[calc(50%-9px)] md:w-[calc(33.333%-12px)] lg:w-[calc(20%-14.4px)] max-w-[320px] lg:max-w-none shrink-0"><ProductCardSkeleton /></div>
+            <div className="w-full sm:w-[calc(50%-9px)] md:w-[calc(33.333%-12px)] lg:w-[calc(20%-14.4px)] max-w-[320px] lg:max-w-none shrink-0"><ProductCardSkeleton /></div>
+            <div className="w-full sm:w-[calc(50%-9px)] md:w-[calc(33.333%-12px)] lg:w-[calc(20%-14.4px)] max-w-[320px] lg:max-w-none shrink-0"><ProductCardSkeleton /></div>
+            <div className="w-full sm:w-[calc(50%-9px)] md:w-[calc(33.333%-12px)] lg:w-[calc(20%-14.4px)] max-w-[320px] lg:max-w-none shrink-0"><ProductCardSkeleton /></div>
           </>
         )}
       </div>

@@ -14,8 +14,8 @@ import categoriesData from '../data/categories.json';
 import { addToCart } from '../utils/cartStore';
 import type { Product } from '../types';
 
-const INITIAL_BATCH = 8;
-const LOAD_STEP = 4;
+const INITIAL_BATCH = 10;
+const LOAD_STEP = 5;
 
 const CATEGORY_TABS = [
   { id: 'all', label: 'Shop tyres & tools', sinhala: 'සියලුම භාණ්ඩ' },
@@ -140,8 +140,8 @@ export default function HomeExploreProducts() {
           })}
         </div>
 
-        {/* Products Grid: 1 column on mobile, responsive multi-column on desktop */}
-        <div className="max-w-[1440px] mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5 lg:gap-6">
+        {/* Products Grid: balanced presentation (centered when < 5 or uneven rows) */}
+        <div className="max-w-[1440px] mx-auto flex flex-wrap justify-center items-stretch gap-4 sm:gap-5 lg:gap-6">
           {displayedProducts.map((product, idx) => {
             const kokoCount = product.kokoInstallmentCount || product.installmentCount || 3;
             const kokoMonthly = product.kokoInstallmentAmount || product.installmentAmount || Math.round(product.price / kokoCount);
@@ -153,7 +153,7 @@ export default function HomeExploreProducts() {
             return (
               <div
                 key={product.id}
-                className="product-card tyrelink-product-card flex flex-col justify-between p-4 sm:p-4.5 rounded-xl border hover:border-brand-500 transition-all duration-300 hover:-translate-y-1 text-left group relative overflow-hidden"
+                className="product-card tyrelink-product-card w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-14px)] lg:w-[calc(20%-19.2px)] max-w-[320px] lg:max-w-none flex flex-col justify-between p-4 sm:p-4.5 rounded-xl border hover:border-brand-500 transition-all duration-300 hover:-translate-y-1 text-left group relative overflow-hidden shrink-0"
               >
                 <div>
                   {/* Product Thumbnail Frame with Frosted Glass Canvas */}

@@ -15,7 +15,7 @@ const products = productsData as Product[];
 
 // Map flash deals directly from campaigns.json schedule / selection
 const flashIds = new Set(campaignsData.flashSale?.productIds || []);
-const flashDeals = products.filter(p => flashIds.has(p.id) || p.isFlashDeal).slice(0, 4);
+const flashDeals = products.filter(p => flashIds.has(p.id) || p.isFlashDeal).slice(0, 5);
 const flashDealIds = new Set(flashDeals.map(p => p.id));
 
 // Map trending products directly from campaigns.json selection
@@ -139,10 +139,10 @@ const faqData = [
           </div>
         </div>
 
-        <!-- Product grid: 1 column on mobile, responsive multi-column on desktop -->
-        <div class="max-w-[1440px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-5 lg:gap-6 stagger-children">
+        <!-- Product grid: balanced responsive presentation (centered when < 5 or uneven rows) -->
+        <div class="max-w-[1440px] mx-auto flex flex-wrap justify-center items-stretch gap-4 sm:gap-5 lg:gap-6 stagger-children">
           {bestSellers.map((prod, i) => (
-            <div class="reveal-scale" style={`transition-delay: ${i * 70}ms`}>
+            <div class="w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-14px)] lg:w-[calc(20%-19.2px)] max-w-[320px] lg:max-w-none flex reveal-scale shrink-0" style={`transition-delay: ${i * 70}ms`}>
               <ProductCard product={prod} />
             </div>
           ))}

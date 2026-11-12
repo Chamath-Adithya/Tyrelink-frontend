@@ -260,11 +260,11 @@ export default function ProductCarousel({
               <ChevronRight className="w-5 h-5 stroke-[2.5]" />
             </button>
 
-            {/* Flash Deals Container: 1-column vertical stack on mobile, horizontal carousel on desktop */}
+            {/* Flash Deals Container: Balanced centered grid layout */}
             <div
               ref={scrollRef}
               onScroll={updateScrollState}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 items-stretch gap-4 sm:gap-5 lg:gap-6 overflow-x-visible pb-4 pt-1 px-4 sm:px-6 lg:px-8"
+              className="flex flex-wrap justify-center items-stretch gap-4 sm:gap-5 lg:gap-6 overflow-x-visible pb-4 pt-1 px-4 sm:px-6 lg:px-8 max-w-[1440px] mx-auto"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {products.map((product, i) => {
@@ -281,7 +281,7 @@ export default function ProductCarousel({
                       if (target.closest('a, button')) return;
                       window.location.href = `/product/${product.slug}`;
                     }}
-                    className="tyrelink-product-card relative overflow-hidden w-full flex flex-col justify-between p-4 sm:p-4.5 group text-left rounded-xl border hover:border-brand-500 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                    className="tyrelink-product-card relative overflow-hidden w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-14px)] lg:w-[calc(20%-19.2px)] max-w-[320px] lg:max-w-none flex flex-col justify-between p-4 sm:p-4.5 group text-left rounded-xl border hover:border-brand-500 transition-all duration-300 hover:-translate-y-1 cursor-pointer shrink-0"
                     style={{ animationDelay: `${i * 60}ms` }}
                   >
                     <div>
