@@ -1,0 +1,61 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ProductCatalogFilter from '../../components/ProductCatalogFilter';
+import categories from '../../data/categories.json';
+
+export async function getStaticPaths() {
+  return categories.map((cat) => ({
+    params: { category: cat.id },
+    props: { categoryInfo: cat },
+  }));
+}
+
+interface Props {
+  categoryInfo: typeof categories[0];
+}
+
+const { categoryInfo } = Astro.props;
+
+const breadcrumbs = [
+  { name: 'Home', item: 'https://tyrelink.lk/' },
+  { name: 'Categories', item: 'https://tyrelink.lk/shop' },
+  { name: categoryInfo.name, item: Astro.url.href }
+];
+---
+
+<Layout
+  title={`Best ${categoryInfo.name} Price in Sri Lanka | Tyrelink`}
+  description={`Shop top-rated ${categoryInfo.name} in Sri Lanka with islandwide Cash on Delivery (COD) and warranty. Fast 1-Click WhatsApp order.`}
+  breadcrumbs={breadcrumbs}
+>
+  <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    
+    <!-- Breadcrumbs -->
+    <nav class="flex items-center gap-2 text-xs text-slate-400 overflow-x-auto whitespace-nowrap font-medium reveal">
+      <a href="/" class="hover:text-brand-600 transition-colors">Home</a>
+      <span class="text-slate-300">/</span>
+      <a href="/shop" class="hover:text-brand-600 transition-colors">Categories</a>
+      <span class="text-slate-300">/</span>
+      <span class="text-slate-800 font-bold">{categoryInfo.name}</span>
+    </nav>
+
+    <!-- Header Stage -->
+    <div class="border-b border-slate-200/60 pb-7 space-y-3 text-left reveal-blur">
+      <div class="section-badge">
+        <span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse"></span>
+        Category Showcase
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-black text-slate-900 font-display tracking-tight">
+        {categoryInfo.name}
+        <span class="text-slate-400 font-medium text-xl ml-2">({categoryInfo.sinhalaName})</span>
+      </h1>
+      <p class="text-xs sm:text-sm text-slate-500 max-w-2xl">
+        {categoryInfo.description}
+      </p>
+    </div>
+
+    <!-- Interactive Filter & Catalog Grid Island (Pre-Filtered) -->
+    <ProductCatalogFilter client:load initialCategory={categoryInfo.id} />
+
+  </div>
+</Layout>

@@ -1,0 +1,70 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+  title="404 — Page Not Found | Tyrelink"
+  description="The requested tech page, product, or portal could not be found on Tyrelink. Explore our best selling tyres, wheel accessories and workshop equipment."
+>
+  <div class="min-h-[70vh] flex items-center justify-center py-16 px-4">
+    <div class="max-w-lg w-full text-center space-y-8 reveal-scale">
+      
+      <!-- Animated Visual -->
+      <div class="relative w-28 h-28 mx-auto">
+        <!-- Outer spinning ring -->
+        <div class="absolute inset-0 rounded-full border-2 border-dashed border-brand-300/50 animate-spin" style="animation-duration: 8s;"></div>
+        <!-- Inner card -->
+        <div class="absolute inset-3 rounded-2xl bg-white shadow-[0_8px_32px_rgba(0,0,0,0.10)] flex items-center justify-center text-brand-500 border border-brand-100">
+          <svg class="w-10 h-10 stroke-[1.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
+          </svg>
+        </div>
+        <!-- 404 badge -->
+        <span class="absolute -top-2 -right-1 px-2.5 py-0.5 rounded-full text-xs font-black bg-gradient-to-r from-brand-600 to-brand-500 text-white shadow-[0_4px_12px_rgba(237,28,36,0.4)]">
+          404
+        </span>
+      </div>
+
+      <!-- Text -->
+      <div class="space-y-3">
+        <h1 class="text-2xl sm:text-3xl font-black text-slate-900 font-display">
+          Page Not Found
+        </h1>
+        <p class="text-xs sm:text-sm font-semibold text-slate-500 font-sinhala">
+          සොයන ලද පිටුව හෝ භාණ්ඩය සොයාගත නොහැකි විය
+        </p>
+        <p class="text-xs text-slate-400 max-w-sm mx-auto leading-relaxed">
+          The link you followed may be broken or the product catalog item may have been moved or updated.
+        </p>
+      </div>
+
+      <!-- Quick Action CTAs -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+        <a 
+          href="/"
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-2xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold transition-all hover:scale-105 active:scale-95"
+          style="box-shadow: 0 4px 20px rgba(255,122,0,0.3);"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          <span>Back to Homepage</span>
+        </a>
+        <a 
+          href="/shop"
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all border border-slate-200 hover:border-slate-300 hover:scale-105"
+        >
+          <span>Explore Catalog</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <!-- Support Link -->
+      <p class="text-[11px] text-slate-400 pt-2">
+        Need immediate help? WhatsApp us at 
+        <a href="https://wa.me/94783724920" class="text-brand-600 font-bold hover:underline">078 372 4920</a>
+      </p>
+
+    </div>
+  </div>
+</Layout>

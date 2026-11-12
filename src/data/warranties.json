@@ -1,0 +1,46 @@
+[
+  {
+    "serialNumber": "TL-DOT-9921",
+    "invoiceNumber": "INV-10492",
+    "productName": "Michelin Energy XM2+ 195/65 R15 (Set of 4)",
+    "customerName": "Kasun Chamara",
+    "purchaseDate": "2026-08-15",
+    "warrantyPeriod": "05 Years Manufacturer Warranty",
+    "validUntil": "2031-08-15",
+    "status": "ACTIVE",
+    "claimCount": 0
+  },
+  {
+    "serialNumber": "TL-DOT-8840",
+    "invoiceNumber": "INV-10214",
+    "productName": "DSI S-Drive 185/65 R15 Tubeless Tyre",
+    "customerName": "Nipuna Rathnayake",
+    "purchaseDate": "2026-06-10",
+    "warrantyPeriod": "04 Years Manufacturer Warranty",
+    "validUntil": "2030-06-10",
+    "status": "ACTIVE",
+    "claimCount": 0
+  },
+  {
+    "serialNumber": "TL-DOT-7312",
+    "invoiceNumber": "INV-09855",
+    "productName": "CEAT Milaze 155/70 R13",
+    "customerName": "Thilina Perera",
+    "purchaseDate": "2023-01-20",
+    "warrantyPeriod": "03 Years Pro-Rata Warranty",
+    "validUntil": "2026-01-20",
+    "status": "EXPIRED",
+    "claimCount": 1
+  },
+  {
+    "serialNumber": "TL-EQ-4410",
+    "invoiceNumber": "INV-11020",
+    "productName": "100L Garage Air Compressor (Tyrelink Pro)",
+    "customerName": "Ranjith Auto Care - Kandy",
+    "purchaseDate": "2026-09-01",
+    "warrantyPeriod": "01 Year Comprehensive Equipment Warranty",
+    "validUntil": "2027-09-01",
+    "status": "ACTIVE",
+    "claimCount": 0
+  }
+]

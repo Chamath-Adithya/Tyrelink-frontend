@@ -1,10 +1,76 @@
 ---
-import StoreLayout from '../layouts/StoreLayout.astro';
-import { products, formatLKR } from '../data/products';
-const category = Astro.url.searchParams.get('category') || 'all';
-const search = Astro.url.searchParams.get('q')?.toLowerCase() || '';
-const shown = (category === 'all' ? products : products.filter((p) => p.category === category)).filter((p) => !search || `${p.brand} ${p.name} ${p.size} ${p.category}`.toLowerCase().includes(search));
+import Layout from '../layouts/Layout.astro';
+import ProductCatalogFilter from '../components/ProductCatalogFilter';
+import productsData from '../data/products.json';
+import type { Product } from '../types';
+
+const breadcrumbs = [
+  { name: 'Home', item: 'https://tyrelink.lk/' },
+  { name: 'Shop Tyres & Equipment', item: 'https://tyrelink.lk/shop' }
+];
+
+const products = productsData as Product[];
+// Build ItemList for SEO — top 20 items only to keep schema compact
+const itemListData = products.slice(0, 20).map((p, i) => ({
+  name: p.title,
+  url: `https://tyrelink.lk/product/${p.slug}`,
+  position: i + 1
+}));
 ---
-<StoreLayout title="Shop Tyres | Tyrelink" description="Browse indicative Tyrelink tyre prices by vehicle category and size. Confirm fitment and availability on WhatsApp."><section class="shop wrap"><p class="eyebrow">Tyre catalogue</p><h1>Choose your tyre<br /><span>with confidence.</span></h1><p class="intro">Public sample prices are shown for guidance. Confirm fitment, current price, delivery and fitting with Tyrelink before ordering.</p><form class="search"><label for="q">Search by brand, product, size or category</label><div><input id="q" name="q" value={search} placeholder="e.g. 185/65 R15 or motorcycle" /><button>Search</button></div></form><div class="filters"><a class:list={{active:category==='all'}} href="/shop">All</a>{['motorcycle','car','suv','van'].map((c)=><a class:list={{active:category===c}} href={`/shop?category=${c}`}>{c}</a>)}</div><p class="count">{shown.length} sample products · <a href="https://wa.me/94783724920">Need help finding a match? WhatsApp us</a></p><div class="grid">{shown.map((p)=><article><div class="art"><b>{p.brand}</b><small>{p.tier}</small></div><p class="brand">{p.brand}</p><h2>{p.name}</h2><p class="size">{p.size} · {p.rating}</p><div class="bottom"><strong>{formatLKR(p.price)}</strong><a href={`/product/${p.slug}`}>View details →</a></div></article>)}</div></section></StoreLayout>
-<style>.shop{padding:80px 0}.eyebrow{color:#ed1c24;text-transform:uppercase;letter-spacing:2px;font-size:10px;font-weight:800}.shop h1{font-size:64px;letter-spacing:-4px;line-height:.95;margin:0}.shop h1 span{color:#888}.intro{max-width:500px;color:#777;line-height:1.6}.search{margin-top:28px;max-width:680px}.search label{display:block;font-size:11px;font-weight:800;margin-bottom:8px}.search div{display:flex}.search input{flex:1;padding:15px;border:1px solid #ddd;font:inherit}.search button{background:#111;color:#fff;border:0;padding:0 22px;font-weight:800}.filters{display:flex;gap:8px;margin:25px 0 12px}.filters a{padding:10px 15px;border:1px solid #ddd;text-transform:capitalize;font-size:12px}.filters a.active{background:#ed1c24;color:#fff;border-color:#ed1c24}.count{font-size:12px;color:#777}.count a{color:#ed1c24;font-weight:700}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:25px}.grid article{background:#fff;padding:16px;border:1px solid #ecece8}.art{height:180px;background:radial-gradient(circle,#595959 0 23%,#151515 24% 48%,#333 49% 54%,#0a0a0a 55%);color:#fff;padding:14px;display:flex;justify-content:space-between}.art small{background:#ed1c24;height:fit-content;padding:5px;text-transform:uppercase;font-size:9px}.brand{color:#ed1c24;letter-spacing:2px;font-size:10px;font-weight:800;margin:17px 0 7px}.grid h2{font-size:20px;margin:0}.size{color:#777;font-size:12px}.bottom{display:flex;align-items:center;justify-content:space-between;border-top:1px solid #eee;margin-top:18px;padding-top:15px}.bottom strong{font-size:18px}.bottom a{font-size:11px;font-weight:800;color:#ed1c24}@media(max-width:760px){.shop{padding:50px 0}.shop h1{font-size:48px}.grid{grid-template-columns:1fr}.filters{overflow:auto}.filters a{white-space:nowrap}.search div{display:block}.search input{width:100%}.search button{padding:13px 20px;margin-top:8px}}
-</style>
+
+<Layout
+  title="Shop All Tyres, Wheels & Garage Equipment | Tyrelink Sri Lanka"
+  description="Explore our full collection of genuine tyres (CEAT, DSI, Michelin, Bridgestone, Dunlop, Hankook) and garage equipment in Sri Lanka. Cash on Delivery (COD) & 1-Click WhatsApp Quick Order."
+  breadcrumbs={breadcrumbs}
+  itemList={itemListData}
+>
+  <div class="max-w-[1440px] mx-auto px-3.5 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-5 sm:space-y-8">
+    
+    <!-- Page Header Banner -->
+    <div class="text-left space-y-2 sm:space-y-3 border-b border-slate-200/60 pb-4.5 sm:pb-7 reveal-blur">
+      <div class="section-badge">
+        <span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse"></span>
+        Tyre & Equipment Storefront — {productsData.length} Products
+      </div>
+      <h1 class="text-2xl sm:text-4xl font-black text-slate-900 font-display tracking-tight leading-tight">
+        All Tyres & Garage Equipment
+      </h1>
+      <p class="text-xs sm:text-sm text-slate-500 font-sinhala leading-relaxed">
+        දිවයින පුරා Cash on Delivery සහ 100% Genuine වගකීමක් සහිත අපගේ සියලුම භාණ්ඩ එකතුව
+      </p>
+    </div>
+
+    <!-- Interactive Filter & Catalog Grid Island -->
+    <ProductCatalogFilter client:load initialCategory="all" />
+
+  </div>
+
+  <!-- Dynamic Smooth Hash Anchor Anchor Scroll Manager -->
+  <script>
+    (function () {
+      function checkAnchorScroll() {
+        if (window.location.hash === '#catalog-products') {
+          setTimeout(() => {
+            const target = document.getElementById('catalog-products');
+            if (target) {
+              const headerOffset = 135;
+              const elementPosition = target.getBoundingClientRect().top;
+              const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+              window.scrollTo({
+                top: Math.max(0, offsetPosition),
+                behavior: 'smooth'
+              });
+            }
+          }, 180);
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', checkAnchorScroll);
+      } else {
+        checkAnchorScroll();
+      }
+      document.addEventListener('astro:page-load', checkAnchorScroll);
+    })();
+  </script>
+</Layout>

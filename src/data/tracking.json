@@ -1,0 +1,105 @@
+[
+  {
+    "trackingId": "TL-TRK-7712",
+    "orderRef": "TL-ORD-9021",
+    "customerPhone": "0771234567",
+    "productTitle": "Dunlop Grandtrek AT5 265/65 R17 (Pair)",
+    "deliveryCity": "Colombo 07",
+    "courierPartner": "Tyrelink Islandwide Logistics",
+    "estimatedDelivery": "Tomorrow by 2:00 PM",
+    "status": "out_for_delivery",
+    "steps": [
+      {
+        "title": "Order Placed & Vehicle Fitment Verified",
+        "sinhalaTitle": "ඇණවුම සහ වාහන ගැළපුම තහවුරු විය",
+        "description": "Tyre size & load index confirmed via WhatsApp with tyre expert.",
+        "timestamp": "2026-11-10 10:30 AM",
+        "completed": true,
+        "current": false
+      },
+      {
+        "title": "DOT & Manufacture Date Inspected",
+        "sinhalaTitle": "DOT සහ නිෂ්පාදිත දිනය පරීක්ෂා කරන ලදී",
+        "description": "Passed 6-point bead, tread and sidewall quality inspection.",
+        "timestamp": "2026-11-10 02:15 PM",
+        "completed": true,
+        "current": false
+      },
+      {
+        "title": "Dispatched from Central Warehouse",
+        "sinhalaTitle": "ප්‍රධාන ගබඩාවෙන් පිටත් කරන ලදී",
+        "description": "Handed over to express courier fleet for doorstep / partner garage delivery.",
+        "timestamp": "2026-11-10 06:00 PM",
+        "completed": true,
+        "current": false
+      },
+      {
+        "title": "Out for Delivery & Fitment",
+        "sinhalaTitle": "බෙදාහැරීමට රැගෙන එමින් පවතී",
+        "description": "Delivery vehicle is en route. Driver will call before arrival.",
+        "timestamp": "2026-11-11 09:00 AM",
+        "completed": true,
+        "current": true
+      },
+      {
+        "title": "Delivered & Fitted Successfully",
+        "sinhalaTitle": "සාර්ථකව භාර දෙන ලදී",
+        "description": "Tyres delivered and fitted with verified warranty registration.",
+        "completed": false,
+        "current": false
+      }
+    ]
+  },
+  {
+    "trackingId": "TL-TRK-8820",
+    "orderRef": "TL-ORD-9140",
+    "customerPhone": "0719876543",
+    "productTitle": "DSI S-Drive 185/65 R15 (Set of 4)",
+    "deliveryCity": "Gampaha",
+    "courierPartner": "Tyrelink Islandwide Logistics",
+    "estimatedDelivery": "Delivered on 08 Nov 2026",
+    "status": "delivered",
+    "steps": [
+      {
+        "title": "Order Placed & Vehicle Fitment Verified",
+        "sinhalaTitle": "ඇණවුම සහ වාහන ගැළපුම තහවුරු විය",
+        "description": "Tyre size & vehicle model confirmed on WhatsApp.",
+        "timestamp": "2026-11-06 09:00 AM",
+        "completed": true,
+        "current": false
+      },
+      {
+        "title": "DOT & Manufacture Date Inspected",
+        "sinhalaTitle": "DOT සහ නිෂ්පාදිත දිනය පරීක්ෂා කරන ලදී",
+        "description": "Fresh factory stock verified with 4-year warranty.",
+        "timestamp": "2026-11-06 01:30 PM",
+        "completed": true,
+        "current": false
+      },
+      {
+        "title": "Dispatched from Central Warehouse",
+        "sinhalaTitle": "ප්‍රධාන ගබඩාවෙන් පිටත් කරන ලදී",
+        "description": "Dispatched via regional express delivery route.",
+        "timestamp": "2026-11-07 08:30 AM",
+        "completed": true,
+        "current": false
+      },
+      {
+        "title": "Out for Delivery",
+        "sinhalaTitle": "බෙදාහැරීමට රැගෙන එමින් පවතී",
+        "description": "En route to delivery address.",
+        "timestamp": "2026-11-08 10:00 AM",
+        "completed": true,
+        "current": false
+      },
+      {
+        "title": "Delivered Successfully",
+        "sinhalaTitle": "සාර්ථකව භාර දෙන ලදී",
+        "description": "Delivered and Cash on Delivery collected successfully.",
+        "timestamp": "2026-11-08 02:45 PM",
+        "completed": true,
+        "current": true
+      }
+    ]
+  }
+]

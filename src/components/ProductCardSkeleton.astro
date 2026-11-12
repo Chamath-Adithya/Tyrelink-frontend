@@ -1,0 +1,40 @@
+---
+// ProductCardSkeleton.astro - Static high-fidelity luxury placeholder
+---
+
+<div class="flex flex-col justify-between bg-white rounded-[2rem] p-5 shadow-[0_10px_30px_-5px_rgba(0,0,0,0.06),0_2px_8px_-2px_rgba(0,0,0,0.04)] border-0 relative overflow-hidden animate-pulse">
+  <div>
+    <!-- Shimmer Thumbnail Frame -->
+    <div class="relative aspect-square w-full rounded-2xl overflow-hidden bg-slate-100 mb-4 p-5 flex items-center justify-center">
+      <div class="w-3/4 h-3/4 rounded-xl shimmer"></div>
+      <div class="absolute top-3 left-3 w-16 h-5 rounded-full shimmer"></div>
+    </div>
+
+    <!-- Brand & Rating Skeleton -->
+    <div class="space-y-2 text-left">
+      <div class="flex items-center justify-between">
+        <div class="w-16 h-4 rounded-md shimmer"></div>
+        <div class="w-12 h-4 rounded-md shimmer"></div>
+      </div>
+
+      <!-- Title Skeleton -->
+      <div class="space-y-1.5 pt-1">
+        <div class="w-full h-4 rounded-md shimmer"></div>
+        <div class="w-3/4 h-4 rounded-md shimmer"></div>
+      </div>
+
+      <!-- Warranty Pill -->
+      <div class="w-24 h-3.5 rounded-full shimmer mt-2"></div>
+    </div>
+  </div>
+
+  <!-- Price & Action Skeleton -->
+  <div class="mt-5 pt-4 border-t border-slate-100 flex items-end justify-between gap-2">
+    <div class="space-y-1.5">
+      <div class="w-28 h-6 rounded-lg shimmer"></div>
+      <div class="w-36 h-3.5 rounded-md shimmer"></div>
+    </div>
+
+    <div class="w-9 h-9 rounded-2xl bg-slate-100 shimmer shrink-0"></div>
+  </div>
+</div>

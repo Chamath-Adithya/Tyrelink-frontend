@@ -1,0 +1,340 @@
+---
+import type { Product } from '../types';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonicalUrl?: string;
+  type?: 'website' | 'article' | 'product';
+  product?: Product;
+  faq?: { question: string; answer: string }[];
+  breadcrumbs?: { name: string; item: string }[];
+  itemList?: { name: string; url: string; position: number }[];
+}
+
+const {
+  title = 'Tyrelink — Sri Lanka\'s Trusted Store for Tyres, Wheels & Garage Equipment',
+  description = 'Find, compare and fit tyres with confidence. 1-Click WhatsApp Quick Order, islandwide Cash on Delivery (COD), verified manufacture dates, and warranty across Sri Lanka.',
+  image = 'https://images.unsplash.com/photo-1578844251758-2f71da64c96f?w=1200&auto=format&fit=crop&q=80',
+  canonicalUrl = Astro.url.href,
+  type = 'website',
+  product,
+  faq,
+  breadcrumbs,
+  itemList,
+} = Astro.props;
+
+const siteUrl = 'https://tyrelink.lk';
+const siteName = 'Tyrelink';
+const twitterHandle = '@tyrelinklk';
+
+// ─── Structured Data: Organization (LocalBusiness) ─────────────────────────
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': ['LocalBusiness', 'Store'],
+  '@id': `${siteUrl}/#organization`,
+  'name': siteName,
+  'legalName': 'Tyrelink (Pvt) Ltd',
+  'url': siteUrl,
+  'logo': {
+    '@type': 'ImageObject',
+    'url': `${siteUrl}/images/tyrelink-logo.png`,
+    'width': 400,
+    'height': 120
+  },
+  'image': {
+    '@type': 'ImageObject',
+    'url': image,
+    'width': 1200,
+    'height': 630
+  },
+  'description': 'Leading e-commerce store in Sri Lanka for tyres, wheel accessories and garage equipment with islandwide COD and genuine company warranty.',
+  'telephone': '+94783724920',
+  'email': 'support@tyrelink.lk',
+  'priceRange': 'LKR 1,500 - LKR 350,000',
+  'currenciesAccepted': 'LKR',
+  'paymentAccepted': 'Cash on Delivery, Koko, Mintpay',
+  'address': {
+    '@type': 'PostalAddress',
+    'streetAddress': 'Main Street',
+    'addressLocality': 'Horana',
+    'addressRegion': 'Western Province',
+    'postalCode': '12400',
+    'addressCountry': 'LK'
+  },
+  'geo': {
+    '@type': 'GeoCoordinates',
+    'latitude': '6.7153',
+    'longitude': '80.0630'
+  },
+  'areaServed': {
+    '@type': 'Country',
+    'name': 'Sri Lanka'
+  },
+  'openingHoursSpecification': [
+    {
+      '@type': 'OpeningHoursSpecification',
+      'dayOfWeek': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+      'opens': '08:30',
+      'closes': '20:00'
+    },
+    {
+      '@type': 'OpeningHoursSpecification',
+      'dayOfWeek': ['Sunday'],
+      'opens': '09:00',
+      'closes': '17:00'
+    }
+  ],
+  'hasMap': 'https://maps.google.com/?q=Horana,Sri+Lanka',
+  'sameAs': [
+    'https://facebook.com/tyrelinklk',
+    'https://instagram.com/tyrelinklk',
+    'https://tiktok.com/@tyrelinklk',
+    'https://wa.me/94783724920'
+  ]
+};
+
+// ─── Structured Data: WebSite with SearchAction ─────────────────────────────
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${siteUrl}/#website`,
+  'url': siteUrl,
+  'name': siteName,
+  'description': 'Sri Lanka\'s trusted tech store for tyres, wheel accessories and workshop equipment with Cash on Delivery.',
+  'inLanguage': ['en-LK', 'si-LK'],
+  'potentialAction': {
+    '@type': 'SearchAction',
+    'target': {
+      '@type': 'EntryPoint',
+      'urlTemplate': `${siteUrl}/shop?q={search_term_string}`
+    },
+    'query-input': 'required name=search_term_string'
+  }
+};
+
+// ─── Structured Data: Product ───────────────────────────────────────────────
+let productSchema = null;
+if (product) {
+  productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    '@id': `${siteUrl}/product/${product.slug}#product`,
+    'name': product.title,
+    'alternateName': product.sinhalaTitle,
+    'image': product.images?.length ? product.images : [product.featuredImage],
+    'description': product.shortDescription,
+    'sku': product.id,
+    'mpn': product.id,
+    'gtin': null,
+    'brand': {
+      '@type': 'Brand',
+      'name': product.brand
+    },
+    'category': product.category,
+    'keywords': `${product.brand} ${product.title}, buy ${product.title} Sri Lanka, ${product.title} price Sri Lanka, ${product.title} COD`,
+    'offers': {
+      '@type': 'Offer',
+      'url': `${siteUrl}/product/${product.slug}`,
+      'priceCurrency': 'LKR',
+      'price': product.price,
+      'priceValidUntil': '2027-12-31',
+      'itemCondition': product.laptopConfig?.condition === 'pre-owned-like-new'
+        ? 'https://schema.org/RefurbishedCondition'
+        : 'https://schema.org/NewCondition',
+      'availability': product.inStock
+        ? 'https://schema.org/InStock'
+        : 'https://schema.org/OutOfStock',
+      'shippingDetails': {
+        '@type': 'OfferShippingDetails',
+        'shippingRate': {
+          '@type': 'MonetaryAmount',
+          'value': '0',
+          'currency': 'LKR'
+        },
+        'shippingDestination': {
+          '@type': 'DefinedRegion',
+          'addressCountry': 'LK'
+        },
+        'deliveryTime': {
+          '@type': 'ShippingDeliveryTime',
+          'handlingTime': { '@type': 'QuantitativeValue', 'minValue': 0, 'maxValue': 1, 'unitCode': 'DAY' },
+          'transitTime': { '@type': 'QuantitativeValue', 'minValue': 1, 'maxValue': 3, 'unitCode': 'DAY' }
+        }
+      },
+      'hasMerchantReturnPolicy': {
+        '@type': 'MerchantReturnPolicy',
+        'applicableCountry': 'LK',
+        'returnPolicyCategory': 'https://schema.org/MerchantReturnFiniteReturnWindow',
+        'merchantReturnDays': 7,
+        'returnMethod': 'https://schema.org/ReturnByMail'
+      },
+      'seller': {
+        '@type': 'Organization',
+        'name': siteName,
+        '@id': `${siteUrl}/#organization`
+      }
+    },
+    'aggregateRating': {
+      '@type': 'AggregateRating',
+      'ratingValue': product.rating.toString(),
+      'bestRating': '5',
+      'worstRating': '1',
+      'reviewCount': product.reviewCount.toString()
+    },
+    // AEO/LLMO: Speakable for voice assistants and LLM answer extraction
+    'speakable': {
+      '@type': 'SpeakableSpecification',
+      'cssSelector': ['h1', '.product-speakable-summary']
+    }
+  };
+}
+
+// ─── Structured Data: BreadcrumbList ────────────────────────────────────────
+let breadcrumbSchema = null;
+if (breadcrumbs && breadcrumbs.length > 0) {
+  breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    'itemListElement': breadcrumbs.map((crumb, idx) => ({
+      '@type': 'ListItem',
+      'position': idx + 1,
+      'name': crumb.name,
+      'item': crumb.item
+    }))
+  };
+}
+
+// ─── Structured Data: FAQPage ────────────────────────────────────────────────
+let faqSchema = null;
+if (faq && faq.length > 0) {
+  faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    'mainEntity': faq.map((item) => ({
+      '@type': 'Question',
+      'name': item.question,
+      'acceptedAnswer': {
+        '@type': 'Answer',
+        'text': item.answer
+      }
+    }))
+  };
+}
+
+// ─── Structured Data: ItemList (shop/category pages) ─────────────────────────
+let itemListSchema = null;
+if (itemList && itemList.length > 0) {
+  itemListSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    'name': title,
+    'description': description,
+    'numberOfItems': itemList.length,
+    'itemListElement': itemList.map((item) => ({
+      '@type': 'ListItem',
+      'position': item.position,
+      'name': item.name,
+      'url': item.url
+    }))
+  };
+}
+
+// Computed safe title (max 60 chars for SERP display)
+const safeTitle = title.length > 60 ? title.substring(0, 57) + '...' : title;
+// Computed safe description (max 160 chars)
+const safeDesc = description.length > 160 ? description.substring(0, 157) + '...' : description;
+---
+
+<!-- ═══════════════════════════════════════════════════
+     CORE META TAGS
+═══════════════════════════════════════════════════ -->
+<title>{safeTitle}</title>
+<meta name="title" content={safeTitle} />
+<meta name="description" content={safeDesc} />
+<link rel="canonical" href={canonicalUrl} />
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+<meta name="googlebot" content="index, follow" />
+<meta name="theme-color" content="#ed1c24" />
+<meta name="format-detection" content="telephone=yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="application-name" content="Tyrelink" />
+
+<!-- ═══════════════════════════════════════════════════
+     GEO TARGETING (Sri Lanka / Horana)
+═══════════════════════════════════════════════════ -->
+<meta name="geo.region" content="LK-1" />
+<meta name="geo.placename" content="Horana, Western Province, Sri Lanka" />
+<meta name="geo.position" content="6.7153;80.0630" />
+<meta name="ICBM" content="6.7153, 80.0630" />
+<meta name="language" content="English" />
+<meta name="content-language" content="en-LK" />
+
+<!-- hreflang for bilingual EN + SI targeting -->
+<link rel="alternate" hreflang="en-lk" href={canonicalUrl} />
+<link rel="alternate" hreflang="si-lk" href={canonicalUrl} />
+<link rel="alternate" hreflang="x-default" href={siteUrl} />
+
+<!-- ═══════════════════════════════════════════════════
+     OPEN GRAPH / FACEBOOK
+═══════════════════════════════════════════════════ -->
+<meta property="og:type" content={type === 'product' ? 'product' : type} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:title" content={safeTitle} />
+<meta property="og:description" content={safeDesc} />
+<meta property="og:image" content={image} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={safeTitle} />
+<meta property="og:site_name" content={siteName} />
+<meta property="og:locale" content="en_LK" />
+<meta property="og:locale:alternate" content="si_LK" />
+
+<!-- Product-specific Open Graph -->
+{product && (
+  <>
+    <meta property="product:price:amount" content={product.price.toString()} />
+    <meta property="product:price:currency" content="LKR" />
+    <meta property="product:availability" content={product.inStock ? 'in stock' : 'out of stock'} />
+    <meta property="product:condition" content="new" />
+    <meta property="product:brand" content={product.brand} />
+  </>
+)}
+
+<!-- ═══════════════════════════════════════════════════
+     TWITTER / X CARD
+═══════════════════════════════════════════════════ -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:site" content={twitterHandle} />
+<meta property="twitter:creator" content={twitterHandle} />
+<meta property="twitter:url" content={canonicalUrl} />
+<meta property="twitter:title" content={safeTitle} />
+<meta property="twitter:description" content={safeDesc} />
+<meta property="twitter:image" content={image} />
+<meta property="twitter:image:alt" content={safeTitle} />
+
+<!-- ═══════════════════════════════════════════════════
+     AEO / LLMO: AI ANSWER ENGINE OPTIMIZATION
+     Helps Google SGE, Bing Copilot, ChatGPT browsing,
+     Claude, and other LLMs extract accurate answers.
+═══════════════════════════════════════════════════ -->
+<meta name="speakable" content="h1, .product-speakable-summary, .faq-answer" />
+<!-- Structured keywords for entity extraction -->
+<meta name="keywords" content={
+  product
+    ? `${product.brand} ${product.title}, ${product.title} price Sri Lanka, buy ${product.title} Sri Lanka, ${product.title} COD Sri Lanka, ${product.brand} authorized dealer Sri Lanka`
+    : 'keyboards Sri Lanka, gaming mice Sri Lanka, headsets Sri Lanka, laptops Sri Lanka, COD Sri Lanka, Tyrelink, computer accessories Horana'
+} />
+
+<!-- ═══════════════════════════════════════════════════
+     JSON-LD STRUCTURED DATA (MULTI-SCHEMA)
+═══════════════════════════════════════════════════ -->
+<script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+<script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+{productSchema && <script type="application/ld+json" set:html={JSON.stringify(productSchema)} />}
+{breadcrumbSchema && <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />}
+{faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
+{itemListSchema && <script type="application/ld+json" set:html={JSON.stringify(itemListSchema)} />}

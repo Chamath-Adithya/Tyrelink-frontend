@@ -1,0 +1,58 @@
+[
+  {
+    "id": "car-tyres",
+    "name": "Car Tyres",
+    "sinhalaName": "කාර් ටයර්",
+    "icon": "CircleDot",
+    "description": "Everyday passenger-car tyres, matched by size and vehicle.",
+    "itemCount": 24
+  },
+  {
+    "id": "suv-4x4",
+    "name": "SUV & 4x4 Tyres",
+    "sinhalaName": "SUV සහ 4x4 ටයර්",
+    "icon": "Truck",
+    "description": "Highway, touring and all-terrain SUV tyre options.",
+    "itemCount": 18
+  },
+  {
+    "id": "motorcycle",
+    "name": "Motorcycle Tyres",
+    "sinhalaName": "මෝටර්සයිකල් ටයර්",
+    "icon": "Bike",
+    "description": "Tubeless and tube-type tyres for daily riding and touring.",
+    "itemCount": 20
+  },
+  {
+    "id": "commercial",
+    "name": "Van & Commercial",
+    "sinhalaName": "වාණිජ වාහන ටයර්",
+    "icon": "Package",
+    "description": "Durable load-rated tyres for vans and business fleets.",
+    "itemCount": 14
+  },
+  {
+    "id": "wheels",
+    "name": "Wheels & Accessories",
+    "sinhalaName": "රෝද සහ උපාංග",
+    "icon": "Disc3",
+    "description": "Wheels, valves, puncture repair and essential tyre care.",
+    "itemCount": 30
+  },
+  {
+    "id": "garage-tools",
+    "name": "Garage Tools",
+    "sinhalaName": "ගරාජ් මෙවලම්",
+    "icon": "Wrench",
+    "description": "Tyre changers, balancers, compressors and workshop tools.",
+    "itemCount": 35
+  },
+  {
+    "id": "garage-equipment",
+    "name": "Workshop Equipment",
+    "sinhalaName": "වර්ක්ශොප් උපකරණ",
+    "icon": "Settings",
+    "description": "Complete tyre-centre equipment, installation and support.",
+    "itemCount": 12
+  }
+]

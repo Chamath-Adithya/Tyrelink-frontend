@@ -1,0 +1,239 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import SEOHead from '../components/SEOHead.astro';
+import CartAndOrderModal from '../components/CartAndOrderModal';
+import WhatsAppChatWidget from '../components/WhatsAppChatWidget';
+import AdminControlBar from '../components/admin/AdminControlBar';
+import type { Product } from '../types';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  product?: Product;
+  faq?: { question: string; answer: string }[];
+  breadcrumbs?: { name: string; item: string }[];
+  itemList?: { name: string; url: string; position: number }[];
+}
+
+const { title, description, image, product, faq, breadcrumbs, itemList } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Security & Privacy Meta Directives -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+    <!-- Performance & DNS Pre-fetch for CDNs -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+
+    <!-- Google Fonts Embed: Modern Sans & Sinhala Typography with font-display: swap -->
+    <link 
+      href="https://fonts.googleapis.com/css2?family=Gemunu+Libre:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" 
+      rel="stylesheet" 
+    />
+
+    <!-- SEO, GEO & JSON-LD Schemas -->
+    <SEOHead 
+      title={title} 
+      description={description} 
+      image={image} 
+      product={product} 
+      faq={faq} 
+      breadcrumbs={breadcrumbs}
+      itemList={itemList}
+    />
+
+    {import.meta.env.DEV && (
+      <script type="module" is:inline>
+        try {
+          const { default: RefreshRuntime } = await import('/@react-refresh');
+          RefreshRuntime.injectIntoGlobalHook(window);
+          window.$RefreshReg$ = () => {};
+          window.$RefreshSig$ = () => (type) => type;
+          window.__vite_plugin_react_preamble_installed__ = true;
+        } catch (e) {
+          // React refresh not available or not required
+        }
+      </script>
+    )}
+  </head>
+  <body class="min-h-screen flex flex-col text-slate-900 font-sans antialiased">
+    <!-- Merchant Live Edit Mode & Control HUD Bar (Loads dynamically for logged-in admin) -->
+    <AdminControlBar client:load />
+    
+    <Header />
+    <main class="flex-1 page-enter">
+      <slot />
+    </main>
+    <Footer />
+    <CartAndOrderModal client:load />
+
+    <!-- Global Floating WhatsApp Support Quick Launcher & Chat Popup -->
+    <WhatsAppChatWidget client:load />
+
+    <!-- =====================================================
+         NEXT-LEVEL CINEMATIC SCROLL & INTERACTION ENGINE
+         ===================================================== -->
+    <script>
+      (function () {
+        const REVEAL_SELECTOR = '.reveal, .reveal-left, .reveal-right, .reveal-scale, .reveal-blur, .reveal-clip, .reveal-3d';
+        const REVEAL_CLASSES = ['reveal', 'reveal-left', 'reveal-right', 'reveal-scale', 'reveal-blur', 'reveal-clip', 'reveal-3d'];
+
+        /* 1. Cinematic Multi-Style Scroll Reveal Engine */
+        function initRevealObserver() {
+          const allEls = document.querySelectorAll(REVEAL_SELECTOR);
+          if (!allEls.length) return;
+
+          if (!('IntersectionObserver' in window)) {
+            allEls.forEach((el) => el.classList.add('revealed'));
+            return;
+          }
+
+          const observer = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  const target = entry.target as HTMLElement;
+                  // Calculate stagger delay for siblings
+                  const parent = target.parentElement;
+                  const siblings = parent
+                    ? Array.from(parent.children).filter((c) =>
+                        REVEAL_CLASSES.some((cls) => c.classList.contains(cls))
+                      )
+                    : [];
+                  const idx = siblings.indexOf(target);
+                  const autoDelay = idx >= 0 ? Math.min(idx * 70, 420) : 0;
+                  const explicitDelay = target.getAttribute('data-delay');
+                  const delay = explicitDelay !== null ? Number(explicitDelay) : autoDelay;
+
+                  setTimeout(() => {
+                    target.classList.add('revealed');
+                  }, delay);
+
+                  observer.unobserve(target);
+                }
+              });
+            },
+            { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+          );
+
+          allEls.forEach((el) => {
+            if (!el.classList.contains('revealed')) {
+              observer.observe(el);
+            }
+          });
+        }
+
+        /* 3. Number Counter Roll-Up Animation on Scroll */
+        function initCounters() {
+          const counterEls = document.querySelectorAll<HTMLElement>('[data-counter]');
+          if (!counterEls.length) return;
+
+          if (!('IntersectionObserver' in window)) {
+            counterEls.forEach((el) => {
+              const val = el.getAttribute('data-counter') || '';
+              const prefix = el.getAttribute('data-prefix') || '';
+              const suffix = el.getAttribute('data-suffix') || '';
+              el.textContent = `${prefix}${val}${suffix}`;
+            });
+            return;
+          }
+
+          const counterObserver = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  const el = entry.target as HTMLElement;
+                  const targetNum = parseFloat(el.getAttribute('data-counter') || '0');
+                  const prefix = el.getAttribute('data-prefix') || '';
+                  const suffix = el.getAttribute('data-suffix') || '';
+                  const isFloat = el.getAttribute('data-counter')?.includes('.');
+                  const duration = 1600;
+                  const startTime = performance.now();
+
+                  function update(now: number) {
+                    const elapsed = now - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    // Ease out expo curve
+                    const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+                    const current = targetNum * ease;
+
+                    if (isFloat) {
+                      el.textContent = `${prefix}${current.toFixed(1)}${suffix}`;
+                    } else {
+                      el.textContent = `${prefix}${Math.floor(current).toLocaleString('en-US')}${suffix}`;
+                    }
+
+                    if (progress < 1) {
+                      requestAnimationFrame(update);
+                    } else {
+                      if (isFloat) {
+                        el.textContent = `${prefix}${targetNum.toFixed(1)}${suffix}`;
+                      } else {
+                        el.textContent = `${prefix}${targetNum.toLocaleString('en-US')}${suffix}`;
+                      }
+                    }
+                  }
+
+                  requestAnimationFrame(update);
+                  counterObserver.unobserve(el);
+                }
+              });
+            },
+            { threshold: 0.25 }
+          );
+
+          counterEls.forEach((el) => counterObserver.observe(el));
+        }
+
+        /* 4. Subtle Magnetic Physics for Buttons */
+        function initMagneticButtons() {
+          const buttons = document.querySelectorAll<HTMLElement>('.btn-magnetic');
+          buttons.forEach((btn) => {
+            btn.addEventListener('mousemove', (e: MouseEvent) => {
+              const rect = btn.getBoundingClientRect();
+              const x = e.clientX - rect.left - rect.width / 2;
+              const y = e.clientY - rect.top - rect.height / 2;
+              btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px) scale(1.02)`;
+            });
+
+            btn.addEventListener('mouseleave', () => {
+              btn.style.transform = '';
+            });
+          });
+        }
+
+        /* Boot All Next-Level Interactions */
+        function boot() {
+          initRevealObserver();
+          initCounters();
+          initMagneticButtons();
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', boot);
+        } else {
+          boot();
+        }
+
+        // Re-run for Astro view transitions
+        document.addEventListener('astro:page-load', boot);
+      })();
+    </script>
+  </body>
+</html>

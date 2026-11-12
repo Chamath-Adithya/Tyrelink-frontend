@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 120">
+  <!-- Tyrelink Chevrons -->
+  <g transform="translate(10, 20)">
+    <path d="M0 10 L25 40 L0 70 L20 70 L45 40 L20 10 Z" fill="#ed1c24"/>
+    <path d="M25 10 L50 40 L25 70 L45 70 L70 40 L45 10 Z" fill="#ed1c24"/>
+    <path d="M50 10 L75 40 L50 70 L70 70 L95 40 L70 10 Z" fill="#ffffff"/>
+  </g>
+  <!-- TYRELINK Text -->
+  <text x="125" y="72" font-family="'Plus Jakarta Sans', Inter, sans-serif" font-weight="900" font-size="52" letter-spacing="-2" fill="#ffffff">
+    TYRE<tspan fill="#ed1c24">LINK</tspan>
+  </text>
+</svg>

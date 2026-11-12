@@ -1,32 +1,283 @@
 ---
-const categories = [
-  { icon: '◉', title: 'Tyres by vehicle', text: 'Find a safe match for your car, bike, van or three-wheeler.' },
-  { icon: '⌁', title: 'Tyres by size', text: 'Search the sidewall code and compare verified options.' },
-  { icon: '▣', title: 'Garage equipment', text: 'Build, upgrade and maintain your workshop with confidence.' },
+import Layout from '../layouts/Layout.astro';
+import HeroCarousel from '../components/HeroCarousel';
+import CategoryStrip from '../components/CategoryStrip.astro';
+import ProductCard from '../components/ProductCard.astro';
+import ProductCarousel from '../components/ProductCarousel';
+import HomeExploreProducts from '../components/HomeExploreProducts';
+import TrustSection from '../components/TrustSection.astro';
+
+import productsData from '../data/products.json';
+import campaignsData from '../data/campaigns.json';
+import type { Product } from '../types';
+
+const products = productsData as Product[];
+
+// Map flash deals directly from campaigns.json schedule / selection
+const flashIds = new Set(campaignsData.flashSale?.productIds || []);
+const flashDeals = products.filter(p => flashIds.has(p.id) || p.isFlashDeal).slice(0, 6);
+const flashDealIds = new Set(flashDeals.map(p => p.id));
+
+// Map trending products directly from campaigns.json selection
+const trendingIds = new Set(campaignsData.trending?.productIds || []);
+const bestSellers = products.filter(p => (trendingIds.has(p.id) || p.isBestSeller) && !flashDealIds.has(p.id)).slice(0, 6);
+
+const faqData = [
+  {
+    question: 'How do I place an order with 1-Click WhatsApp Quick Order?',
+    answer: 'Simply click "Buy via WhatsApp" or "Quick Order" on any tyre or tool, fill in your delivery name, address, and mobile number. Your order is registered in our system and pre-filled in WhatsApp to confirm fitment and delivery.'
+  },
+  {
+    question: 'Is Cash on Delivery (COD) available throughout Sri Lanka?',
+    answer: 'Yes! We provide islandwide Cash on Delivery (COD) to all 25 districts in Sri Lanka within 1-3 business days. You can inspect the tyre manufacture dates (DOT) and condition upon arrival.'
+  },
+  {
+    question: 'How can I verify the warranty of my purchased tyres or equipment?',
+    answer: 'Visit our public /warranty-check portal anytime and enter your invoice number or tyre serial/DOT code to view active coverage, expiration dates, and claim status.'
+  }
 ];
-const trustPoints = ['Verified stock & manufacture date', 'Transparent fitted pricing', 'Human fitment confirmation'];
-const products = [
-  { brand: 'CEAT', name: 'Milaze 3', size: '155/70 R13', price: 'Rs. 18,500', tier: 'Value' },
-  { brand: 'DSI', name: 'S-Drive', size: '185/65 R15', price: 'Rs. 29,900', tier: 'Balanced' },
-  { brand: 'Michelin', name: 'Energy XM2+', size: '195/65 R15', price: 'Rs. 54,500', tier: 'Premium' },
-];
-const whatsapp = '94783724920';
 ---
-<html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width" /><meta name="description" content="Tyrelink helps Sri Lanka find, compare, buy and fit the right tyres, with trusted garage equipment and service support." /><link rel="icon" href="/favicon.svg" /><title>Tyrelink | Find the right tyre. Fit it with confidence.</title></head>
-<body>
-<header class="nav shell"><a class="brand" href="/"><span class="brand-mark">›››</span><span>TYRE<span>LINK</span></span></a><nav><a href="#shop">Shop tyres</a><a href="#services">Services</a><a href="#garages">For garages</a><a href="#learn">Learn</a></nav><div class="nav-actions"><a class="text-link" href="tel:+94783724920">24/7 help</a><a class="button small" href="#finder">Find my tyre</a></div></header>
-<main>
-<section class="hero shell" id="finder"><div class="hero-copy"><p class="eyebrow"><span class="pulse"></span> Sri Lanka's islandwide tyre partner</p><h1>The right tyre.<br /><em>Made simple.</em></h1><p class="sinhala-hero">ඔබේ වාහනයට ගැළපෙන ටයරය පහසුවෙන් සොයාගන්න.</p><p class="lede">Find, compare and fit tyres with confidence. Public prices, islandwide delivery and expert help on WhatsApp—24 hours a day.</p><div class="hero-actions"><a class="button" href="#shop">Shop tyres <span>↗</span></a><a class="button ghost" href={`https://wa.me/${whatsapp}?text=${encodeURIComponent('Hello Tyrelink, I need help choosing a tyre.')}`}>WhatsApp an expert <span>↗</span></a></div><div class="proof-row">{trustPoints.map((point) => <span><b>✓</b> {point}</span>)}</div></div><div class="hero-visual"><div class="hero-glow"></div><div class="road-line"></div><img class="hero-tyre" src="/hero-tyre.png" alt="Tyrelink performance tyre illustration" /><div class="floating-card stock"><span class="check">✓</span><span><strong>Islandwide delivery</strong><small>Order through WhatsApp</small></span></div><div class="floating-card fit"><span class="mini-icon">◉</span><span><strong>Fitment guidance</strong><small>By a Tyrelink expert</small></span></div></div></section>
-<section class="finder shell" id="shop"><div class="section-heading"><div><p class="eyebrow">Start here</p><h2>How do you want to find your tyre?</h2></div><p>Not sure? <a href={`https://wa.me/${whatsapp}`}>Ask an expert →</a></p></div><div class="finder-grid">{categories.map((category) => <a class="finder-card" href="#products"><span class="category-icon">{category.icon}</span><span><h3>{category.title}</h3><p>{category.text}</p></span><span class="arrow">↗</span></a>)}</div></section>
-<section class="service-strip" id="services"><div class="shell strip-inner"><span>One platform. More confidence.</span><p>From your first search to your next replacement.</p><a href="#catalog">Explore our services →</a></div></section>
-<section class="products shell" id="products"><div class="section-heading"><div><p class="eyebrow">Popular picks</p><h2>Public prices.<br /><span>Easy WhatsApp orders.</span></h2></div><p>Prices are examples for launch. Confirm fitment and final delivery details with our team before ordering.</p></div><div class="product-grid">{products.map((product) => <article class="product-card"><div class="product-art"><span>{product.brand}</span><strong>{product.tier}</strong></div><p class="product-brand">{product.brand}</p><h3>{product.name}</h3><p class="product-size">{product.size}</p><div class="product-bottom"><strong>{product.price}</strong><a href={`https://wa.me/${whatsapp}?text=${encodeURIComponent(`Hello Tyrelink, I want to order ${product.brand} ${product.name} ${product.size}. Please confirm fitment and delivery.`)}`}>Buy via WhatsApp ↗</a></div></article>)}</div></section>
-<section class="catalog shell" id="catalog"><div class="section-heading"><div><p class="eyebrow">Shop with clarity</p><h2>Good. Better. Best.<br /><span>Always the right fit.</span></h2></div><p>Every option comes with clear specs, availability and a price you can understand.</p></div><div class="choice-grid"><article><span class="choice-tag value">VALUE</span><h3>Reliable everyday performance</h3><p>Smart choices for daily rides and commercial use.</p><a href="#">Explore value tyres →</a></article><article class="featured"><span class="choice-tag balanced">BALANCED</span><h3>Comfort for every journey</h3><p>Our most popular mix of comfort, grip and tread life.</p><a href="#">Explore balanced tyres →</a></article><article><span class="choice-tag premium">PREMIUM</span><h3>Performance without compromise</h3><p>For drivers who want confidence in every condition.</p><a href="#">Explore premium tyres →</a></article></div></section>
-<section class="garage shell" id="garages"><div class="garage-copy"><p class="eyebrow">For garages & businesses</p><h2>Build a better<br /><em>workshop.</em></h2><p>From a puncture-shop starter kit to a complete tyre centre, get the equipment, installation and after-sales support to grow with confidence.</p><a class="button dark" href="#">Explore garage solutions <span>↗</span></a></div><div class="garage-art"><div class="tool tool-one">▱</div><div class="tool tool-two">◒</div><div class="tool tool-three">⌁</div><div class="garage-label">TYRELINK<br /><small>WORKSHOP SYSTEMS</small></div></div></section>
-<section class="learn shell" id="learn"><div class="section-heading"><div><p class="eyebrow">Learn before you buy</p><h2>Tyre knowledge,<br /><span>without the jargon.</span></h2></div><a href="#">Visit the learning centre →</a></div><div class="learn-grid"><article><p>GUIDE 01</p><h3>What do the numbers on a tyre mean?</h3><a href="#">Read guide →</a></article><article><p>GUIDE 02</p><h3>When should you replace your tyres?</h3><a href="#">Read guide →</a></article><article><p>GUIDE 03</p><h3>How to choose the right tyre for Sri Lankan roads</h3><a href="#">Read guide →</a></article></div></section>
-</main>
-<a class="whatsapp-float" href={`https://wa.me/${whatsapp}?text=${encodeURIComponent('Hello Tyrelink, I need help with tyres.')}`} aria-label="Chat with Tyrelink on WhatsApp">⌕ <span>WhatsApp us</span></a><footer><div class="shell footer-top"><a class="brand" href="/"><span class="brand-mark">›››</span><span>TYRE<span>LINK</span></span></a><p>ඔබේ ගමනට නිවැරදි ටයරය.<br />Find the right tyre. Fit it with confidence.</p><div><a href="tel:+94783724920">078 372 4920</a><a href={`https://wa.me/${whatsapp}`}>WhatsApp - 24 hours</a></div></div><div class="shell footer-bottom"><span>© 2026 Tyrelink. All rights reserved.</span><span>Islandwide service. Sinhala support.</span></div></footer>
-</body></html>
-<style>
-:global(*){box-sizing:border-box}:global(html){scroll-behavior:smooth}:global(body){margin:0;background:#f7f7f4;color:#111;font-family:Inter,ui-sans-serif,system-ui,sans-serif}:global(a){color:inherit;text-decoration:none}.shell{width:min(1180px,calc(100% - 64px));margin:0 auto}.nav{height:88px;display:flex;align-items:center;justify-content:space-between;gap:32px}.brand{display:flex;align-items:center;gap:10px;font-size:22px;letter-spacing:-1px;font-weight:900}.brand>span:last-child span{color:#ed1c24}.brand-mark{color:#ed1c24;font-size:30px;letter-spacing:-12px;width:28px;overflow:hidden;transform:skew(-18deg)}nav{display:flex;gap:34px;color:#555;font-size:13px}nav a:hover,.text-link:hover{color:#ed1c24}.nav-actions{display:flex;align-items:center;gap:20px;font-size:13px}.button{display:inline-flex;align-items:center;gap:18px;background:#ed1c24;color:#fff;padding:16px 22px;border-radius:2px;font-size:13px;font-weight:700;transition:.2s}.button:hover{transform:translateY(-2px);box-shadow:0 10px 22px #ed1c2433}.button.small{padding:12px 16px}.button.ghost{background:transparent;color:#111;border:1px solid #d6d6d1}.button.dark{background:#111}.eyebrow{color:#ed1c24;text-transform:uppercase;letter-spacing:2px;font-size:10px;font-weight:800;margin:0 0 18px}.pulse{display:inline-block;width:7px;height:7px;background:#ed1c24;border-radius:50%;margin-right:8px;vertical-align:1px;box-shadow:0 0 0 5px #ed1c2417}.hero{min-height:650px;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:20px}.hero h1{font-size:clamp(52px,7vw,92px);line-height:.92;letter-spacing:-5px;margin:0 0 28px;font-weight:900}h1 em,h2 em{color:#ed1c24;font-style:normal}.sinhala-hero{font-family:'Noto Sans Sinhala',sans-serif;font-size:18px;margin:-12px 0 18px}.lede{color:#686866;max-width:480px;font-size:17px;line-height:1.6;margin:0 0 30px}.hero-actions{display:flex;gap:12px}.proof-row{display:flex;flex-wrap:wrap;gap:18px;margin-top:38px;color:#666;font-size:11px}.proof-row b{color:#ed1c24;margin-right:5px}.hero-visual{min-height:500px;position:relative;display:grid;place-items:center;overflow:hidden}.orb{position:absolute;border-radius:50%;filter:blur(2px)}.orb-one{width:370px;height:370px;background:#ececea;left:40px;top:65px}.orb-two{width:220px;height:220px;background:#e5e5e0;right:30px;bottom:30px}.tyre{width:320px;height:320px;border-radius:50%;background:repeating-conic-gradient(#202020 0 8deg,#080808 8deg 17deg);box-shadow:inset 0 0 0 32px #131313,0 32px 45px #0004;transform:rotate(-18deg);position:relative;z-index:1}.tyre-inner{position:absolute;inset:70px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#666 0 5%,#272727 6% 35%,#111 36% 100%);box-shadow:inset 0 0 0 16px #080808}.tyre-shine{position:absolute;width:90px;height:220px;border-left:14px solid #fff2;left:30px;top:52px;border-radius:50%;transform:rotate(35deg)}.floating-card{position:absolute;z-index:2;background:#fff;padding:14px 16px;display:flex;gap:10px;align-items:center;box-shadow:0 14px 35px #00000014;font-size:12px}.floating-card small,.floating-card strong{display:block}.floating-card small{color:#999;font-size:10px;margin-top:4px}.stock{top:105px;right:10px}.fit{bottom:95px;left:20px}.check{background:#e7f7eb;color:#1a9a45;border-radius:50%;width:25px;height:25px;display:grid;place-items:center}.mini-icon{color:#ed1c24;font-size:22px}.finder,.catalog,.learn,.products{padding:95px 0}.section-heading{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:36px}h2{font-size:44px;letter-spacing:-2px;line-height:1;margin:0}h2 span{color:#888}.section-heading>p,.section-heading>a{max-width:290px;color:#777;font-size:13px;line-height:1.6;margin:0}.section-heading a{color:#ed1c24;font-weight:700}.finder-grid,.product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.finder-card{min-height:215px;background:#fff;padding:28px;display:flex;flex-direction:column;justify-content:space-between;border:1px solid #ecece8;transition:.2s}.finder-card:hover{border-color:#ed1c24;transform:translateY(-4px)}.category-icon{font-size:36px;color:#ed1c24}.finder-card h3{font-size:18px;margin:0 0 8px}.finder-card p{color:#777;font-size:12px;line-height:1.5;max-width:220px;margin:0}.arrow{align-self:flex-end;font-size:20px}.product-card{background:#fff;padding:18px;border:1px solid #ecece8}.product-art{height:145px;background:radial-gradient(circle,#555 0 24%,#171717 25% 47%,#333 48% 53%,#111 54%);color:#fff;display:flex;justify-content:space-between;align-items:start;padding:12px;font-size:11px}.product-art strong{background:#ed1c24;padding:5px 8px;font-size:9px;text-transform:uppercase}.product-brand{color:#ed1c24;font-size:10px;font-weight:800;letter-spacing:2px;margin:17px 0 5px}.product-card h3{font-size:21px;margin:0 0 5px}.product-size{color:#777;font-size:12px;margin:0}.product-bottom{border-top:1px solid #eee;margin-top:18px;padding-top:15px;display:flex;align-items:center;justify-content:space-between;gap:10px}.product-bottom>strong{font-size:18px}.product-bottom a{background:#25d366;color:#fff;padding:9px 11px;font-size:10px;font-weight:800}.service-strip{background:#ed1c24;color:#fff}.strip-inner{display:flex;align-items:center;gap:30px;padding:20px 0;font-size:13px}.strip-inner span{font-weight:800;font-size:17px}.strip-inner p{margin:0;color:#ffb9bb;flex:1}.strip-inner a{font-weight:700}.choice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.choice-grid article{min-height:275px;padding:30px;background:#e9e9e5;position:relative}.choice-grid .featured{background:#111;color:#fff}.choice-grid p{color:#777;font-size:13px;line-height:1.5;max-width:220px}.featured p{color:#aaa}.choice-grid h3{font-size:24px;letter-spacing:-1px;max-width:220px;line-height:1.05}.choice-grid a{position:absolute;bottom:30px;font-size:12px;font-weight:700}.choice-tag{font-size:10px;font-weight:800;letter-spacing:2px}.value,.premium{color:#777}.balanced{color:#ed1c24}.garage{background:#d9d9d3;min-height:490px;padding:70px;display:grid;grid-template-columns:1fr 1fr;align-items:center;overflow:hidden}.garage-copy{max-width:420px}.garage-copy>p:not(.eyebrow){color:#666;line-height:1.6;font-size:14px;margin:25px 0 30px}.garage-art{height:340px;position:relative;background:linear-gradient(140deg,#c7c7c1,#deded9);overflow:hidden}.tool{position:absolute;font-size:130px;color:#151515;transform:rotate(-28deg);opacity:.9}.tool-one{left:40px;bottom:-25px}.tool-two{right:28px;top:10px;transform:rotate(25deg)}.tool-three{left:160px;top:80px;color:#ed1c24;transform:rotate(70deg)}.garage-label{position:absolute;right:22px;bottom:20px;font-size:11px;font-weight:900;letter-spacing:2px;text-align:right}.garage-label small{font-size:7px;color:#ed1c24}.learn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.learn-grid article{padding:26px 0;border-top:1px solid #d7d7d1}.learn-grid p{color:#ed1c24;font-size:10px;letter-spacing:2px}.learn-grid h3{font-size:22px;line-height:1.1;max-width:230px;min-height:72px}.learn-grid a{font-size:12px;font-weight:700}.whatsapp-float{position:fixed;right:24px;bottom:24px;z-index:10;background:#25d366;color:#fff;border-radius:40px;padding:13px 18px;box-shadow:0 8px 20px #0003;font-size:13px;font-weight:800}.whatsapp-float:first-letter{font-size:20px}footer{background:#111;color:#fff;padding:55px 0 20px}.footer-top{display:flex;align-items:center;gap:50px;padding-bottom:50px}.footer-top p{flex:1;color:#777;font-size:13px}.footer-top>div{display:flex;flex-direction:column;gap:8px;font-size:12px;color:#aaa}.footer-bottom{border-top:1px solid #333;padding-top:20px;display:flex;justify-content:space-between;color:#666;font-size:11px}@media(max-width:800px){.shell{width:min(100% - 36px,600px)}nav{display:none}.nav-actions .text-link{display:none}.hero{grid-template-columns:1fr;min-height:auto;padding:70px 0 40px}.hero h1{font-size:64px}.hero-visual{min-height:370px}.tyre{width:250px;height:250px}.tyre-inner{inset:55px}.stock{right:0;top:45px}.fit{left:0;bottom:35px}.finder,.catalog,.learn,.products{padding:65px 0}.section-heading{display:block}.section-heading>p,.section-heading>a{margin-top:18px}.finder-grid,.product-grid,.choice-grid,.learn-grid{grid-template-columns:1fr}.garage{padding:35px 24px;grid-template-columns:1fr;gap:28px}.garage-art{height:240px}.strip-inner{display:block;padding:20px 0}.strip-inner p{margin:7px 0}.footer-top{display:block}.footer-top p{margin:22px 0}.footer-bottom{display:block}.footer-bottom span{display:block;margin-top:8px}.whatsapp-float{right:16px;bottom:16px}.whatsapp-float span{display:none}}
-.hero-visual{min-height:540px;background:radial-gradient(circle at 50% 48%,#3a1115 0,#181316 37%,#101010 70%);border-radius:28px;isolation:isolate;box-shadow:0 24px 70px #3e0d1328}.hero-visual:after{content:'TYRELINK / PERFORMANCE SERIES';position:absolute;right:22px;top:22px;color:#ffffff65;font-size:9px;letter-spacing:2px}.hero-glow{position:absolute;width:300px;height:300px;background:#ed1c24;filter:blur(90px);opacity:.3;animation:pulseGlow 4s ease-in-out infinite}.hero-tyre{position:relative;z-index:1;width:min(620px,115%);mix-blend-mode:screen;filter:drop-shadow(0 28px 18px #0009);animation:floatTyre 6s ease-in-out infinite}.road-line{position:absolute;width:150%;height:90px;left:-25%;bottom:70px;border-top:2px solid #ed1c2477;border-radius:50%;transform:rotate(-12deg);animation:roadMove 5s linear infinite}.stock,.fit{animation:floatCard 5s ease-in-out infinite}.fit{animation-delay:-2.4s}.finder-card,.product-card,.choice-grid article,.learn-grid article{animation:riseIn .7s both;transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease}.finder-card:hover,.product-card:hover,.choice-grid article:hover{transform:translateY(-8px);box-shadow:0 22px 45px #15151518}.product-art{overflow:hidden;position:relative}.product-art:after{content:'';position:absolute;inset:0;background:linear-gradient(120deg,transparent,#fff4,transparent);transform:translateX(-120%);transition:.6s}.product-card:hover .product-art:after{transform:translateX(120%)}.whatsapp-float{animation:whatsPulse 3s ease-in-out infinite}.sinhala-hero{font-weight:600;letter-spacing:-.2px}@keyframes floatTyre{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-14px) rotate(2deg)}}@keyframes floatCard{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}@keyframes pulseGlow{0%,100%{opacity:.2;transform:scale(.9)}50%{opacity:.42;transform:scale(1.1)}}@keyframes roadMove{0%{transform:translateX(-14%) rotate(-12deg)}100%{transform:translateX(14%) rotate(-12deg)}}@keyframes riseIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}@keyframes whatsPulse{0%,100%{box-shadow:0 8px 20px #0003}50%{box-shadow:0 8px 26px #25d36688}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}@media(max-width:800px){.hero-visual{min-height:390px;border-radius:20px}.hero-tyre{width:125%}.hero-visual:after{font-size:7px}.road-line{bottom:50px}}
-</style>
+
+<Layout 
+  title="Tyrelink — Sri Lanka's Trusted Tyre, Wheel & Garage Equipment Store"
+  description="Find, compare and fit tyres with confidence. 1-Click WhatsApp Quick Order, Islandwide Cash on Delivery (COD), verified manufacture dates, and genuine company warranty in Sri Lanka."
+  faq={faqData}
+>
+  <!-- Hero Stage (Expansive Full-Width Banner with Luxury Margin) -->
+  <div class="w-full pt-2 sm:pt-4 pb-2 px-2 sm:px-4 lg:px-6 xl:px-8 max-w-[1680px] mx-auto">
+    <HeroCarousel client:load />
+  </div>
+
+  <!-- Categories Strip (Full Screen Width Edge-to-Edge) -->
+  <CategoryStrip />
+
+  <!-- ============================================================
+       FLASH DEALS SECTION — FREEZES IN PLACE (Sticky on Desktop)
+       Pins under the sticky navbar as the user scrolls on desktop;
+       scrolls naturally and fluidly on mobile
+       ============================================================ -->
+  <div id="flash-deals-sticky-wrapper" class="relative md:sticky md:top-[var(--header-height,98px)] transition-[top] duration-300 ease-out z-10 w-full overflow-hidden">
+    <div id="flash-deals-blur-stage" class="w-full will-change-transform will-change-[filter,opacity] transition-all duration-75">
+      <ProductCarousel 
+        client:load 
+        title="Today's Flash Deals" 
+        sinhalaTitle="අද දවසේ සුවිශේෂී මිල අඩුකිරීම් (Limited Stocks)"
+        badge="FLASH DEALS"
+        products={flashDeals}
+        countdownTimer="04h : 35m : 22s"
+      />
+    </div>
+  </div>
+
+  <!-- ============================================================
+       STACKING CARD SHEET: Trending & Best Sellers + Remaining Feed
+       Slides up OVER Today's Flash Deals with smooth rounded corners,
+       deep physical drop-shadow, and causes Flash Deals to softly blur
+       ============================================================ -->
+  <div 
+    id="trending-stacking-section" 
+    class="relative z-20 w-full rounded-none shadow-none border-t-0 overflow-hidden"
+    style="background-color: #080C14; background-image: radial-gradient(ellipse at 50% 0%, rgba(237, 28, 36, 0.16) 0%, transparent 55%), radial-gradient(ellipse at 85% 30%, rgba(180, 20, 25, 0.10) 0%, transparent 50%), radial-gradient(ellipse at 15% 45%, rgba(237, 28, 36, 0.08) 0%, transparent 45%);"
+  >
+    <!-- Background tech dot grid -->
+    <div class="absolute inset-0 tech-dot-grid-dark opacity-15 pointer-events-none"></div>
+
+    <!-- Ambient glowing spotlight orbs -->
+    <div class="absolute -top-36 left-1/4 w-[500px] h-[500px] rounded-full blur-3xl bg-brand-500/15 pointer-events-none"></div>
+    <div class="absolute -bottom-20 right-1/4 w-[450px] h-[450px] rounded-full blur-3xl bg-red-600/10 pointer-events-none"></div>
+
+    <div class="relative z-10 max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 pb-10 space-y-4">
+
+      <!-- Best Selling Products Grid -->
+      <section class="py-6 sm:py-8 reveal">
+        <div class="flex items-end justify-between mb-6 sm:mb-8 flex-wrap gap-3 sm:gap-4">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 text-brand-400 border border-brand-500/35 text-[11px] font-black uppercase tracking-wider backdrop-blur-md shadow-md mb-2 sm:mb-3">
+              <svg class="w-3.5 h-3.5 text-brand-400 fill-brand-400 animate-pulse" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+              </svg>
+              <span>Top Picks • ප්‍රමුඛතම තේරීම්</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-white font-display tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.3)]">
+              Trending & Best Sellers
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-400 font-sinhala font-medium mt-1">
+              ලංකාවේ වැඩිපුරම අලෙවි වන ටයර් සහ වැඩබිම් උපකරණ
+            </p>
+          </div>
+
+          <div class="flex items-center gap-1.5 sm:gap-2.5 flex-wrap">
+            <!-- Admin In-Section Actions (Shown only when in Edit Mode) -->
+            <div class="admin-trending-controls hidden items-center gap-1.5 sm:gap-2">
+              <button
+                type="button"
+                onclick="window.dispatchEvent(new CustomEvent('tyrelink:open-trending-modal'))"
+                title="Select Existing Products for Trending"
+                class="inline-flex items-center gap-1 px-3 py-1.5 sm:px-3.5 sm:py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-[11px] sm:text-xs font-black transition-all shadow-md hover:scale-105 active:scale-95 cursor-pointer"
+              >
+                <svg class="w-3.5 h-3.5 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                <span>+ Pick Products</span>
+              </button>
+
+              <button
+                type="button"
+                onclick="window.dispatchEvent(new CustomEvent('tyrelink:open-trending-modal'))"
+                title="Manage Trending & Best Sellers Collection"
+                class="inline-flex items-center gap-1 px-3 py-1.5 sm:px-3.5 sm:py-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-950 border border-brand-500/50 text-brand-300 text-[11px] sm:text-xs font-bold transition-all shadow-sm hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md"
+              >
+                <svg class="w-3.5 h-3.5 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                <span>Edit Trending Collection</span>
+              </button>
+            </div>
+
+            <a 
+              href="/shop" 
+              class="inline-flex items-center gap-1.5 sm:gap-2 text-xs font-bold text-white bg-white/10 hover:bg-white/20 px-3.5 py-1.5 sm:px-4 sm:py-2.5 rounded-xl transition-all border border-white/15 backdrop-blur-md group shadow-sm"
+            >
+              <span>View All Tyres</span>
+              <svg class="w-3.5 h-3.5 text-red-400 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Product grid: 1 column on mobile, responsive multi-column on desktop -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-4 lg:gap-5 stagger-children">
+          {bestSellers.map((prod, i) => (
+            <div class="reveal-scale" style={`transition-delay: ${i * 70}ms`}>
+              <ProductCard product={prod} />
+            </div>
+          ))}
+        </div>
+      </section>
+
+    </div>
+
+    <!-- PART 2: Shop tyres & tools Explore Feed + Trust + Ready to Order (Clean Light Background with border-radius: 0) -->
+    <div 
+      class="w-full relative z-10 border-t border-slate-200/80"
+      style="background-color: #F4F3F0; background-image: radial-gradient(ellipse at 50% 0%, rgba(237, 28, 36, 0.08) 0%, transparent 55%), radial-gradient(ellipse at 90% 80%, rgba(220, 38, 38, 0.06) 0%, transparent 45%);"
+    >
+      <div class="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 pb-6">
+        <HomeExploreProducts client:load />
+      </div>
+
+      <!-- Full-width Trust Section -->
+      <TrustSection />
+
+      <!-- Bottom CTA strip (Ready to Order? Chat With Us Now! on original light background) -->
+      <div class="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="relative rounded-3xl overflow-hidden p-8 sm:p-12 text-center reveal"
+          style="background: linear-gradient(135deg, #ED1C24 0%, #C9141B 50%, #900D12 100%);">
+          <!-- Background texture -->
+          <div class="absolute inset-0 tech-dot-grid opacity-20 pointer-events-none"></div>
+          <!-- Glow blob -->
+          <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+          
+          <div class="relative z-10 max-w-xl mx-auto space-y-5">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/20 text-white text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm">
+              <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+              Instant WhatsApp Order
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-black text-white font-display tracking-tight">
+              Ready to Order? Chat With Us Now!
+            </h2>
+            <p class="text-sm text-white/80 font-sinhala">
+              ඔබේ order WhatsApp හරහා ක්ෂණිකව දෙන්න — Cash on Delivery
+            </p>
+            <a
+              href="https://wa.me/94783724920?text=Hi%20Tyrelink,%20I%20would%20like%20to%20place%20an%20order"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-white text-brand-600 font-bold text-sm hover:scale-105 hover:shadow-[0_12px_32px_rgba(0,0,0,0.2)] active:scale-95 transition-all"
+            >
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+              Chat on WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</Layout>
+
+<!-- ============================================================
+     CINEMATIC SCROLL STACKING & PROGRESSIVE BLUR ENGINE
+     Tracks the physical overlap between Flash Deals and Trending,
+     progressively applying smooth optical blur & depth scaling
+     ============================================================ -->
+<script>
+  function initScrollStackingAndBlur() {
+    const stickyWrapper = document.getElementById('flash-deals-sticky-wrapper');
+    const blurTarget = document.getElementById('flash-deals-blur-stage');
+    const stackingSection = document.getElementById('trending-stacking-section');
+
+    if (!stickyWrapper || !blurTarget || !stackingSection) return;
+
+    let ticking = false;
+
+    function update() {
+      // On mobile screens (< 768px), allow native, fluid scrolling without trapping or blurring sections
+      if (window.innerWidth < 768) {
+        blurTarget.style.filter = 'none';
+        blurTarget.style.opacity = '1';
+        blurTarget.style.transform = 'none';
+        ticking = false;
+        return;
+      }
+
+      const stickyRect = stickyWrapper.getBoundingClientRect();
+      const stackingRect = stackingSection.getBoundingClientRect();
+
+      // The point where Flash Deals bottom meets the top of the stacking section
+      // In sticky state, stickyRect.bottom is fixed at (stickyRect.top + stickyRect.height)
+      const stickyHeight = stickyRect.height || 500;
+      const stickyBottom = stickyRect.top + stickyHeight;
+      const overlapPx = stickyBottom - stackingRect.top;
+
+      let progress = overlapPx / stickyHeight;
+      progress = Math.max(0, Math.min(1, progress));
+
+      if (progress > 0.01) {
+        // Smooth progressive blur from 0px up to 14px
+        const blurAmount = (progress * 14).toFixed(1);
+        // Progressive dimming from 1 down to 0.45
+        const opacity = (1 - progress * 0.55).toFixed(2);
+        // 3D card depth scale from 1.0 down to 0.96
+        const scale = (1 - progress * 0.04).toFixed(3);
+
+        blurTarget.style.filter = `blur(${blurAmount}px)`;
+        blurTarget.style.opacity = opacity;
+        blurTarget.style.transform = `scale(${scale})`;
+        blurTarget.style.transformOrigin = 'center 15%';
+      } else {
+        blurTarget.style.filter = 'none';
+        blurTarget.style.opacity = '1';
+        blurTarget.style.transform = 'none';
+      }
+
+      ticking = false;
+    }
+
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(update);
+        ticking = true;
+      }
+    }
+
+    window.removeEventListener('scroll', onScroll);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    update();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initScrollStackingAndBlur);
+  } else {
+    initScrollStackingAndBlur();
+  }
+  document.addEventListener('astro:page-load', initScrollStackingAndBlur);
+</script>

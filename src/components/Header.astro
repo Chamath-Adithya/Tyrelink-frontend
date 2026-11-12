@@ -1,0 +1,248 @@
+---
+import SearchBar from './SearchBar';
+import CartNavButton from './CartNavButton';
+import categories from '../data/categories.json';
+
+const currentPath = Astro.url.pathname;
+const isProductPage = currentPath.startsWith('/product') || currentPath.startsWith('/shop') || currentPath.startsWith('/category');
+const filteredCategories = categories;
+---
+
+<header id="site-header" class="w-full sticky top-0 z-50">
+  <!-- Minimalist Top Trust Strip -->
+  <div class="bg-slate-950 text-slate-300 text-[11px] py-2 px-4 border-b border-slate-900">
+    <div class="max-w-[1680px] mx-auto flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3 font-medium truncate">
+        <span class="inline-flex items-center gap-1.5 text-emerald-400 font-semibold truncate">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+          <span class="hidden sm:inline">Islandwide Cash on Delivery (COD) Available</span>
+          <span class="sm:hidden">Islandwide COD Available</span>
+        </span>
+        <span class="hidden md:inline text-slate-700">•</span>
+        <span class="hidden md:inline-flex items-center gap-1.5 text-slate-400">
+          100% Verified Manufacture Dates & Genuine Warranty on All Tyres
+        </span>
+      </div>
+
+      <div class="flex items-center gap-4 shrink-0 text-[11px] font-semibold">
+        <a 
+          href="/warranty-check" 
+          class="hidden sm:inline-flex items-center gap-1 text-slate-400 hover:text-white transition-colors"
+        >
+          <span>Warranty Verification</span>
+        </a>
+        <span class="hidden sm:inline text-slate-800">|</span>
+        <a 
+          href="/track-order" 
+          class="hidden sm:inline-flex items-center gap-1 text-slate-400 hover:text-white transition-colors"
+        >
+          <span>Track Order</span>
+        </a>
+        <span class="hidden sm:inline text-slate-800">|</span>
+        <a 
+          href="https://wa.me/94783724920?text=Hi%20Tyrelink,%20I%20have%20an%20inquiry" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300 font-mono transition-colors"
+        >
+          <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+          <span>078 372 4920</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dynamic Navbar: Clean Frosted Light Glass with Official Brand Logo -->
+  <div 
+    id="main-navbar"
+    class="main-navbar-container bg-white/85 backdrop-blur-xl border-b border-slate-200/80 shadow-xs transition-all duration-300"
+  >
+    <div class="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div id="main-navbar-inner" class="flex items-center justify-between h-20 gap-6 transition-[height] duration-300 ease-out">
+        
+        <!-- Official Brand Logo (Sharp Dark Text + Brand Orange Accents on Light Navbar) -->
+        <a href="/" class="flex items-center shrink-0 group py-1" aria-label="Tyrelink Home">
+          <span class="tyrelink-mark" aria-hidden="true">›››</span>
+          <span class="tyrelink-wordmark">TYRE<span>LINK</span></span>
+        </a>
+
+        <!-- Desktop Live Search Bar (React Island) - Hidden on product/catalog pages -->
+        {!isProductPage && (
+          <div class="hidden lg:flex flex-1 max-w-xl mx-6">
+            <SearchBar client:load />
+          </div>
+        )}
+
+        <!-- Desktop Navigation Links -->
+        <div class="hidden md:flex items-center gap-6">
+          <nav class="flex items-center gap-6 text-xs font-bold text-slate-700">
+            <a 
+              href="/" 
+              class={`hover:text-brand-500 transition-colors ${currentPath === '/' ? 'text-brand-500 font-extrabold' : ''}`}
+            >
+              Home
+            </a>
+            <a 
+              href="/shop" 
+              class={`hover:text-brand-500 transition-colors ${currentPath.startsWith('/shop') ? 'text-brand-500 font-extrabold' : ''}`}
+            >
+              Shop tyres & tools
+            </a>
+            
+            <div class="relative group py-2">
+              <button class="flex items-center gap-1.5 hover:text-brand-500 transition-colors cursor-pointer">
+                <span>Categories</span>
+                <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-brand-500 group-hover:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              <!-- Refined Dropdown Menu -->
+              <div class="absolute top-full -left-4 w-64 bg-white rounded-2xl shadow-card border border-slate-200 p-2 hidden group-hover:block animate-in fade-in duration-150 z-50">
+                {filteredCategories.map((cat) => (
+                  <a
+                    href={`/category/${cat.id}`}
+                    class="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-red-50 hover:text-brand-600 transition-all"
+                  >
+                    <span>{cat.name}</span>
+                    <span class="text-[10px] text-slate-400 font-normal">{cat.sinhalaName}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </nav>
+
+          <!-- Shopping Cart Nav Island Button -->
+          <CartNavButton client:load />
+
+          <!-- WhatsApp Direct Order Action Button -->
+          <a
+            href="https://wa.me/94783724920?text=Hi%20Tyrelink,%20I%20would%20like%20to%20place%20an%20order"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-sm transition-all hover:scale-105 active:scale-95 cursor-pointer"
+          >
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+            </svg>
+            <span>WhatsApp Us</span>
+          </a>
+        </div>
+
+        <!-- Mobile Header Actions (Cart + Menu Toggle) -->
+        <div class="flex items-center gap-2 md:hidden">
+          <CartNavButton client:load />
+          <button
+            id="mobile-menu-toggle"
+            type="button"
+            class="p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer select-none active:scale-95"
+            style="touch-action: manipulation;"
+            aria-label="Open mobile menu"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile Search Bar (Hidden on product/catalog pages) -->
+      {!isProductPage && (
+        <div class="lg:hidden pb-3">
+          <SearchBar client:load />
+        </div>
+      )}
+    </div>
+
+    <!-- Mobile Drawer Menu -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 bg-white px-4 pt-3 pb-6 space-y-3">
+      <nav class="flex flex-col space-y-1.5 text-sm font-semibold text-slate-700">
+        <a href="/" class="px-3 py-2 rounded-xl hover:bg-slate-50 hover:text-brand-500">Home</a>
+        <a href="/shop" class="px-3 py-2 rounded-xl hover:bg-slate-50 hover:text-brand-500">Shop tyres & tools</a>
+        <a href="/warranty-check" class="px-3 py-2 rounded-xl hover:bg-slate-50">Warranty Verification</a>
+        <a href="/track-order" class="px-3 py-2 rounded-xl hover:bg-slate-50">Track Courier Order</a>
+        <a href="/about" class="px-3 py-2 rounded-xl hover:bg-slate-50">About Tyrelink</a>
+        <a href="/contact" class="px-3 py-2 rounded-xl hover:bg-slate-50">Contact & Support</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<style>
+  .tyrelink-mark{color:#ed1c24;font-size:31px;letter-spacing:-12px;width:29px;overflow:hidden;line-height:1;transform:skew(-18deg)}
+  .tyrelink-wordmark{font-size:25px;font-weight:900;letter-spacing:-1.5px;color:#111827}.tyrelink-wordmark span{color:#ed1c24}
+  .main-navbar-container {
+    transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                backdrop-filter 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                -webkit-backdrop-filter 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.3s ease,
+                box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Scrolled Frosted Glass State with Ultra-Smooth Animation */
+  .main-navbar-container.is-scrolled {
+    background-color: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(24px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
+    border-bottom-color: rgba(226, 232, 240, 0.8) !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+  }
+</style>
+
+<script>
+  function initHeaderScroll() {
+    const toggleBtn = document.getElementById('mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    if (toggleBtn && mobileMenu) {
+      toggleBtn.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        mobileMenu.classList.toggle('hidden');
+      };
+    }
+
+    const navbar = document.getElementById('main-navbar');
+    const navInner = document.getElementById('main-navbar-inner');
+    const headerEl = document.getElementById('site-header');
+
+    function updateNavScroll() {
+      if (!navbar) return;
+      const currentScrollY = Math.max(0, window.scrollY);
+
+      if (currentScrollY > 15) {
+        navbar.classList.add('is-scrolled');
+        if (currentScrollY > 60 && navInner) {
+          navInner.classList.remove('h-20');
+          navInner.classList.add('h-16');
+        } else if (navInner) {
+          navInner.classList.remove('h-16');
+          navInner.classList.add('h-20');
+        }
+      } else {
+        navbar.classList.remove('is-scrolled');
+        if (navInner) {
+          navInner.classList.remove('h-16');
+          navInner.classList.add('h-20');
+        }
+      }
+
+      if (headerEl) {
+        const h = headerEl.getBoundingClientRect().height;
+        document.documentElement.style.setProperty('--header-height', `${Math.round(h)}px`);
+      }
+    }
+
+    window.removeEventListener('scroll', updateNavScroll);
+    window.addEventListener('scroll', updateNavScroll, { passive: true });
+    window.addEventListener('resize', updateNavScroll, { passive: true });
+    updateNavScroll();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHeaderScroll);
+  } else {
+    initHeaderScroll();
+  }
+  document.addEventListener('astro:page-load', initHeaderScroll);
+</script>

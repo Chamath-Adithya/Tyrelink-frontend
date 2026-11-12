@@ -1,0 +1,22 @@
+{
+  "flashSale": {
+    "isActive": true,
+    "startTime": "2026-11-01T00:00:00.000Z",
+    "endTime": "2026-11-30T23:59:59.000Z",
+    "productIds": [
+      "tl-dunlop-at5-265",
+      "tl-ceat-zoom-90",
+      "tl-air-compressor"
+    ]
+  },
+  "trending": {
+    "isActive": true,
+    "productIds": [
+      "tl-michelin-xm2-195",
+      "tl-bridgestone-dueler-265",
+      "tl-michelin-pilot-100",
+      "tl-hankook-vantra-195",
+      "tl-valve-kit"
+    ]
+  }
+}

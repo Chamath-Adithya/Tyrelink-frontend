@@ -1,8 +1,297 @@
 ---
-import StoreLayout from '../../layouts/StoreLayout.astro'; import { products, formatLKR } from '../../data/products';
-export function getStaticPaths() { return products.map((product) => ({ params: { slug: product.slug } })); }
-const slug = Astro.params.slug || ''; const product = products.find((p) => p.slug === slug); if (!product) return Astro.redirect('/shop'); const phone='94783724920'; const message=encodeURIComponent(`Hello Tyrelink, I want ${product.brand} ${product.name} (${product.size}). Please confirm fitment, current price, delivery and fitting.`);
+import Layout from '../../layouts/Layout.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import ProductVideoReview from '../../components/ProductVideoReview';
+import InfiniteProductFeed from '../../components/InfiniteProductFeed';
+import ProductImageGallery from '../../components/ProductImageGallery.astro';
+import ProductPurchaseActions from '../../components/ProductPurchaseActions';
+import ProductStickyBuyBar from '../../components/ProductStickyBuyBar';
+import ProductAdminBar from '../../components/admin/ProductAdminBar';
+import ProductKokoBanner from '../../components/ProductKokoBanner';
+import ProductStockBadge from '../../components/ProductStockBadge';
+
+import productsData from '../../data/products.json';
+import type { Product } from '../../types';
+
+export async function getStaticPaths() {
+  const products = productsData as Product[];
+  const categoryMap = new Map<string, Product[]>();
+  
+  for (const p of products) {
+    if (!categoryMap.has(p.category)) categoryMap.set(p.category, []);
+    categoryMap.get(p.category)!.push(p);
+  }
+
+  return products.map((product) => {
+    const relatedProducts = (categoryMap.get(product.category) || [])
+      .filter(p => p.id !== product.id)
+      .slice(0, 4);
+
+    return {
+      params: { slug: product.slug },
+      props: { product, relatedProducts },
+    };
+  });
+}
+
+interface Props {
+  product: Product;
+  relatedProducts: Product[];
+}
+
+const { product, relatedProducts } = Astro.props;
+
+const breadcrumbs = [
+  { name: 'Home', item: 'https://tyrelink.lk/' },
+  { name: product.category.toUpperCase(), item: `https://tyrelink.lk/category/${product.category}` },
+  { name: product.title, item: Astro.url.href }
+];
 ---
-<StoreLayout title={`${product.brand} ${product.name} ${product.size} | Tyrelink`} description={`${product.name} ${product.size}. View indicative price and confirm fitment with Tyrelink on WhatsApp.`}><section class="pdp wrap"><a class="crumb" href="/shop">← Back to shop</a><div class="pdp-grid"><div class="visual"><div class="wheel">{product.brand}</div></div><div><p class="eyebrow">{product.category} · {product.tier}</p><p class="brand">{product.brand}</p><h1>{product.name}</h1><p class="size">{product.size} · {product.rating}</p><p class="desc">{product.description}</p><ul>{product.features.map((f)=><li>✓ {f}</li>)}</ul><div class="price"><span>Indicative public price</span><strong>{formatLKR(product.price)}</strong></div><p class="notice">Final price, availability, fitment and delivery are confirmed by our team before order acceptance.</p><div class="actions"><button class="save" data-product={product.slug}>Save tyre</button><a class="order" href={`https://wa.me/${phone}?text=${message}`}>Ask / Buy via WhatsApp ↗</a></div><small id="saved" role="status"></small></div></div></section></StoreLayout><script define:vars={{slug:product.slug}}>{`const key='tyrelink-cart';const button=document.querySelector('[data-product]');button?.addEventListener('click',()=>{const items=JSON.parse(localStorage.getItem(key)||'[]');if(!items.includes(slug))items.push(slug);localStorage.setItem(key,JSON.stringify(items));document.querySelector('#saved').textContent='Saved for your WhatsApp enquiry.';window.dispatchEvent(new Event('tyrelink:cart-updated'));});`}</script>
-<style>.pdp{padding:70px 0}.crumb{font-size:12px;color:#777}.pdp-grid{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center;margin-top:35px}.visual{background:#181818;min-height:500px;display:grid;place-items:center;overflow:hidden}.wheel{width:330px;height:330px;border-radius:50%;background:repeating-conic-gradient(#222 0 7deg,#080808 7deg 15deg);box-shadow:inset 0 0 0 32px #111,0 30px 40px #0008;color:#ed1c24;display:grid;place-items:center;font-weight:900;transform:rotate(-15deg)}.eyebrow{color:#ed1c24;text-transform:uppercase;letter-spacing:2px;font-size:10px;font-weight:800}.brand{color:#ed1c24;letter-spacing:3px;font-size:12px;font-weight:800}.pdp h1{font-size:54px;line-height:.95;letter-spacing:-3px;margin:7px 0}.size{color:#777}.desc{line-height:1.6;color:#666}.pdp ul{list-style:none;padding:0;color:#444;line-height:2;font-size:13px}.price{border-top:1px solid #ddd;margin-top:25px;padding-top:17px}.price span{display:block;color:#888;font-size:11px}.price strong{font-size:30px}.notice{background:#fff2db;padding:13px;font-size:11px;line-height:1.5}.actions{display:flex;gap:10px;align-items:center}.save{border:1px solid #111;background:#fff;padding:14px 17px;font-weight:800}.order{display:inline-block;background:#25d366;color:#fff;padding:16px 20px;font-weight:800;font-size:13px}#saved{display:block;color:#1b8c45;margin-top:12px}@media(max-width:760px){.pdp{padding:45px 0}.pdp-grid{grid-template-columns:1fr;gap:35px}.visual{min-height:330px}.wheel{width:240px;height:240px}.pdp h1{font-size:42px}.actions{display:block}.actions>*{margin-top:8px}}
-</style>
+
+<Layout
+  title={`${product.title} Price in Sri Lanka | Tyrelink`}
+  description={`Buy ${product.title} at the best price in Sri Lanka. Rs. ${product.price.toLocaleString('en-US')}. 1-Click WhatsApp Quick Checkout with Islandwide Cash on Delivery.`}
+  image={product.featuredImage}
+  product={product}
+  breadcrumbs={breadcrumbs}
+>
+  <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 pt-3 sm:pt-5 pb-28 sm:pb-36 space-y-12 sm:space-y-16">
+    
+    <!-- Merchant In-Page Admin Controls (Shown only when Edit Mode is active) -->
+    <ProductAdminBar client:load product={product} />
+
+    <!-- Subtle Modern Breadcrumbs -->
+    <nav class="flex items-center gap-2 text-xs text-slate-400 overflow-x-auto whitespace-nowrap font-medium -mb-4 sm:-mb-6 reveal">
+      <a href="/" class="hover:text-brand-600 transition-colors">Home</a>
+      <span class="text-slate-300">/</span>
+      <a href={`/category/${product.category}`} class="hover:text-brand-600 uppercase font-semibold transition-colors">
+        {product.category}
+      </a>
+      <span class="text-slate-300">/</span>
+      <span class="text-slate-800 font-bold truncate max-w-sm">{product.title}</span>
+    </nav>
+
+    <!-- Main Product Showcase Grid with 3D Spatial Framing -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 lg:gap-14 items-start reveal-blur">
+      
+      <!-- Left Column: Multi-Angle High-Res Studio Gallery Showcase -->
+      <div class="lg:col-span-6">
+        
+        {/* Interactive Studio Image Gallery Showcase (Hover Magnifier Lens + Fullscreen Lightbox) */}
+        <ProductImageGallery
+          title={product.title}
+          images={product.images && product.images.length > 0 ? product.images : [product.featuredImage]}
+          featuredImage={product.featuredImage}
+          isFlashDeal={product.isFlashDeal}
+          flashDealDiscount={product.flashDealDiscount}
+        />
+
+        {/* Interactive YouTube Video Review & Sound Test (Reactive island: renders video if present, returns null if absent) */}
+        <ProductVideoReview 
+          client:load 
+          productId={product.id}
+          productTitle={product.title} 
+          youtubeId={product.youtubeReviewId} 
+        />
+      </div>
+
+      <!-- Right Column: Editorial Product Specs, Pricing & Purchase Engine -->
+      <div class="lg:col-span-6 space-y-8 text-left">
+        
+        {/* Product Title Header */}
+        <div class="space-y-3">
+          <h1 class="text-3xl sm:text-4xl lg:text-[2.6rem] font-black text-slate-900 font-display tracking-tight leading-[1.12]">
+            {product.title}
+          </h1>
+
+          {product.sinhalaTitle && (
+            <p class="text-sm font-medium text-slate-500 font-sinhala leading-relaxed pt-1">
+              {product.sinhalaTitle}
+            </p>
+          )}
+
+          {/* AEO / LLMO: Machine-readable speakable summary for AI answer engines */}
+          <p class="product-speakable-summary sr-only">
+            {product.title} is available at Tyrelink Sri Lanka for Rs. {product.price.toLocaleString('en-US')} with islandwide Cash on Delivery (COD). Brand: {product.brand}. Warranty: {product.warranty}. {product.shortDescription}
+          </p>
+        </div>
+
+        {/* Pricing Card with 3D Elevation */}
+        <div class="p-6 sm:p-8 rounded-3xl bg-white/80 backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,0,0,0.04)] space-y-5 border border-white/90 reveal-scale">
+          
+          {/* Main Price & Stock Status Block */}
+          <div class="space-y-3">
+            {/* Price Line */}
+            <div class="flex flex-wrap items-baseline gap-3 sm:gap-4">
+              <span class="text-4xl sm:text-5xl font-black text-slate-900 font-display tracking-tight leading-none">
+                Rs. {product.price.toLocaleString('en-US')}
+              </span>
+              {product.originalPrice && (
+                <span class="text-base sm:text-lg text-slate-400 line-through font-mono">
+                  Rs. {product.originalPrice.toLocaleString('en-US')}
+                </span>
+              )}
+              {product.originalPrice && (
+                <span class="px-3 py-1 rounded-full text-xs font-black bg-emerald-50 text-emerald-700 border border-emerald-200/60 shadow-2xs">
+                  Save Rs. {(product.originalPrice - product.price).toLocaleString('en-US')}
+                </span>
+              )}
+            </div>
+
+            {/* Stock Availability Status Badge (Dedicated row with proper spacing, cannot collide) */}
+            <div>
+              <ProductStockBadge client:load product={product} />
+            </div>
+          </div>
+
+          {/* Koko BNPL Widget (Dedicated block with clean margin) */}
+          <div class="w-full pt-1">
+            <ProductKokoBanner client:load product={product} />
+          </div>
+
+          {/* Delivery & Dispatch */}
+          <div class="flex items-center text-xs pt-3 border-t border-slate-100 font-medium">
+            <span class="text-slate-500 inline-flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" /></svg>
+              Express Islandwide Delivery (1-3 Days)
+            </span>
+          </div>
+        </div>
+
+        {/* Primary Dual Actions: Order Now + Add to Cart */}
+        <div id="main-buy-cta">
+          <ProductPurchaseActions client:load product={product} />
+        </div>
+
+        {/* Technical Specs Table with 3D Borderless Elevation & Spatial 3D Reveal */}
+        <div class="bg-white/80 backdrop-blur-2xl rounded-3xl p-8 sm:p-10 shadow-[0_12px_40px_rgba(0,0,0,0.04)] space-y-6 border border-white/90 flex flex-col justify-between reveal-3d" data-delay="120">
+          <div>
+            <div class="flex items-center justify-between border-b border-slate-100/80 pb-4 mb-2">
+              <h3 class="text-xs sm:text-sm font-black text-slate-900 uppercase tracking-widest font-display">
+                Technical Specifications
+              </h3>
+              <span class="text-[10px] font-mono text-slate-400 uppercase font-bold tracking-wider">
+                Official Specs
+              </span>
+            </div>
+
+            <div class="divide-y divide-slate-100/80 text-xs sm:text-sm">
+              {Object.entries(product.specs).map(([key, val]) => (
+                <div class="py-4 sm:py-4.5 flex items-center justify-between gap-6">
+                  <span class="text-slate-400 font-medium">{key}</span>
+                  <span class="font-bold text-slate-800 text-right">{val}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-slate-100/80 flex items-center justify-between text-xs text-slate-400 font-medium">
+            <span class="flex items-center gap-1.5 text-emerald-600 font-bold text-[11px]">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              100% Factory Verified & Tested
+            </span>
+            <span class="text-[11px] font-mono text-slate-400">QA Inspected & Approved</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    {/* Infinite Optimized Product Recommendation Feed with Skeletons */}
+    <InfiniteProductFeed 
+      client:load 
+      currentProductId={product.id} 
+    />
+
+  </div>
+
+  <!-- =====================================================
+       NEXT-LEVEL FLOATING QUICK BUY DOCK (Appears on Scroll)
+       ===================================================== -->
+  <aside 
+    id="sticky-buy-bar"
+    class="fixed bottom-0 left-0 right-0 z-40 bg-white/98 backdrop-blur-xl border-t border-slate-200/90 shadow-[0_-10px_35px_-5px_rgba(0,0,0,0.12)] px-4 pt-3 pb-[max(0.75rem,calc(0.5rem+env(safe-area-inset-bottom,0px)))] sm:py-3.5"
+    aria-label="Quick order dock"
+  >
+    <div class="max-w-[1440px] mx-auto flex items-center justify-between gap-4">
+      {/* Product Mini Preview */}
+      <div class="flex items-center gap-3.5 min-w-0">
+        <div class="w-12 h-12 rounded-xl bg-slate-50 p-1 shrink-0 border border-slate-200/80 flex items-center justify-center">
+          <img src={product.featuredImage} alt={product.title} class="w-full h-full object-contain" />
+        </div>
+        <div class="min-w-0 text-left">
+          <p class="text-xs sm:text-sm font-bold text-slate-900 truncate max-w-xs sm:max-w-md">
+            {product.title}
+          </p>
+          <div class="flex items-center gap-2 text-xs">
+            <span class="font-black text-brand-600 font-mono">
+              Rs. {product.price.toLocaleString('en-US')}
+            </span>
+            <span class={`hidden sm:inline-block text-[10px] font-bold px-2 py-0.5 rounded-md ${
+              product.inStock !== false ? 'text-emerald-600 bg-emerald-50' : 'text-rose-600 bg-rose-50'
+            }`}>
+              {product.inStock !== false ? 'In Stock' : 'Out of Stock'}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Instant Action CTAs */}
+      <ProductStickyBuyBar client:load product={product} />
+    </div>
+  </aside>
+
+  <!-- Product Detail Page Dynamic Scroll Behaviors -->
+  <script>
+    (function () {
+      function initProductScroll() {
+        const stickyBar = document.getElementById('sticky-buy-bar');
+        const mainCta = document.getElementById('main-buy-cta');
+        const footer = document.querySelector('footer');
+
+        if (stickyBar && mainCta) {
+          let pastMainCta = false;
+          let footerInView = false;
+
+          function updateBarVisibility() {
+            if (pastMainCta && !footerInView) {
+              stickyBar.classList.add('is-visible');
+            } else {
+              stickyBar.classList.remove('is-visible');
+            }
+          }
+
+          // Monitor main buy CTA
+          const ctaObserver = new IntersectionObserver(
+            ([entry]) => {
+              pastMainCta = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+              updateBarVisibility();
+            },
+            { threshold: 0 }
+          );
+          ctaObserver.observe(mainCta);
+
+          // Gracefully hide buy bar when footer is in view
+          if (footer) {
+            const footerObserver = new IntersectionObserver(
+              ([entry]) => {
+                footerInView = entry.isIntersecting;
+                updateBarVisibility();
+              },
+              { threshold: 0.05 }
+            );
+            footerObserver.observe(footer);
+          }
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initProductScroll);
+      } else {
+        initProductScroll();
+      }
+      document.addEventListener('astro:page-load', initProductScroll);
+    })();
+  </script>
+</Layout>
