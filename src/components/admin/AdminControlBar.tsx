@@ -62,7 +62,7 @@ export default function AdminControlBar() {
     if (typeof window !== 'undefined' && window.location.search.includes('admin_preview=1')) {
       if (!current) {
         const previewSession: AdminSession = {
-          token: 'lpx_adm_' + (typeof btoa !== 'undefined' ? btoa(`preview:${Date.now()}`) : 'preview_adm'),
+          token: 'tl_adm_' + (typeof btoa !== 'undefined' ? btoa(`preview:${Date.now()}`) : 'preview_adm'),
           username: 'admin',
           loginTime: Date.now(),
           editMode: true,

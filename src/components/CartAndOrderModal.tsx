@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { apiRequest } from '../lib/api';
+import { submitOrderLead } from '../services/leadService';
 import {
   getCart,
   saveCart,
@@ -228,11 +229,7 @@ export default function CartAndOrderModal() {
     };
 
     try {
-      await apiRequest('/v1/order-leads', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderPayload)
-      });
+      await submitOrderLead(orderPayload);
     } catch (err) {
       console.warn('Backend order logging skipped, continuing to WhatsApp:', err);
     }

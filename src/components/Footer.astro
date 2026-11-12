@@ -8,9 +8,14 @@ import categories from '../data/categories.json';
       
       <!-- Brand & Info Column -->
       <div class="lg:col-span-2 space-y-4">
-        <a href="/" class="flex items-center gap-1 py-1" aria-label="Tyrelink Home">
-          <span class="text-[#ed1c24] text-2xl font-black tracking-[-8px] w-6 overflow-hidden inline-block transform -skew-x-[18deg] leading-none">›››</span>
-          <span class="text-xl font-black tracking-tight text-white">TYRE<span class="text-[#ed1c24]">LINK</span></span>
+        <!-- Official Brand Logo (Exact official white Tyrelink logo for dark footer) -->
+        <a href="/" class="flex items-center gap-2 py-1" aria-label="Tyrelink Home">
+          <img 
+            src="/branding/tyrelink-logo-white.png" 
+            alt="Tyrelink Official Logo" 
+            class="h-8 sm:h-9 w-auto object-contain transition-transform group-hover:scale-102"
+            loading="lazy"
+          />
         </a>
         
         <p class="text-xs text-neutral-400 max-w-sm leading-relaxed">

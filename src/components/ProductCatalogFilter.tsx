@@ -13,7 +13,8 @@ import {
   ChevronDown,
   Check,
   PackagePlus,
-  Loader2
+  Loader2,
+  Edit3
 } from 'lucide-react';
 import productsData from '../data/products.json';
 import categoriesData from '../data/categories.json';
@@ -850,6 +851,20 @@ export default function ProductCatalogFilter({
                       style={{ animationDelay: `${(idx % 8) * 60}ms` }}
                       className="product-card bg-white flex flex-col justify-between p-4 sm:p-4.5 group relative text-left rounded-2xl sm:rounded-3xl border border-slate-200/90 hover:border-brand-500 shadow-[0_2px_8px_-2px_rgba(15,23,42,0.06),0_10px_24px_-4px_rgba(15,23,42,0.10),0_20px_35px_-6px_rgba(15,23,42,0.08)] hover:shadow-[0_24px_48px_-10px_rgba(15,23,42,0.18),0_12px_28px_-6px_rgba(237,28,36,0.28)] transition-all duration-300 hover:-translate-y-1.5 overflow-hidden animate-[fadeIn_0.45s_ease_both] cursor-pointer"
                     >
+                      {/* Admin Quick Edit Button */}
+                      <button
+                        type="button"
+                        className="admin-edit-badge hidden z-30 absolute top-2.5 right-2.5 px-2.5 py-1 rounded-full bg-slate-900/95 text-brand-300 border border-brand-500/60 shadow-lg text-[10px] font-bold items-center gap-1 hover:scale-105 active:scale-95 transition-all cursor-pointer backdrop-blur-md"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          window.dispatchEvent(new CustomEvent('tyrelink:edit-product', { detail: { product } }));
+                        }}
+                      >
+                        <Edit3 className="w-3 h-3 text-brand-400" />
+                        <span>Edit</span>
+                      </button>
+
                       <div>
                         {/* Full-bleed Product Thumbnail with Glass Canvas */}
                         <a

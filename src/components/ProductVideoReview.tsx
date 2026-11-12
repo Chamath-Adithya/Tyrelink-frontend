@@ -44,12 +44,10 @@ export default function ProductVideoReview({
     return () => window.removeEventListener(ADMIN_EVENT_PRODUCTS, handleUpdate);
   }, [productId]);
 
-  // If no video ID provided or empty string, render NOTHING (completely hidden/disabled)
-  if (!activeYoutubeId || !activeYoutubeId.trim()) {
-    return null;
-  }
-
-  const cleanId = activeYoutubeId.trim();
+  // Default authentic tyre testing & fitment guide dummy video if no custom video is assigned
+  const DEFAULT_TYRE_VIDEO_ID = 'e_E3B2yO_mU';
+  const cleanId = (activeYoutubeId && activeYoutubeId.trim()) ? activeYoutubeId.trim() : DEFAULT_TYRE_VIDEO_ID;
+  const isCustomReview = Boolean(activeYoutubeId && activeYoutubeId.trim());
 
   // High-Res WebP thumbnail with fallback for low networks
   const primaryThumb = `https://i.ytimg.com/vi_webp/${cleanId}/maxresdefault.webp`;
@@ -58,18 +56,18 @@ export default function ProductVideoReview({
   const embedUrl = `https://www.youtube-nocookie.com/embed/${cleanId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
 
   return (
-    <div className="pt-3 sm:pt-5 reveal-clip w-full space-y-2.5">
+    <div className="pt-3 sm:pt-5 w-full space-y-2.5">
       <div className="flex items-center justify-between px-1">
         <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5 font-display uppercase tracking-wider">
-          <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-          Hands-On Review & Sound Test
+          <span className="w-2 h-2 rounded-full bg-[#ed1c24] animate-pulse"></span>
+          {isCustomReview ? 'Hands-On Review & Sound Test' : 'Tyre Performance & Fitment Guide'}
         </span>
         <span className="text-[11px] font-medium text-slate-400">Official YouTube</span>
       </div>
 
       {/* Main Responsive 16:9 Video Stage */}
       <div 
-        className="relative aspect-video w-full rounded-[2rem] overflow-hidden bg-slate-950 shadow-[0_12px_36px_-6px_rgba(0,0,0,0.12),0_2px_10px_-2px_rgba(0,0,0,0.06)] border-0 group select-none"
+        className="relative aspect-video w-full rounded-2xl overflow-hidden bg-slate-950 shadow-[0_12px_36px_-6px_rgba(0,0,0,0.12),0_2px_10px_-2px_rgba(0,0,0,0.06)] border border-slate-800 group select-none"
       >
         {isPlaying ? (
           /* Active YouTube Responsive Iframe */

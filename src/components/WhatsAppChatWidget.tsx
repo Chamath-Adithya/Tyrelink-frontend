@@ -97,7 +97,7 @@ export default function WhatsAppChatWidget({
             {/* Avatar with Tyrelink branding and active online green dot */}
             <div className="relative shrink-0">
               <div className="w-11 h-11 rounded-full bg-slate-900 flex items-center justify-center p-1.5 shadow-md border-2 border-white/20 overflow-hidden">
-                <img src="/branding/logo-mark.svg" alt="Tyrelink" className="w-full h-full object-contain" />
+                <img src="/branding/tyrelink-mark.png" alt="Tyrelink" className="w-full h-full object-contain" />
               </div>
               {/* Online Green Indicator Dot */}
               <span className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-[#25D366] border-2 border-[#075E54] shadow-sm"></span>

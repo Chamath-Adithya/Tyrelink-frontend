@@ -60,10 +60,15 @@ const filteredCategories = categories;
     <div class="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8">
       <div id="main-navbar-inner" class="flex items-center justify-between h-20 gap-6 transition-[height] duration-300 ease-out">
         
-        <!-- Official Brand Logo (Sharp Dark Text + Brand Orange Accents on Light Navbar) -->
+        <!-- Official Brand Logo (Exact official Tyrelink emblem + TYRELINK wordmark) -->
         <a href="/" class="flex items-center shrink-0 group py-1" aria-label="Tyrelink Home">
-          <span class="tyrelink-mark" aria-hidden="true">›››</span>
-          <span class="tyrelink-wordmark">TYRE<span>LINK</span></span>
+          <img 
+            src="/branding/tyrelink-logo.png" 
+            alt="Tyrelink Official Logo" 
+            class="h-8 sm:h-9 w-auto object-contain transition-transform group-hover:scale-102"
+            loading="eager"
+            fetchpriority="high"
+          />
         </a>
 
         <!-- Desktop Live Search Bar (React Island) - Hidden on product/catalog pages -->

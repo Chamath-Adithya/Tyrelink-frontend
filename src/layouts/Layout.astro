@@ -26,7 +26,8 @@ const { title, description, image, product, faq, breadcrumbs, itemList } = Astro
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
     <meta name="generator" content={Astro.generator} />
 
     <!-- Security & Privacy Meta Directives -->
@@ -99,6 +100,11 @@ const { title, description, image, product, faq, breadcrumbs, itemList } = Astro
           const allEls = document.querySelectorAll(REVEAL_SELECTOR);
           if (!allEls.length) return;
 
+          // Safety fallback: reveal all elements after 1.2s to guarantee zero blank areas
+          setTimeout(() => {
+            allEls.forEach((el) => el.classList.add('revealed'));
+          }, 1200);
+
           if (!('IntersectionObserver' in window)) {
             allEls.forEach((el) => el.classList.add('revealed'));
             return;
@@ -129,12 +135,18 @@ const { title, description, image, product, faq, breadcrumbs, itemList } = Astro
                 }
               });
             },
-            { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+            { threshold: 0.01, rootMargin: '50px 0px 50px 0px' }
           );
 
           allEls.forEach((el) => {
             if (!el.classList.contains('revealed')) {
-              observer.observe(el);
+              const rect = el.getBoundingClientRect();
+              // If already in or near viewport, reveal immediately
+              if (rect.top < window.innerHeight + 100 && rect.bottom > -50) {
+                el.classList.add('revealed');
+              } else {
+                observer.observe(el);
+              }
             }
           });
         }

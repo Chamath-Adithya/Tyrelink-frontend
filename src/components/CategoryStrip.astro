@@ -95,9 +95,9 @@ const allCategories = [...categories, ...categories, ...categories, ...categorie
   <!-- Marquee Container with Left & Right Luxury Fade Masks (Edge-to-Edge) -->
   <div class="relative w-full py-2 overflow-hidden">
     <!-- Left fade mask -->
-    <div class="absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-[#F4F3F0] via-[#F4F3F0]/80 to-transparent z-10 pointer-events-none"></div>
+    <div class="absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-[#f7f7f4] via-[#f7f7f4]/80 to-transparent z-10 pointer-events-none"></div>
     <!-- Right fade mask -->
-    <div class="absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-[#F4F3F0] via-[#F4F3F0]/80 to-transparent z-10 pointer-events-none"></div>
+    <div class="absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-[#f7f7f4] via-[#f7f7f4]/80 to-transparent z-10 pointer-events-none"></div>
 
     <div class="overflow-x-auto sm:overflow-hidden w-full no-scrollbar">
       <div class="category-marquee-track gap-4 sm:gap-5 py-3 px-4 sm:px-0">
@@ -106,7 +106,7 @@ const allCategories = [...categories, ...categories, ...categories, ...categorie
           return (
             <a
               href={`/category/${cat.id}`}
-              class={`flex flex-col items-center justify-center min-w-[165px] sm:min-w-[185px] p-5 sm:p-6 rounded-3xl ${theme.cardBg} ${theme.shadow} shadow-[0_8px_24px_rgba(0,0,0,0.12)] hover:-translate-y-2 hover:scale-[1.03] transition-all duration-300 group shrink-0 text-center relative overflow-hidden text-white border-0 cursor-pointer`}
+              class={`flex flex-col items-center justify-center min-w-[165px] sm:min-w-[185px] p-5 sm:p-6 rounded-2xl ${theme.cardBg} ${theme.shadow} shadow-[0_8px_24px_rgba(0,0,0,0.12)] hover:-translate-y-2 hover:scale-[1.03] transition-all duration-300 group shrink-0 text-center relative overflow-hidden text-white border-0 cursor-pointer`}
             >
               <!-- Category Icon in Clean Translucent White Squircle -->
               <div 

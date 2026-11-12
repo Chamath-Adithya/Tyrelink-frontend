@@ -61,7 +61,7 @@ const breadcrumbs = [
     <ProductAdminBar client:load product={product} />
 
     <!-- Subtle Modern Breadcrumbs -->
-    <nav class="flex items-center gap-2 text-xs text-slate-400 overflow-x-auto whitespace-nowrap font-medium -mb-4 sm:-mb-6 reveal">
+    <nav class="flex items-center gap-2 text-xs text-slate-400 overflow-x-auto whitespace-nowrap font-medium -mb-4 sm:-mb-6">
       <a href="/" class="hover:text-brand-600 transition-colors">Home</a>
       <span class="text-slate-300">/</span>
       <a href={`/category/${product.category}`} class="hover:text-brand-600 uppercase font-semibold transition-colors">
@@ -72,7 +72,7 @@ const breadcrumbs = [
     </nav>
 
     <!-- Main Product Showcase Grid with 3D Spatial Framing -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 lg:gap-14 items-start reveal-blur">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 lg:gap-14 items-start">
       
       <!-- Left Column: Multi-Angle High-Res Studio Gallery Showcase -->
       <div class="lg:col-span-6">
@@ -117,7 +117,7 @@ const breadcrumbs = [
         </div>
 
         {/* Pricing Card with 3D Elevation */}
-        <div class="p-6 sm:p-8 rounded-3xl bg-white/80 backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,0,0,0.04)] space-y-5 border border-white/90 reveal-scale">
+        <div class="p-6 sm:p-8 rounded-2xl bg-white/80 backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,0,0,0.04)] space-y-5 border border-white/90">
           
           {/* Main Price & Stock Status Block */}
           <div class="space-y-3">
@@ -163,8 +163,8 @@ const breadcrumbs = [
           <ProductPurchaseActions client:load product={product} />
         </div>
 
-        {/* Technical Specs Table with 3D Borderless Elevation & Spatial 3D Reveal */}
-        <div class="bg-white/80 backdrop-blur-2xl rounded-3xl p-8 sm:p-10 shadow-[0_12px_40px_rgba(0,0,0,0.04)] space-y-6 border border-white/90 flex flex-col justify-between reveal-3d" data-delay="120">
+        {/* Technical Specs Table with 3D Borderless Elevation */}
+        <div class="bg-white/80 backdrop-blur-2xl rounded-3xl p-8 sm:p-10 shadow-[0_12px_40px_rgba(0,0,0,0.04)] space-y-6 border border-white/90 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between border-b border-slate-100/80 pb-4 mb-2">
               <h3 class="text-xs sm:text-sm font-black text-slate-900 uppercase tracking-widest font-display">
