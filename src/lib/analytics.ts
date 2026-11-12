@@ -1,0 +1,2 @@
+export type TyrelinkEvent = 'product_view' | 'finder_start' | 'quote_request_start' | 'whatsapp_click' | 'language_selected';
+export function track(event: TyrelinkEvent, props: Record<string, string> = {}) { if (typeof window === 'undefined') return; const payload = { event, props, path: window.location.pathname, ts: new Date().toISOString() }; window.dispatchEvent(new CustomEvent('tyrelink:analytics', { detail: payload })); }

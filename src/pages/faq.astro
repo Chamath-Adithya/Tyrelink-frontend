@@ -1,0 +1,7 @@
+---
+import StoreLayout from '../layouts/StoreLayout.astro';
+const faqs=[['Are these final prices?','No. Public prices are indicative sample prices until Tyrelink confirms current price, fitment, delivery and fitting on WhatsApp.'],['Can you help me choose a tyre?','Yes. Send your vehicle details or the tyre sidewall size to our 24-hour WhatsApp team.'],['Do you deliver islandwide?','Islandwide ordering is planned; delivery coverage, fees and timing are confirmed per enquiry.'],['Can I check my warranty?','Use the warranty page with your invoice number, or message our support team.']];
+---
+<StoreLayout title="FAQ | Tyrelink"><section class="faq wrap"><p class="eyebrow">Need to know</p><h1>Questions, answered.</h1>{faqs.map(([q,a])=><details><summary>{q}</summary><p>{a}</p></details>)}</section></StoreLayout>
+<style>.faq{padding:80px 0;max-width:820px}.eyebrow{color:#ed1c24;text-transform:uppercase;letter-spacing:2px;font-size:10px;font-weight:800}.faq h1{font-size:60px;letter-spacing:-3px;margin:0 0 35px}.faq details{background:#fff;border-bottom:1px solid #eee;padding:22px}.faq summary{cursor:pointer;font-weight:800}.faq details p{color:#666;line-height:1.6;max-width:650px}@media(max-width:760px){.faq{padding:50px 0}.faq h1{font-size:45px}}
+</style>
