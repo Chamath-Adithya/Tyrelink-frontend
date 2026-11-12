@@ -6,6 +6,7 @@ import ProductCard from '../components/ProductCard.astro';
 import ProductCarousel from '../components/ProductCarousel';
 import HomeExploreProducts from '../components/HomeExploreProducts';
 import TrustSection from '../components/TrustSection.astro';
+import CinematicVideoShowcase from '../components/CinematicVideoShowcase.astro';
 
 import productsData from '../data/products.json';
 import campaignsData from '../data/campaigns.json';
@@ -163,8 +164,11 @@ const faqData = [
       <!-- Full-width Trust Section -->
       <TrustSection />
 
+      <!-- Cinematic Automotive Video Showcase (Full-width expanding viewport with blur slide-over) -->
+      <CinematicVideoShowcase />
+
       <!-- Bottom CTA strip (Ready to Order? Chat With Us Now! on original light background) -->
-      <div class="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div id="ready-to-order-section" class="relative z-20 max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div class="relative rounded-xl overflow-hidden p-8 sm:p-12 text-center reveal"
           style="background: linear-gradient(135deg, #ED1C24 0%, #C9141B 50%, #900D12 100%);">
           <!-- Background texture -->

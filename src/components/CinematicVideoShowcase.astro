@@ -1,0 +1,244 @@
+---
+// CinematicVideoShowcase.astro — Pure Cinema Viewport (Expanding Fullscreen & Pinned Blur Slide-Over)
+// Ultra-optimized for low-data mobile connection (612KB loop)
+---
+
+<section class="cinema-section" id="cinematic-showcase">
+  <div class="cinema-sticky-stage" id="cinema-stage">
+    
+    <!-- Expanding Video Chassis (Starts as compact floating frame, expands to 100vw x 100vh fullscreen) -->
+    <div class="cinema-frame" id="cinema-frame">
+      <div class="cinema-monitor">
+        
+        <!-- Ultra-Optimized Infinite Looping Video (Zero bandwidth waste, 600KB, muted, playsinline) -->
+        <video 
+          id="cinema-player"
+          class="cinema-video"
+          autoplay
+          loop
+          muted
+          playsinline
+          preload="metadata"
+          poster="/videos/tyrelink-cinematic-poster.webp"
+        >
+          <source src="/videos/tyrelink-cinematic.webm" type="video/webm" />
+          <source src="/videos/tyrelink-cinematic.mp4" type="video/mp4" />
+        </video>
+
+        <!-- Subtle Film Grain & Vignette Scrim -->
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-black/60 pointer-events-none"></div>
+
+        <!-- High-Tech Automotive HUD Overlay -->
+        <div class="absolute inset-0 p-6 sm:p-10 lg:p-14 flex flex-col justify-between pointer-events-none z-10">
+          
+          <!-- Top HUD Bar -->
+          <div class="flex items-center justify-between w-full">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/80 border border-white/20 text-white text-[11px] font-bold uppercase tracking-wider backdrop-blur-md shadow-lg">
+              <span class="w-2 h-2 rounded-full bg-brand-500 animate-ping"></span>
+              <span class="w-2 h-2 rounded-full bg-brand-500 -ml-4"></span>
+              <span class="text-brand-400 font-mono">DYNAMIC PERFORMANCE</span>
+              <span class="text-white/40">|</span>
+              <span>TEST BENCH</span>
+            </div>
+
+            <!-- Telemetry Indicator -->
+            <div class="hidden sm:flex items-center gap-3 text-xs font-mono text-white/70 bg-black/60 px-3.5 py-1 rounded-lg border border-white/10 backdrop-blur-md">
+              <span class="text-brand-400">FPS: 60</span>
+              <span>•</span>
+              <span>4K CALIBRATED</span>
+            </div>
+          </div>
+
+          <!-- Bottom Cinematic Typography & Branding -->
+          <div class="max-w-2xl space-y-2.5 sm:space-y-3">
+            <div class="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-brand-400 font-bold">
+              <span>PRECISION ENGINEERING</span>
+              <span class="text-white/30">///</span>
+              <span>100% GENUINE</span>
+            </div>
+            <h2 class="text-2xl sm:text-4xl lg:text-5xl font-black text-white font-display tracking-tight leading-tight drop-shadow-[0_4px_20px_rgba(0,0,0,0.8)]">
+              Engineered For Supreme Grip & Unstoppable Control.
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-200/90 font-sinhala leading-relaxed max-w-xl drop-shadow-md">
+              ශ්‍රී ලංකාවේ ඕනෑම මාර්ගයක උපරිම ආරක්‍ෂාව, කල්පැවැත්ම සහ සැබෑ සමාගම් වගකීම සහිත ප්‍රමුඛතම ටයර් එකතුව.
+            </p>
+          </div>
+
+        </div>
+
+        <!-- Soft Blur & Scrim Overlay for Slide-Over Transition -->
+        <div class="cinema-blur-scrim" id="cinema-blur-scrim" aria-hidden="true"></div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  function initCinemaExpandAndBlur() {
+    const showcaseSec = document.getElementById('cinematic-showcase');
+    const frame = document.getElementById('cinema-frame');
+    const video = document.getElementById('cinema-player') as HTMLVideoElement;
+    const scrim = document.getElementById('cinema-blur-scrim');
+    const nextSec = document.getElementById('ready-to-order-section');
+
+    if (!showcaseSec || !frame || !video) return;
+
+    // Ensure continuous reliable autoplay
+    video.muted = true;
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        const resumePlay = () => {
+          video.play();
+          window.removeEventListener('scroll', resumePlay);
+          window.removeEventListener('click', resumePlay);
+        };
+        window.addEventListener('scroll', resumePlay, { once: true });
+        window.addEventListener('click', resumePlay, { once: true });
+      });
+    }
+
+    const isMobile = window.innerWidth < 768;
+
+    // PHASE 1: Expand video from compact luxury card to FULL SCREEN as user scrolls through #cinematic-showcase
+    gsap.fromTo(frame, 
+      {
+        width: isMobile ? '92vw' : '72vw',
+        maxWidth: isMobile ? '92vw' : '1100px',
+        height: isMobile ? '42vh' : '56vh',
+        maxHeight: isMobile ? '42vh' : '620px',
+        borderRadius: isMobile ? '20px' : '32px',
+        boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.45)',
+      },
+      {
+        width: '100vw',
+        maxWidth: '100vw',
+        height: '100vh',
+        maxHeight: '100vh',
+        borderRadius: '0px',
+        boxShadow: 'none',
+        ease: 'power1.inOut',
+        scrollTrigger: {
+          trigger: showcaseSec,
+          start: 'top top',
+          end: 'top -70%',
+          scrub: 0.7,
+        }
+      }
+    );
+
+    // PHASE 2: As the Ready to Order CTA section slides up over the full-screen video,
+    // softly blur the video and fade in the dark scrim
+    if (nextSec) {
+      gsap.to(video, {
+        filter: 'blur(16px)',
+        scale: 1.05,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: nextSec,
+          start: 'top bottom',
+          end: 'top top',
+          scrub: true,
+        }
+      });
+
+      if (scrim) {
+        gsap.to(scrim, {
+          opacity: 0.55,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: nextSec,
+            start: 'top bottom',
+            end: 'top top',
+            scrub: true,
+          }
+        });
+      }
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCinemaExpandAndBlur);
+  } else {
+    initCinemaExpandAndBlur();
+  }
+  document.addEventListener('astro:page-load', initCinemaExpandAndBlur);
+</script>
+
+<style>
+  /* ==========================================================================
+     CINEMA SECTION (STICKY TRACK: COMPACT -> FULLSCREEN -> BLUR SLIDE-OVER)
+     ========================================================================== */
+  .cinema-section {
+    position: relative;
+    height: 180vh; /* Scroll track distance for smooth expansion */
+    background: transparent;
+    z-index: 15;
+  }
+
+  /* Sticky Viewport Stage */
+  .cinema-sticky-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: transparent;
+  }
+
+  /* Expanding Frame Vessel */
+  .cinema-frame {
+    position: relative;
+    background: #090d16;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    will-change: width, height, border-radius, box-shadow;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cinema-monitor {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #090d16;
+  }
+
+  .cinema-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transform: scale(1);
+    will-change: filter, transform;
+  }
+
+  /* Dark Scrim overlay during blur */
+  .cinema-blur-scrim {
+    position: absolute;
+    inset: 0;
+    background: rgba(9, 13, 22, 0.7);
+    opacity: 0;
+    pointer-events: none;
+    will-change: opacity;
+  }
+
+  @media (max-width: 768px) {
+    .cinema-section {
+      height: 160vh;
+    }
+  }
+</style>
+

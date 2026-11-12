@@ -365,26 +365,8 @@
     }
   }
 
-  /* 11. Subtle ambient aura breath */
-  .cad-aura-box {
-    animation: cadAuraBreath 18s ease-in-out infinite alternate;
-    will-change: transform, opacity;
-  }
-
-  @keyframes cadAuraBreath {
-    0% {
-      transform: scale(0.985);
-      opacity: 0.88;
-    }
-    100% {
-      transform: scale(1.02);
-      opacity: 1;
-    }
-  }
-
   /* Respect reduced motion preference */
   @media (prefers-reduced-motion: reduce) {
-    .cad-aura-box,
     .cad-spin-clockwise,
     .cad-spin-counter,
     .cad-wheel-container,
