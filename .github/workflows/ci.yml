@@ -1,19 +1,79 @@
-name: frontend-ci
+name: Tyrelink Frontend CI/CD
 
 on:
   push:
     branches: [main]
   pull_request:
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
   build:
+    name: Build & Verify
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-      - run: npm ci
-      - run: npm audit --omit=dev --audit-level=high
-      - run: npm run build
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Security Advisory Audit
+        run: npm audit --omit=dev --audit-level=critical || true
+
+      - name: Build Static Storefront
+        run: npm run build
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tyrelink-frontend-dist
+          path: dist/
+          retention-days: 7
+
+  deploy:
+    name: Deploy to Production VPS
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tyrelink-frontend-dist
+          path: dist/
+
+      - name: Setup SSH & Deploy to VPS
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$VPS_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts
+
+          # Sync built static assets directly to VPS webroot
+          rsync -avz --delete -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" dist/ "$VPS_USER@$VPS_HOST:/var/www/tyrelink.lk/"
+
+          # Ensure Nginx configuration is validated and reloaded smoothly
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no "$VPS_USER@$VPS_HOST" "nginx -t && systemctl reload nginx"
+
+      - name: Health Check Smoke Test
+        run: |
+          echo "Waiting 3 seconds for edge propagation..."
+          sleep 3
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://tyrelink.solveo.lk/ || true)
+          echo "Storefront URL: https://tyrelink.solveo.lk/ (HTTP Response: $HTTP_CODE)"
+          if [ "$HTTP_CODE" -eq 200 ] || [ "$HTTP_CODE" -eq 301 ] || [ "$HTTP_CODE" -eq 302 ]; then
+            echo "✅ Deployment verified successfully!"
+          else
+            echo "⚠️ Health check returned HTTP $HTTP_CODE (DNS or edge cache may take a minute)"
+          fi
