@@ -21,7 +21,7 @@ const waOrderMsg = `Hello Tyrelink, I want to order ${product.brand} ${product.t
 
 <div
   onclick={`if (!event.target.closest('a, button')) window.location.href='/product/${product.slug}'`}
-  class="product-card tyrelink-product-card bg-white reveal-scale flex flex-col justify-between p-4 group relative text-left rounded-2xl border border-slate-200/90 hover:border-brand-500 shadow-[0_2px_8px_-2px_rgba(15,23,42,0.06),0_10px_24px_-4px_rgba(15,23,42,0.10),0_20px_35px_-6px_rgba(15,23,42,0.08)] hover:shadow-[0_24px_48px_-10px_rgba(15,23,42,0.18),0_12px_28px_-6px_rgba(237,28,36,0.22)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer"
+  class="product-card tyrelink-product-card bg-white reveal-scale flex flex-col justify-between p-4 group relative text-left rounded-xl border border-slate-200 hover:border-brand-500 transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden"
 >
   <!-- Admin Edit Quick Button (Shown only when Edit Mode is active) -->
   <button
@@ -37,7 +37,7 @@ const waOrderMsg = `Hello Tyrelink, I want to order ${product.brand} ${product.t
     <!-- Full-bleed Image Stage with Crisp Glass Canvas -->
     <a 
       href={`/product/${product.slug}`}
-      class="block relative aspect-[4/3] sm:aspect-square max-h-[250px] sm:max-h-none w-full rounded-xl overflow-hidden mb-3 bg-gradient-to-b from-[#f0f0eb] to-[#e8e8e3] border border-slate-200/80 flex items-center justify-center p-3"
+      class="product-image-stage block relative aspect-[4/3] sm:aspect-square max-h-[250px] sm:max-h-none w-full rounded-lg overflow-hidden mb-3 border border-slate-200/80 flex items-center justify-center p-3"
     >
       <img
         src={product.featuredImage}

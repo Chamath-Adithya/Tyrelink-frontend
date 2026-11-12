@@ -85,42 +85,6 @@ export interface OrderLead {
   status: 'pending_whatsapp' | 'confirmed' | 'dispatched' | 'delivered';
 }
 
-export interface WarrantyRecord {
-  serialNumber: string;
-  invoiceNumber: string;
-  productName: string;
-  productTitle?: string;
-  customerName: string;
-  purchaseDate: string;
-  warrantyPeriod: string;
-  validUntil: string;
-  warrantyExpiry?: string;
-  remainingDays?: number;
-  status: 'ACTIVE' | 'EXPIRED' | 'VOIDED';
-  claimCount: number;
-}
-
-export interface TrackingStep {
-  title: string;
-  sinhalaTitle: string;
-  description: string;
-  timestamp?: string;
-  completed: boolean;
-  current: boolean;
-}
-
-export interface TrackingRecord {
-  trackingId: string;
-  orderRef: string;
-  customerPhone: string;
-  productTitle: string;
-  deliveryCity: string;
-  courierPartner: string;
-  estimatedDelivery: string;
-  status: 'confirmed' | 'packed' | 'dispatched' | 'out_for_delivery' | 'delivered';
-  steps: TrackingStep[];
-}
-
 export interface FlashSaleConfig {
   isActive: boolean;
   startTime: string; // ISO string

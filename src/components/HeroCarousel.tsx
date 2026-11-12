@@ -128,7 +128,7 @@ export default function HeroCarousel() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[280px] sm:h-[400px] md:h-[480px] lg:h-[540px] xl:h-[600px] rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-950 shadow-[0_16px_50px_rgba(0,0,0,0.25)] border border-slate-800 group select-none cursor-pointer will-change-[border-radius,transform,box-shadow] transition-[border-radius,transform,box-shadow] duration-150 ease-out"
+      className="relative w-full h-[280px] sm:h-[400px] md:h-[480px] lg:h-[540px] xl:h-[600px] rounded-xl overflow-hidden bg-slate-950 shadow-[0_16px_50px_rgba(0,0,0,0.22)] border border-slate-800 group select-none cursor-pointer will-change-transform transition-[transform,box-shadow] duration-150 ease-out"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onTouchStart={handleTouchStart}

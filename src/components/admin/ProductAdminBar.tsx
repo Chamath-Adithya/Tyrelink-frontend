@@ -107,7 +107,7 @@ export default function ProductAdminBar({ product: initialProduct }: ProductAdmi
   return (
     <>
       {/* Top Floating Merchant Control Dock on Product Page */}
-      <div className="w-full mb-6 p-4 sm:p-5 rounded-3xl bg-slate-950/95 border-2 border-amber-500/50 shadow-[0_16px_40px_rgba(255,122,0,0.15)] text-white backdrop-blur-2xl transition-all animate-in fade-in slide-in-from-top-2 duration-300">
+      <div className="w-full mb-6 p-4 sm:p-5 rounded-xl bg-slate-950/95 border-2 border-amber-500/50 shadow-[0_16px_40px_rgba(227,27,35,0.15)] text-white backdrop-blur-2xl transition-all animate-in fade-in slide-in-from-top-2 duration-300">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           
           {/* Left: Product Meta Badges */}
@@ -196,7 +196,7 @@ export default function ProductAdminBar({ product: initialProduct }: ProductAdmi
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200">
-          <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 text-left shadow-2xl space-y-5 text-white">
+          <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-xl p-6 text-left shadow-2xl space-y-5 text-white">
             <div className="flex items-center gap-3 text-red-400">
               <div className="w-12 h-12 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center">
                 <ShieldAlert className="w-6 h-6 text-red-500" />

@@ -328,7 +328,7 @@ ${phone2.trim() ? `📱 *Alternative Mobile:* ${phone2.trim()}\n` : ''}🏷️ *
               <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4">
                 {cartItems.length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center text-center p-8 space-y-4">
-                    <div className="w-16 h-16 rounded-3xl bg-slate-100 text-slate-400 flex items-center justify-center">
+                    <div className="w-16 h-16 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center">
                       <ShoppingBag className="w-8 h-8" />
                     </div>
                     <div className="space-y-1">
@@ -473,7 +473,7 @@ ${phone2.trim() ? `📱 *Alternative Mobile:* ${phone2.trim()}\n` : ''}🏷️ *
       {isCheckoutOpen && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center p-3 sm:p-6 pt-[calc(0.75rem+env(safe-area-inset-top,0px))] pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] bg-slate-950/75 backdrop-blur-md overflow-y-auto animate-in fade-in duration-200">
           <div
-            className="relative w-full max-w-2xl sm:max-w-[680px] max-h-[90vh] max-h-[90dvh] flex flex-col my-auto rounded-3xl bg-white shadow-2xl border border-slate-200 overflow-hidden text-left"
+            className="relative w-full max-w-2xl sm:max-w-[680px] max-h-[90vh] max-h-[90dvh] flex flex-col my-auto rounded-xl bg-white shadow-2xl border border-slate-200 overflow-hidden text-left"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}

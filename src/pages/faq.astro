@@ -20,12 +20,12 @@ const faqs = [
   {
     q: 'How long does delivery take across Sri Lanka?',
     qSi: 'දිවයින පුරා බෙදාහැරීමට කොපමණ කාලයක් ගතවේද?',
-    a: 'Western Province deliveries usually take 1-2 business days. Outstation and other regional districts take 2-3 business days. You can track your parcel live at /track-order.'
+    a: 'Western Province deliveries usually take 1-2 business days. Outstation and other regional districts take 2-3 business days. Our team will share courier updates through WhatsApp or SMS.'
   },
   {
     q: 'How do I claim or verify warranty for my items?',
     qSi: 'වගකීම් සහතිකය පරීක්ෂා කිරීම හෝ Claim කරන්නේ කෙසේද?',
-    a: 'All genuine products come with a verified digital warranty. You can check remaining days anytime at /warranty-check. For any issues, message our WhatsApp support desk with your invoice or serial number.'
+    a: 'Eligible genuine products include the stated manufacturer warranty. For assistance, message our WhatsApp support desk with your invoice and product serial or DOT number.'
   },
   {
     q: 'Can I pay in monthly installments with Koko or Mintpay?',
@@ -61,7 +61,7 @@ const faqs = [
     <div class="space-y-4">
       {faqs.map((faq, idx) => (
         <div 
-          class="reveal bg-white/80 backdrop-blur-2xl rounded-3xl p-7 sm:p-9 shadow-[0_12px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_48px_rgba(237,28,36,0.12)] transition-all duration-300 hover:-translate-y-1 text-left space-y-3 group border border-white/90 glass-card"
+          class="reveal bg-white/80 backdrop-blur-2xl rounded-xl p-7 sm:p-9 shadow-[0_12px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_48px_rgba(237,28,36,0.12)] transition-all duration-300 hover:-translate-y-1 text-left space-y-3 group border border-white/90 glass-card"
           data-delay={idx * 80}
         >
           <div class="flex items-start gap-4">
@@ -85,7 +85,7 @@ const faqs = [
     </div>
 
     <!-- Need More Help Banner -->
-    <div class="reveal p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-slate-950 to-slate-900 text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.35)] text-left relative overflow-hidden">
+    <div class="reveal p-8 sm:p-12 rounded-xl bg-gradient-to-br from-slate-950 to-slate-900 text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.35)] text-left relative overflow-hidden">
       <div class="absolute inset-0 tech-dot-grid-dark opacity-25 pointer-events-none"></div>
       <div class="absolute -bottom-16 -left-16 w-48 h-48 bg-emerald-500/8 rounded-full blur-3xl pointer-events-none"></div>
 

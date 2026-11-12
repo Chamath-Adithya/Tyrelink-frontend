@@ -26,20 +26,6 @@ const filteredCategories = categories;
 
       <div class="flex items-center gap-4 shrink-0 text-[11px] font-semibold">
         <a 
-          href="/warranty-check" 
-          class="hidden sm:inline-flex items-center gap-1 text-slate-400 hover:text-white transition-colors"
-        >
-          <span>Warranty Verification</span>
-        </a>
-        <span class="hidden sm:inline text-slate-800">|</span>
-        <a 
-          href="/track-order" 
-          class="hidden sm:inline-flex items-center gap-1 text-slate-400 hover:text-white transition-colors"
-        >
-          <span>Track Order</span>
-        </a>
-        <span class="hidden sm:inline text-slate-800">|</span>
-        <a 
           href="https://wa.me/94783724920?text=Hi%20Tyrelink,%20I%20have%20an%20inquiry" 
           target="_blank" 
           rel="noopener noreferrer"
@@ -92,6 +78,12 @@ const filteredCategories = categories;
               class={`hover:text-brand-500 transition-colors ${currentPath.startsWith('/shop') ? 'text-brand-500 font-extrabold' : ''}`}
             >
               Shop tyres & tools
+            </a>
+            <a
+              href="/about"
+              class={`hover:text-brand-500 transition-colors ${currentPath.startsWith('/about') ? 'text-brand-500 font-extrabold' : ''}`}
+            >
+              About Us
             </a>
             
             <div class="relative group py-2">
@@ -164,8 +156,6 @@ const filteredCategories = categories;
       <nav class="flex flex-col space-y-1.5 text-sm font-semibold text-slate-700">
         <a href="/" class="px-3 py-2 rounded-xl hover:bg-slate-50 hover:text-brand-500">Home</a>
         <a href="/shop" class="px-3 py-2 rounded-xl hover:bg-slate-50 hover:text-brand-500">Shop tyres & tools</a>
-        <a href="/warranty-check" class="px-3 py-2 rounded-xl hover:bg-slate-50">Warranty Verification</a>
-        <a href="/track-order" class="px-3 py-2 rounded-xl hover:bg-slate-50">Track Courier Order</a>
         <a href="/about" class="px-3 py-2 rounded-xl hover:bg-slate-50">About Tyrelink</a>
         <a href="/contact" class="px-3 py-2 rounded-xl hover:bg-slate-50">Contact & Support</a>
       </nav>

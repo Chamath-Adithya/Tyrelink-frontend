@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function ProductCardSkeleton() {
   return (
-    <div className="flex flex-col justify-between bg-white rounded-[2rem] p-4 sm:p-4.5 shadow-[0_10px_30px_-5px_rgba(0,0,0,0.06),0_2px_8px_-2px_rgba(0,0,0,0.04)] border-0 relative overflow-hidden animate-pulse">
+    <div className="flex flex-col justify-between bg-white rounded-xl p-4 sm:p-4.5 shadow-[0_10px_30px_-5px_rgba(0,0,0,0.06),0_2px_8px_-2px_rgba(0,0,0,0.04)] border-0 relative overflow-hidden animate-pulse">
       <div>
         {/* Shimmer Thumbnail Frame */}
         <div className="relative aspect-[4/3] sm:aspect-square max-h-[250px] sm:max-h-none w-full rounded-2xl overflow-hidden bg-slate-100 mb-3.5 p-4 flex items-center justify-center">

@@ -252,12 +252,12 @@ export default function ProductCarousel({
           </div>
 
           {/* Carousel Track Stage with Left & Right Floating Arrows (Hidden on mobile for native touch swiping) */}
-          <div className="relative z-10 w-full group/stage">
+          <div className="relative z-10 w-full max-w-[1440px] mx-auto group/stage">
             {/* Left Floating Arrow Key (Desktop only) */}
             <button
               onClick={() => scroll('left')}
               disabled={!canScrollLeft}
-              className={`hidden sm:flex absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-12 sm:h-12 rounded-full items-center justify-center transition-all duration-300 border cursor-pointer backdrop-blur-md ${canScrollLeft
+              className={`hidden absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-12 sm:h-12 rounded-full items-center justify-center transition-all duration-300 border cursor-pointer backdrop-blur-md ${canScrollLeft
                 ? 'bg-slate-950 hover:bg-black text-white border-white/30 shadow-[0_8px_30px_rgba(0,0,0,0.6)] hover:scale-110 active:scale-95 opacity-100'
                 : 'bg-slate-950/40 text-white/20 border-white/5 opacity-0 pointer-events-none'
                 }`}
@@ -270,7 +270,7 @@ export default function ProductCarousel({
             <button
               onClick={() => scroll('right')}
               disabled={!canScrollRight}
-              className={`hidden sm:flex absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-12 sm:h-12 rounded-full items-center justify-center transition-all duration-300 border cursor-pointer backdrop-blur-md ${canScrollRight
+              className={`hidden absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-12 sm:h-12 rounded-full items-center justify-center transition-all duration-300 border cursor-pointer backdrop-blur-md ${canScrollRight
                 ? 'bg-slate-950 hover:bg-black text-white border-white/30 shadow-[0_8px_30px_rgba(0,0,0,0.6)] hover:scale-110 active:scale-95 opacity-100'
                 : 'bg-slate-950/40 text-white/20 border-white/5 opacity-0 pointer-events-none'
                 }`}
@@ -283,7 +283,7 @@ export default function ProductCarousel({
             <div
               ref={scrollRef}
               onScroll={updateScrollState}
-              className="grid grid-cols-1 sm:flex sm:items-stretch gap-4 overflow-x-visible sm:overflow-x-auto pb-4 pt-1 no-scrollbar sm:snap-x sm:snap-mandatory px-4 sm:px-6 lg:px-8"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 items-stretch gap-4 sm:gap-5 lg:gap-6 overflow-x-visible pb-4 pt-1 px-4 sm:px-6 lg:px-8"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {products.map((product, i) => {
@@ -300,14 +300,14 @@ export default function ProductCarousel({
                       if (target.closest('a, button')) return;
                       window.location.href = `/product/${product.slug}`;
                     }}
-                    className="w-full sm:w-[250px] lg:w-[240px] xl:w-[255px] sm:shrink-0 sm:snap-start bg-white flex flex-col justify-between p-4 sm:p-4.5 group text-left rounded-2xl sm:rounded-3xl border border-slate-200/90 hover:border-brand-500 shadow-[0_2px_8px_-2px_rgba(15,23,42,0.06),0_10px_24px_-4px_rgba(15,23,42,0.10),0_20px_35px_-6px_rgba(15,23,42,0.08)] hover:shadow-[0_24px_48px_-10px_rgba(15,23,42,0.18),0_12px_28px_-6px_rgba(255,122,0,0.28)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer"
+                    className="tyrelink-product-card relative overflow-hidden w-full flex flex-col justify-between p-4 sm:p-4.5 group text-left rounded-xl border hover:border-brand-500 transition-all duration-300 hover:-translate-y-1 cursor-pointer"
                     style={{ animationDelay: `${i * 60}ms` }}
                   >
                     <div>
                       {/* Full-bleed Glass Image Stage */}
                       <a
                         href={`/product/${product.slug}`}
-                        className="block relative aspect-[4/3] sm:aspect-square max-h-[240px] sm:max-h-none w-full rounded-xl sm:rounded-2xl overflow-hidden mb-3 sm:mb-3.5 bg-gradient-to-b from-slate-100/60 to-slate-50/40 backdrop-blur-md border border-white/70 flex items-center justify-center p-3 sm:p-3"
+                        className="product-image-stage block relative aspect-[4/3] sm:aspect-square max-h-[250px] sm:max-h-none w-full rounded-lg overflow-hidden mb-3 border border-slate-200/80 flex items-center justify-center p-3"
                       >
                         <img
                           src={product.featuredImage}
@@ -397,7 +397,7 @@ export default function ProductCarousel({
                         </div>
                       </div>
 
-                      <div className="w-8.5 h-8.5 sm:w-8.5 sm:h-8.5 rounded-xl sm:rounded-2xl bg-white/80 hover:bg-brand-500 text-slate-600 hover:text-white backdrop-blur-md border border-white/70 flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_8px_20px_rgba(255,122,0,0.35)] shrink-0">
+                      <div className="w-8.5 h-8.5 sm:w-8.5 sm:h-8.5 rounded-xl sm:rounded-2xl bg-white/80 hover:bg-brand-500 text-slate-600 hover:text-white backdrop-blur-md border border-white/70 flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_8px_20px_rgba(227,27,35,0.35)] shrink-0">
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-300" />
                       </div>
                     </div>

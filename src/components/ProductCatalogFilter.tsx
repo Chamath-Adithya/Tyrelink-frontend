@@ -409,7 +409,7 @@ export default function ProductCatalogFilter({
       <div
         className={`relative md:sticky md:top-[112px] z-30 transition-all duration-300 ease-out text-left border ${isScrolled
               ? 'bg-white/95 backdrop-blur-2xl rounded-2xl md:rounded-full py-2.5 px-4 shadow-[0_16px_36px_-10px_rgba(0,0,0,0.14),0_0_0_1px_rgba(237,28,36,0.18)] border-brand-500/25 space-y-0'
-              : 'bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-[2rem] p-3.5 sm:p-5 shadow-[0_12px_36px_-6px_rgba(0,0,0,0.08),0_2px_8px_-2px_rgba(0,0,0,0.04)] border-slate-200/80 space-y-3 sm:space-y-3.5'
+              : 'bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-xl p-3.5 sm:p-5 shadow-[0_12px_36px_-6px_rgba(0,0,0,0.08),0_2px_8px_-2px_rgba(0,0,0,0.04)] border-slate-200/80 space-y-3 sm:space-y-3.5'
         }`}
       >
         <div className={`flex items-center justify-between gap-2 sm:gap-3 transition-all ${isScrolled ? 'flex-row' : 'flex-col md:flex-row items-stretch md:items-center'}`}>
@@ -458,7 +458,7 @@ export default function ProductCatalogFilter({
 
                 {/* Floating category popover menu */}
                 {isCategoryMenuOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-3xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.2)] p-2.5 z-50 animate-in fade-in zoom-in-95 duration-150 border border-slate-100 text-left">
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.2)] p-2.5 z-50 animate-in fade-in zoom-in-95 duration-150 border border-slate-100 text-left">
                     <div className="px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-slate-400 border-b border-slate-100 mb-1 flex items-center justify-between">
                       <span>Select Category</span>
                       <span>{categoriesData.length + 1} categories</span>
@@ -518,7 +518,7 @@ export default function ProductCatalogFilter({
 
               {/* Luxury Floating Price Budget Card */}
               {isPriceOpen && (
-                <div className="absolute left-0 sm:left-auto sm:right-0 top-full mt-2 w-[calc(100vw-2.5rem)] sm:w-96 max-w-sm bg-white rounded-3xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.2)] p-4 sm:p-6 z-50 animate-in fade-in zoom-in-95 duration-150 border border-slate-100 text-left">
+                <div className="absolute left-0 sm:left-auto sm:right-0 top-full mt-2 w-[calc(100vw-2.5rem)] sm:w-96 max-w-sm bg-white rounded-xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.2)] p-4 sm:p-6 z-50 animate-in fade-in zoom-in-95 duration-150 border border-slate-100 text-left">
                   <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                     <div className="flex items-center gap-2">
                       <SlidersHorizontal className="w-4 h-4 text-brand-500" />
@@ -682,7 +682,7 @@ export default function ProductCatalogFilter({
 
               {/* Luxury Floating Menu */}
               {isSortOpen && (
-                <div className="absolute right-0 top-full mt-2 w-64 sm:w-72 max-w-[calc(100vw-2.5rem)] bg-white rounded-3xl shadow-[0_20px_50px_-10px_rgba(0,0,0,0.18)] p-2 z-50 animate-in fade-in zoom-in-95 duration-150 border border-slate-100 text-left">
+                <div className="absolute right-0 top-full mt-2 w-64 sm:w-72 max-w-[calc(100vw-2.5rem)] bg-white rounded-xl shadow-[0_20px_50px_-10px_rgba(0,0,0,0.18)] p-2 z-50 animate-in fade-in zoom-in-95 duration-150 border border-slate-100 text-left">
                   <div className="px-3 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">
                     Sort Catalog By
                   </div>
@@ -849,7 +849,7 @@ export default function ProductCatalogFilter({
                         window.location.href = `/product/${product.slug}`;
                       }}
                       style={{ animationDelay: `${(idx % 8) * 60}ms` }}
-                      className="product-card bg-white flex flex-col justify-between p-4 sm:p-4.5 group relative text-left rounded-2xl sm:rounded-3xl border border-slate-200/90 hover:border-brand-500 shadow-[0_2px_8px_-2px_rgba(15,23,42,0.06),0_10px_24px_-4px_rgba(15,23,42,0.10),0_20px_35px_-6px_rgba(15,23,42,0.08)] hover:shadow-[0_24px_48px_-10px_rgba(15,23,42,0.18),0_12px_28px_-6px_rgba(237,28,36,0.28)] transition-all duration-300 hover:-translate-y-1.5 overflow-hidden animate-[fadeIn_0.45s_ease_both] cursor-pointer"
+                      className="product-card tyrelink-product-card bg-white flex flex-col justify-between p-4 sm:p-4.5 group relative text-left rounded-xl border border-slate-200 hover:border-brand-500 transition-all duration-300 hover:-translate-y-1 overflow-hidden animate-[fadeIn_0.45s_ease_both] cursor-pointer"
                     >
                       {/* Admin Quick Edit Button */}
                       <button
@@ -984,7 +984,7 @@ export default function ProductCatalogFilter({
                   {/* Progressive Progress & Manual Load Control Bar / Completion Stage */ }
                   {
                     hasMore ? (
-                      <div className="p-6 sm:p-8 rounded-[2rem] bg-white shadow-[0_10px_30px_-5px_rgba(0,0,0,0.06),0_2px_8px_-2px_rgba(0,0,0,0.04)] border-0 flex flex-col md:flex-row items-center justify-between gap-6">
+                      <div className="p-6 sm:p-8 rounded-xl bg-white shadow-[0_10px_30px_-5px_rgba(0,0,0,0.06),0_2px_8px_-2px_rgba(0,0,0,0.04)] border-0 flex flex-col md:flex-row items-center justify-between gap-6">
                         <div className="space-y-2.5 w-full md:flex-1 text-left">
                           <div className="flex items-center justify-between text-xs font-bold text-slate-800">
                             <span className="flex items-center gap-2">
@@ -1024,7 +1024,7 @@ export default function ProductCatalogFilter({
                         </button>
                       </div>
                     ) : (
-                      <div className="p-8 rounded-[2rem] bg-gradient-to-b from-white to-slate-50 shadow-[0_10px_30px_-5px_rgba(0,0,0,0.06),0_2px_8px_-2px_rgba(0,0,0,0.04)] border-0 text-center space-y-4">
+                      <div className="p-8 rounded-xl bg-gradient-to-b from-white to-slate-50 shadow-[0_10px_30px_-5px_rgba(0,0,0,0.06),0_2px_8px_-2px_rgba(0,0,0,0.04)] border-0 text-center space-y-4">
                         <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto shadow-2xs">
                           <ShieldCheck className="w-6 h-6" />
                         </div>
@@ -1065,7 +1065,7 @@ export default function ProductCatalogFilter({
                   }
             </div>
               ) : (
-              <div className="bg-white rounded-[2rem] p-12 text-center shadow-[0_10px_30px_-5px_rgba(0,0,0,0.06)] space-y-4 border-0">
+              <div className="bg-white rounded-xl p-12 text-center shadow-[0_10px_30px_-5px_rgba(0,0,0,0.06)] space-y-4 border-0">
                 <Search className="w-12 h-12 text-slate-300 mx-auto" />
                 <div className="space-y-1">
                   <h3 className="text-lg font-bold text-slate-900">No matching hardware found</h3>

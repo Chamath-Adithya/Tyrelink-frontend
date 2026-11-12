@@ -15,12 +15,14 @@ const products = productsData as Product[];
 
 // Map flash deals directly from campaigns.json schedule / selection
 const flashIds = new Set(campaignsData.flashSale?.productIds || []);
-const flashDeals = products.filter(p => flashIds.has(p.id) || p.isFlashDeal).slice(0, 6);
+const flashDeals = products.filter(p => flashIds.has(p.id) || p.isFlashDeal).slice(0, 4);
 const flashDealIds = new Set(flashDeals.map(p => p.id));
 
 // Map trending products directly from campaigns.json selection
 const trendingIds = new Set(campaignsData.trending?.productIds || []);
-const bestSellers = products.filter(p => (trendingIds.has(p.id) || p.isBestSeller) && !flashDealIds.has(p.id)).slice(0, 6);
+// A curated shelf should always end as a complete row. The full catalog remains
+// available through the section CTA for customers who want more choice.
+const bestSellers = products.filter(p => (trendingIds.has(p.id) || p.isBestSeller) && !flashDealIds.has(p.id)).slice(0, 5);
 
 const faqData = [
   {
@@ -32,8 +34,8 @@ const faqData = [
     answer: 'Yes! We provide islandwide Cash on Delivery (COD) to all 25 districts in Sri Lanka within 1-3 business days. You can inspect the tyre manufacture dates (DOT) and condition upon arrival.'
   },
   {
-    question: 'How can I verify the warranty of my purchased tyres or equipment?',
-    answer: 'Visit our public /warranty-check portal anytime and enter your invoice number or tyre serial/DOT code to view active coverage, expiration dates, and claim status.'
+    question: 'How do I get help with a product warranty?',
+    answer: 'Keep your invoice and contact our WhatsApp support desk. Our team will confirm the applicable manufacturer warranty and guide you through the claim process.'
   }
 ];
 ---
@@ -143,7 +145,7 @@ const faqData = [
         </div>
 
         <!-- Product grid: 1 column on mobile, responsive multi-column on desktop -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-4 lg:gap-5 stagger-children">
+        <div class="max-w-[1440px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-5 lg:gap-6 stagger-children">
           {bestSellers.map((prod, i) => (
             <div class="reveal-scale" style={`transition-delay: ${i * 70}ms`}>
               <ProductCard product={prod} />
@@ -157,7 +159,7 @@ const faqData = [
     <!-- PART 2: Shop tyres & tools Explore Feed + Trust + Ready to Order (Clean Light Background with border-radius: 0) -->
     <div 
       class="w-full relative z-10 border-t border-slate-200/80"
-      style="background-color: #F4F3F0; background-image: radial-gradient(ellipse at 50% 0%, rgba(237, 28, 36, 0.08) 0%, transparent 55%), radial-gradient(ellipse at 90% 80%, rgba(220, 38, 38, 0.06) 0%, transparent 45%);"
+      style="background-color: #F4F6F8; background-image: radial-gradient(ellipse at 50% 0%, rgba(227, 27, 35, 0.045) 0%, transparent 55%), radial-gradient(ellipse at 90% 80%, rgba(15, 23, 42, 0.04) 0%, transparent 45%);"
     >
       <div class="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 pb-6">
         <HomeExploreProducts client:load />
@@ -168,7 +170,7 @@ const faqData = [
 
       <!-- Bottom CTA strip (Ready to Order? Chat With Us Now! on original light background) -->
       <div class="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="relative rounded-3xl overflow-hidden p-8 sm:p-12 text-center reveal"
+        <div class="relative rounded-xl overflow-hidden p-8 sm:p-12 text-center reveal"
           style="background: linear-gradient(135deg, #ED1C24 0%, #C9141B 50%, #900D12 100%);">
           <!-- Background texture -->
           <div class="absolute inset-0 tech-dot-grid opacity-20 pointer-events-none"></div>

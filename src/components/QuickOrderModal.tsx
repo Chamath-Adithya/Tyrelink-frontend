@@ -128,7 +128,7 @@ ${phone2 ? `*Alternative Mobile:* ${phone2}\n` : ''}*Payment Method:* ${paymentM
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-md animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-lg rounded-3xl bg-white/95 backdrop-blur-2xl p-6 sm:p-8 shadow-2xl border border-white/80 overflow-hidden"
+        className="relative w-full max-w-lg rounded-xl bg-white/95 backdrop-blur-2xl p-6 sm:p-8 shadow-2xl border border-white/80 overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Top Bar */}

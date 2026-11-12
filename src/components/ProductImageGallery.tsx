@@ -134,7 +134,7 @@ export default function ProductImageGallery({
         }}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
-        className="relative h-[400px] sm:h-[480px] w-full rounded-3xl overflow-hidden bg-white shadow-[0_4px_24px_rgba(0,0,0,0.06),0_16px_48px_rgba(0,0,0,0.08)] flex items-center justify-center border border-slate-100 group select-none"
+        className="relative h-[400px] sm:h-[480px] w-full rounded-xl overflow-hidden bg-white shadow-[0_4px_24px_rgba(0,0,0,0.06),0_16px_48px_rgba(0,0,0,0.08)] flex items-center justify-center border border-slate-100 group select-none"
       >
         {/* Subtle radial light gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-slate-50/50 via-white to-slate-50/30 pointer-events-none" />

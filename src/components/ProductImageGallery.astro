@@ -27,7 +27,7 @@ const initialImage = galleryImages[0] || featuredImage;
       ===================================================== -->
   <div
     id="gallery-main-stage"
-    class="relative h-[300px] sm:h-[420px] lg:h-[480px] w-full rounded-3xl overflow-hidden bg-white/80 backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,0,0,0.04)] flex items-center justify-center border border-white/90 group select-none cursor-zoom-in"
+    class="relative h-[300px] sm:h-[420px] lg:h-[480px] w-full rounded-xl overflow-hidden bg-white/80 backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,0,0,0.04)] flex items-center justify-center border border-white/90 group select-none cursor-zoom-in"
     title="Click to view full screen high-resolution image"
   >
     <!-- Subtle radial light gradient -->
@@ -129,7 +129,7 @@ const initialImage = galleryImages[0] || featuredImage;
           data-gallery-thumb-idx={idx}
           class={`gallery-thumb-btn relative w-20 h-20 sm:w-22 sm:h-22 rounded-2xl p-2 bg-white/80 backdrop-blur-md transition-all duration-200 cursor-pointer flex items-center justify-center shrink-0 border ${
             idx === 0
-              ? 'border-brand-500 ring-2 ring-brand-500/25 shadow-[0_4px_16px_rgba(255,122,0,0.18)] scale-105 opacity-100'
+              ? 'border-brand-500 ring-2 ring-brand-500/25 shadow-[0_4px_16px_rgba(227,27,35,0.18)] scale-105 opacity-100'
               : 'border-white/90 opacity-70 hover:opacity-100 hover:border-brand-500/40 hover:scale-102'
           }`}
           aria-label={`Switch to angle ${idx + 1}`}
@@ -354,7 +354,7 @@ const initialImage = galleryImages[0] || featuredImage;
       thumbBtns.forEach((btn, idx) => {
         const indicator = btn.querySelector('.thumb-indicator');
         if (idx === currentIndex) {
-          btn.className = 'gallery-thumb-btn relative w-20 h-20 sm:w-22 sm:h-22 rounded-2xl p-2 bg-white transition-all duration-200 cursor-pointer flex items-center justify-center shrink-0 border border-brand-500 ring-2 ring-brand-500/25 shadow-[0_4px_16px_rgba(255,122,0,0.18)] scale-105 opacity-100';
+          btn.className = 'gallery-thumb-btn relative w-20 h-20 sm:w-22 sm:h-22 rounded-2xl p-2 bg-white transition-all duration-200 cursor-pointer flex items-center justify-center shrink-0 border border-brand-500 ring-2 ring-brand-500/25 shadow-[0_4px_16px_rgba(227,27,35,0.18)] scale-105 opacity-100';
           if (indicator) {
             indicator.className = 'thumb-indicator absolute -bottom-1 left-1/2 -translate-x-1/2 w-6 h-1 rounded-full bg-brand-500 transition-opacity duration-200 opacity-100';
           }

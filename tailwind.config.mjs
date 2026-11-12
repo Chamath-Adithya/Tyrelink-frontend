@@ -42,8 +42,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['"Plus Jakarta Sans"', '"Inter"', 'system-ui', 'sans-serif'],
-        display: ['"Outfit"', '"Plus Jakarta Sans"', 'sans-serif'],
+        sans: ['"Inter"', 'system-ui', 'sans-serif'],
+        display: ['"Barlow Condensed"', '"Inter"', 'sans-serif'],
         sinhala: ['"Noto Sans Sinhala"', 'system-ui', 'sans-serif'],
         sinhalaDisplay: ['"Gemunu Libre"', '"Noto Sans Sinhala"', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],

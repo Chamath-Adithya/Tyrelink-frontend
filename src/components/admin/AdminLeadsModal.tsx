@@ -35,7 +35,7 @@ export default function AdminLeadsModal({ isOpen, onClose }: AdminLeadsModalProp
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-xl overflow-y-auto animate-in fade-in duration-200">
-      <div className="relative w-full max-w-4xl my-auto max-h-[90vh] bg-slate-900 border border-slate-700/80 rounded-[2rem] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85)] flex flex-col overflow-hidden text-left text-slate-100">
+      <div className="relative w-full max-w-4xl my-auto max-h-[90vh] bg-slate-900 border border-slate-700/80 rounded-xl shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85)] flex flex-col overflow-hidden text-left text-slate-100">
         
         {/* Header */}
         <div className="px-6 py-5 border-b border-slate-800 flex items-center justify-between bg-slate-950/70">

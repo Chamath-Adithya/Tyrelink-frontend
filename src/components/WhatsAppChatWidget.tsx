@@ -86,7 +86,7 @@ export default function WhatsAppChatWidget({
         role="dialog"
         aria-modal="true"
         aria-label="WhatsApp Chat Support"
-        className={`mb-4 w-[330px] sm:w-[360px] max-w-[calc(100vw-2rem)] rounded-3xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.4)] border border-slate-200/90 bg-white transition-all duration-300 origin-bottom-right ${isOpen
+        className={`mb-4 w-[330px] sm:w-[360px] max-w-[calc(100vw-2rem)] rounded-xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.4)] border border-slate-200/90 bg-white transition-all duration-300 origin-bottom-right ${isOpen
             ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto'
             : 'opacity-0 scale-90 translate-y-6 pointer-events-none'
           }`}

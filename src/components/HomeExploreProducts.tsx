@@ -141,7 +141,7 @@ export default function HomeExploreProducts() {
         </div>
 
         {/* Products Grid: 1 column on mobile, responsive multi-column on desktop */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+        <div className="max-w-[1440px] mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5 lg:gap-6">
           {displayedProducts.map((product, idx) => {
             const kokoCount = product.kokoInstallmentCount || product.installmentCount || 3;
             const kokoMonthly = product.kokoInstallmentAmount || product.installmentAmount || Math.round(product.price / kokoCount);
@@ -153,13 +153,13 @@ export default function HomeExploreProducts() {
             return (
               <div
                 key={product.id}
-                className="product-card bg-white flex flex-col justify-between p-4 sm:p-4.5 rounded-2xl sm:rounded-3xl border border-slate-200/90 hover:border-brand-500 shadow-[0_2px_8px_-2px_rgba(15,23,42,0.06),0_10px_24px_-4px_rgba(15,23,42,0.10),0_20px_35px_-6px_rgba(15,23,42,0.08)] hover:shadow-[0_24px_48px_-10px_rgba(15,23,42,0.18),0_12px_28px_-6px_rgba(255,122,0,0.28)] transition-all duration-300 hover:-translate-y-1.5 text-left group relative"
+                className="product-card tyrelink-product-card flex flex-col justify-between p-4 sm:p-4.5 rounded-xl border hover:border-brand-500 transition-all duration-300 hover:-translate-y-1 text-left group relative overflow-hidden"
               >
                 <div>
                   {/* Product Thumbnail Frame with Frosted Glass Canvas */}
                   <a
                     href={`/product/${product.slug}`}
-                    className="block relative aspect-[4/3] sm:aspect-square max-h-[250px] sm:max-h-none w-full rounded-xl sm:rounded-2xl overflow-hidden bg-gradient-to-b from-slate-100/60 to-slate-50/40 backdrop-blur-md border border-white/70 mb-3 sm:mb-3 flex items-center justify-center p-3 sm:p-3 cursor-pointer"
+                    className="product-image-stage block relative aspect-[4/3] sm:aspect-square max-h-[250px] sm:max-h-none w-full rounded-lg overflow-hidden border border-slate-200/80 mb-3 flex items-center justify-center p-3 cursor-pointer"
                   >
                     <img
                       src={product.featuredImage}
@@ -296,7 +296,7 @@ export default function HomeExploreProducts() {
           {hasMore ? (
             <a
               href={shopCatalogUrl}
-              className="w-full max-w-md sm:max-w-lg md:max-w-xl inline-flex items-center justify-between gap-4 px-6 sm:px-10 py-5 sm:py-6 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-brand-600 via-brand-500 to-red-500 hover:from-brand-500 hover:to-red-600 text-white font-black shadow-[0_20px_50px_-10px_rgba(237,28,36,0.35),0_8px_20px_rgba(0,0,0,0.08)] hover:shadow-[0_25px_60px_-10px_rgba(237,28,36,0.5)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 group cursor-pointer border-t border-white/30 border-b border-black/10"
+              className="w-full max-w-md sm:max-w-lg md:max-w-xl inline-flex items-center justify-between gap-4 px-6 sm:px-10 py-5 sm:py-6 rounded-2xl sm:rounded-xl bg-gradient-to-r from-brand-600 via-brand-500 to-red-500 hover:from-brand-500 hover:to-red-600 text-white font-black shadow-[0_20px_50px_-10px_rgba(237,28,36,0.35),0_8px_20px_rgba(0,0,0,0.08)] hover:shadow-[0_25px_60px_-10px_rgba(237,28,36,0.5)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 group cursor-pointer border-t border-white/30 border-b border-black/10"
             >
               <div className="flex items-center gap-3.5 min-w-0">
                 <span className="text-lg sm:text-2xl font-black tracking-tight text-white font-sinhala leading-normal">
