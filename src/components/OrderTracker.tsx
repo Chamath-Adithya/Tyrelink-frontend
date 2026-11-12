@@ -2,18 +2,37 @@ import React, { useState } from 'react';
 import { Search, Truck, CheckCircle2, Clock, MapPin, Package, AlertCircle, ShieldCheck } from 'lucide-react';
 import trackingData from '../data/tracking.json';
 import type { TrackingRecord } from '../types';
+import { apiRequest } from '../lib/api';
 
 export default function OrderTracker() {
   const [query, setQuery] = useState('');
   const [result, setResult] = useState<TrackingRecord | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim()) return;
 
     // Strict Tracking Reference lookup (Sanitized Alphanumeric)
     const cleanQuery = query.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+    setLoading(true);
+    setHasSearched(true);
+
+    try {
+      const apiRes = await apiRequest<any>(`/v1/orders/${encodeURIComponent(cleanQuery)}`);
+      if (apiRes && apiRes.steps) {
+        setResult({
+          trackingId: apiRes.orderRef || cleanQuery,
+          status: apiRes.currentStatus || 'In Transit',
+          estimatedDelivery: apiRes.estimatedDate || '1-3 Working Days',
+          courierService: apiRes.carrier || 'Tyrelink Express Courier',
+          steps: apiRes.steps,
+        });
+        return;
+      }
+    } catch (_) {}
 
     const found = (trackingData as TrackingRecord[]).find((t) => {
       const cleanTrk = t.trackingId.toUpperCase().replace(/[^A-Z0-9]/g, '');
@@ -21,7 +40,7 @@ export default function OrderTracker() {
     });
 
     setResult(found || null);
-    setHasSearched(true);
+    setLoading(false);
   };
 
   return (

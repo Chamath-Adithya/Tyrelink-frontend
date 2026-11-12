@@ -1,8 +1,13 @@
 const configuredBase = import.meta.env.PUBLIC_API_BASE_URL?.replace(/\/$/, '');
 
 // In production the reverse proxy exposes the Go service at /api. In local
-// development PUBLIC_API_BASE_URL points to the Go process directly.
-export const apiBase = configuredBase || '/api';
+// development on localhost, default to Go server at http://localhost:8080.
+export const apiBase =
+  configuredBase ||
+  (typeof window !== 'undefined' &&
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://localhost:8080'
+    : '/api');
 
 export const apiUrl = (path: string) => `${apiBase}${path.startsWith('/') ? path : `/${path}`}`;
 

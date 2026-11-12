@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { ShieldCheck, Lock, User, ArrowRight, Eye, EyeOff, Sparkles, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Lock, User, ArrowRight, Eye, EyeOff, AlertCircle, CheckCircle2, Server, Database } from 'lucide-react';
 import { saveAdminSession } from '../../utils/adminStore';
+import { loginAdmin } from '../../services/authService';
 
 export default function AdminGatewayForm() {
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState('admin');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [backendStatus, setBackendStatus] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,68 +23,27 @@ export default function AdminGatewayForm() {
     setError(null);
 
     try {
-      const res = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({ username: username.trim(), password: password.trim() }),
-      });
+      const res = await loginAdmin(password.trim());
 
-      let data: any = null;
-      try {
-        data = await res.json();
-      } catch {
-        data = null;
-      }
-
-      if (res.ok && data?.success) {
+      if (res.success && res.token) {
         setSuccess(true);
+        setBackendStatus(res.isBackendConnected ? 'Go API Backend (Online)' : 'Local Storage Mode');
+
         saveAdminSession({
-          token: data.token,
-          username: data.username,
+          token: res.token,
+          username: username.trim(),
           loginTime: Date.now(),
           editMode: true,
         });
 
         setTimeout(() => {
           window.location.href = '/?admin_mode=active';
-        }, 600);
-      } else if (username.trim().toLowerCase() === 'admin' && password.trim() === 'tyrelink@2026') {
-        // Direct credential fallback
-        setSuccess(true);
-        const fallbackToken = 'lpx_adm_' + btoa(`admin:${Date.now()}`);
-        saveAdminSession({
-          token: fallbackToken,
-          username: 'admin',
-          loginTime: Date.now(),
-          editMode: true,
-        });
-
-        setTimeout(() => {
-          window.location.href = '/?admin_mode=active';
-        }, 600);
+        }, 800);
       } else {
-        setError(data?.error || 'Access Denied: Invalid credentials');
+        setError(res.error || 'Access Denied: Invalid credentials');
       }
     } catch (err: any) {
-      if (username.trim().toLowerCase() === 'admin' && password.trim() === 'tyrelink@2026') {
-        setSuccess(true);
-        const fallbackToken = 'lpx_adm_' + btoa(`admin:${Date.now()}`);
-        saveAdminSession({
-          token: fallbackToken,
-          username: 'admin',
-          loginTime: Date.now(),
-          editMode: true,
-        });
-
-        setTimeout(() => {
-          window.location.href = '/?admin_mode=active';
-        }, 600);
-      } else {
-        setError('Authentication error: ' + (err?.message || 'Invalid credentials'));
-      }
+      setError('Authentication error: ' + (err?.message || 'Invalid credentials'));
     } finally {
       setLoading(false);
     }
@@ -93,11 +54,11 @@ export default function AdminGatewayForm() {
       <div className="relative rounded-[2.5rem] bg-slate-900/90 border border-slate-800 shadow-[0_25px_70px_rgba(0,0,0,0.6)] backdrop-blur-2xl p-8 sm:p-10 overflow-hidden text-left">
         {/* Glow ambient sphere */}
         <div className="absolute -top-24 -right-24 w-56 h-56 rounded-full bg-brand-500/20 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-56 h-56 rounded-full bg-amber-500/15 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 w-56 h-56 rounded-full bg-brand-600/15 blur-3xl pointer-events-none" />
 
         {/* Security Badge Header */}
         <div className="relative z-10 flex flex-col items-center text-center space-y-4 mb-8">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-600 to-amber-500 p-0.5 shadow-lg shadow-brand-500/30 flex items-center justify-center">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-600 to-brand-500 p-0.5 shadow-lg shadow-brand-500/30 flex items-center justify-center">
             <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center text-brand-400">
               <ShieldCheck className="w-8 h-8" />
             </div>
@@ -120,9 +81,16 @@ export default function AdminGatewayForm() {
         )}
 
         {success && (
-          <div className="relative z-10 mb-6 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center gap-3 text-emerald-400 text-xs">
-            <CheckCircle2 className="w-4 h-4 shrink-0" />
-            <span>Authorized! Initializing Edit Mode...</span>
+          <div className="relative z-10 mb-6 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex flex-col gap-1 text-emerald-400 text-xs">
+            <div className="flex items-center gap-2 font-bold">
+              <CheckCircle2 className="w-4 h-4 shrink-0" />
+              <span>Authorized! Initializing Edit Mode...</span>
+            </div>
+            {backendStatus && (
+              <span className="text-[11px] text-emerald-300 font-mono pl-6">
+                Connected: {backendStatus}
+              </span>
+            )}
           </div>
         )}
 
@@ -163,7 +131,7 @@ export default function AdminGatewayForm() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3.5 top-3.5 text-slate-500 hover:text-slate-300 transition-colors"
+                className="absolute right-3.5 top-3.5 text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
                 aria-label="Toggle password visibility"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -174,7 +142,7 @@ export default function AdminGatewayForm() {
           <button
             type="submit"
             disabled={loading || success}
-            className="w-full h-12 mt-2 rounded-xl bg-gradient-to-r from-brand-600 via-brand-500 to-amber-500 hover:from-brand-500 hover:to-amber-400 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 cursor-pointer"
+            className="w-full h-12 mt-2 rounded-xl bg-gradient-to-r from-brand-600 via-brand-500 to-red-600 hover:from-brand-500 hover:to-red-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 cursor-pointer"
           >
             {loading ? (
               <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -188,14 +156,20 @@ export default function AdminGatewayForm() {
         </form>
 
         <div className="relative z-10 mt-8 pt-6 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500">
-          <span>Protected Area</span>
-          <span className="font-mono text-slate-400">v2.4-prod</span>
+          <span className="flex items-center gap-1.5">
+            <Server className="w-3.5 h-3.5 text-slate-400" />
+            <span>Go API Backend Ready</span>
+          </span>
+          <span className="font-mono text-slate-400 flex items-center gap-1">
+            <Database className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Postgres + Redis</span>
+          </span>
         </div>
       </div>
 
-      {/* Demo Credentials Tip for Developer / Admin */}
+      {/* Default Credentials Tip for Developer / Admin */}
       <div className="mt-6 text-center text-xs text-slate-500 font-mono">
-        Default Credentials: <span className="text-slate-300">admin</span> / <span className="text-slate-300">tyrelink@2026</span>
+        Default Credentials: <span className="text-slate-300">admin</span> / <span className="text-slate-300">admin</span> (or <span className="text-slate-300">tyrelink@2026</span>)
       </div>
     </div>
   );

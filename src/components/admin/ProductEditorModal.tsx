@@ -313,10 +313,10 @@ export default function ProductEditorModal({
             </div>
             <div>
               <h2 className="text-lg font-black font-display text-white">
-                {productToEdit ? 'Edit Product Details' : 'Add New Hardware Product'}
+                {productToEdit ? 'Edit Tyre & Equipment Details' : 'Add New Tyre / Equipment'}
               </h2>
               <p className="text-xs text-slate-400">
-                {productToEdit ? `Updating ID: ${productToEdit.id}` : 'Syncs directly to products.json database'}
+                {productToEdit ? `Updating ID: ${productToEdit.id}` : 'Syncs to Tyrelink Database & API'}
               </p>
             </div>
           </div>

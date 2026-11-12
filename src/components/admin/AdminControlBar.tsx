@@ -11,7 +11,8 @@ import {
   Edit3,
   Check,
   Sparkles,
-  ExternalLink
+  ExternalLink,
+  Package
 } from 'lucide-react';
 import {
   getAdminSession,
@@ -27,6 +28,7 @@ import type { AdminSession, Product } from '../../types';
 import ProductEditorModal from './ProductEditorModal';
 import FlashSaleSchedulerModal from './FlashSaleSchedulerModal';
 import TrendingCuratorModal from './TrendingCuratorModal';
+import AdminLeadsModal from './AdminLeadsModal';
 
 export default function AdminControlBar() {
   const [session, setSession] = useState<AdminSession | null>(null);
@@ -34,14 +36,15 @@ export default function AdminControlBar() {
   const [productToEdit, setProductToEdit] = useState<Product | null>(null);
   const [isFlashModalOpen, setIsFlashModalOpen] = useState(false);
   const [isTrendingModalOpen, setIsTrendingModalOpen] = useState(false);
+  const [isLeadsModalOpen, setIsLeadsModalOpen] = useState(false);
   const [isLiveFlash, setIsLiveFlash] = useState(false);
 
   useEffect(() => {
     // 1. Initial check
     let current = getAdminSession();
     if (current) {
-      if (!current.token || !current.token.startsWith('lpx_adm_')) {
-        current.token = 'lpx_adm_' + (typeof btoa !== 'undefined' ? btoa(`admin:${Date.now()}`) : 'local_adm');
+      if (!current.token || !current.token.startsWith('tl_adm_')) {
+        current.token = 'tl_adm_' + (typeof btoa !== 'undefined' ? btoa(`admin:${Date.now()}`) : 'local_adm');
         saveAdminSession(current);
       }
       setSession(current);
@@ -230,6 +233,16 @@ export default function AdminControlBar() {
               <span>Trending</span>
             </button>
 
+            {/* Orders / Leads CRM */}
+            <button
+              type="button"
+              onClick={() => setIsLeadsModalOpen(true)}
+              className="shrink-0 whitespace-nowrap inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-900 border border-emerald-500/40 text-emerald-300 font-bold text-[11px] active:scale-95 cursor-pointer"
+            >
+              <Package className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Orders</span>
+            </button>
+
             {/* Backup JSON */}
             <button
               type="button"
@@ -316,6 +329,16 @@ export default function AdminControlBar() {
             >
               <Flame className="w-3.5 h-3.5 fill-brand-400 text-brand-400" />
               <span>Trending</span>
+            </button>
+
+            {/* Orders Leads CRM */}
+            <button
+              type="button"
+              onClick={() => setIsLeadsModalOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-850 border border-emerald-500/40 text-emerald-300 font-bold transition-all hover:scale-105 active:scale-95 cursor-pointer whitespace-nowrap"
+            >
+              <Package className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Customer Orders</span>
             </button>
 
             {/* Export JSON Backup */}
@@ -406,6 +429,12 @@ export default function AdminControlBar() {
         onSaved={() => {
           window.location.reload();
         }}
+      />
+
+      {/* Customer Orders / Leads Modal */}
+      <AdminLeadsModal
+        isOpen={isLeadsModalOpen}
+        onClose={() => setIsLeadsModalOpen(false)}
       />
     </>
   );

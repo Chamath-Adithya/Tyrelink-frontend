@@ -19,6 +19,8 @@ import productsData from '../data/products.json';
 import categoriesData from '../data/categories.json';
 import ProductCardSkeleton from './ProductCardSkeleton';
 import type { Product } from '../types';
+import { getLiveProducts, ADMIN_EVENT_PRODUCTS } from '../utils/adminStore';
+import { fetchProducts } from '../services/productService';
 
 interface ProductCatalogFilterProps {
   initialCategory?: string;
@@ -51,6 +53,31 @@ export default function ProductCatalogFilter({
   const [inStockOnly, setInStockOnly] = useState<boolean>(false);
   const [flashOnly, setFlashOnly] = useState<boolean>(false);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState<boolean>(false);
+
+  // Live Products State (Synced with Go Backend API & local store)
+  const [products, setProducts] = useState<Product[]>(() => {
+    if (typeof window !== 'undefined') return getLiveProducts();
+    return (productsData as unknown) as Product[];
+  });
+
+  useEffect(() => {
+    // 1. Fetch from Go Backend API
+    fetchProducts().then((res) => {
+      if (Array.isArray(res.products) && res.products.length > 0) {
+        setProducts(res.products);
+      }
+    });
+
+    // 2. Listen to admin updates in real time
+    const handleUpdate = (e: any) => {
+      if (Array.isArray(e.detail) && e.detail.length > 0) {
+        setProducts(e.detail);
+      }
+    };
+
+    window.addEventListener(ADMIN_EVENT_PRODUCTS, handleUpdate);
+    return () => window.removeEventListener(ADMIN_EVENT_PRODUCTS, handleUpdate);
+  }, []);
 
   // Progressive Batch Loading States
   const [visibleCount, setVisibleCount] = useState<number>(BATCH_SIZE);
@@ -169,15 +196,15 @@ export default function ProductCatalogFilter({
   // Extract all distinct available brands with item counts (O(N) indexed once)
   const allBrandsWithCounts = useMemo(() => {
     const counts: Record<string, number> = {};
-    ((productsData as unknown) as Product[]).forEach((p) => {
+    products.forEach((p) => {
       counts[p.brand] = (counts[p.brand] || 0) + 1;
     });
     return Object.entries(counts).sort((a, b) => b[1] - a[1]);
-  }, []);
+  }, [products]);
 
   // Setup Fuse.js for typo-tolerant Singlish search
   const fuse = useMemo(() => {
-    return new Fuse((productsData as unknown) as Product[], {
+    return new Fuse(products, {
       keys: [
         { name: 'title', weight: 0.4 },
         { name: 'sinhalaTitle', weight: 0.35 },
@@ -188,7 +215,7 @@ export default function ProductCatalogFilter({
       threshold: 0.6,
       ignoreLocation: true,
     });
-  }, []);
+  }, [products]);
 
   // Handlers for Price Range & Numerical Inputs with Strict Validation
   const handleMinInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -233,7 +260,7 @@ export default function ProductCatalogFilter({
 
   // Filter & Sort Pipeline (Optimized Single-Pass Pipeline)
   const filteredProducts = useMemo(() => {
-    let list: Product[] = (productsData as unknown) as Product[];
+    let list: Product[] = [...products];
 
     // 1. Full-text / Singlish fuzzy search
     if (searchQuery.trim().length >= 2) {
@@ -283,7 +310,7 @@ export default function ProductCatalogFilter({
     }
 
     return sorted;
-  }, [searchQuery, selectedCategory, selectedBrands, priceRange, sortBy, inStockOnly, flashOnly, fuse]);
+  }, [products, searchQuery, selectedCategory, selectedBrands, priceRange, sortBy, inStockOnly, flashOnly, fuse]);
 
   // Sliced Visible Products for Progressive Step-by-Step Batch Loading
   const visibleProducts = useMemo(() => {
@@ -445,7 +472,7 @@ export default function ProductCatalogFilter({
                           }`}
                       >
                         <span>Shop tyres & tools</span>
-                        <span className="text-[10px] opacity-75 font-mono">({productsData.length})</span>
+                        <span className="text-[10px] opacity-75 font-mono">({products.length})</span>
                       </button>
                       {categoriesData.map((cat) => (
                         <button
@@ -708,7 +735,7 @@ export default function ProductCatalogFilter({
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-900'
                 }`}
             >
-              Shop tyres & tools ({productsData.length})
+              Shop tyres & tools ({products.length})
             </button>
             {categoriesData.map((cat) => (
               <button

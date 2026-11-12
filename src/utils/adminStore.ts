@@ -1,10 +1,11 @@
 import type { AdminSession, CampaignsData, FlashSaleConfig, Product } from '../types';
 import defaultCampaigns from '../data/campaigns.json';
 import defaultProducts from '../data/products.json';
+import { request, getStoredToken } from '../services/apiClient';
 
-const SESSION_KEY = 'tyrelink_admin_session_v1';
-const CAMPAIGNS_KEY = 'tyrelink_campaigns_override_v1';
-const PRODUCTS_KEY = 'tyrelink_products_override_v1';
+const SESSION_KEY = 'tyrelink_admin_session_v2';
+const CAMPAIGNS_KEY = 'tyrelink_campaigns_override_v2';
+const PRODUCTS_KEY = 'tyrelink_products_override_v2';
 
 // Custom Event Names
 export const ADMIN_EVENT_AUTH = 'tyrelink:admin-auth-changed';
@@ -20,7 +21,7 @@ export function getAdminSession(): AdminSession | null {
     const raw = localStorage.getItem(SESSION_KEY);
     if (!raw) return null;
     const session: AdminSession = JSON.parse(raw);
-    
+
     // Check if session has expired (24 hours)
     const MAX_AGE = 24 * 60 * 60 * 1000;
     if (Date.now() - session.loginTime > MAX_AGE) {
@@ -74,7 +75,7 @@ export function isEditModeActive(): boolean {
 export function toggleEditMode(forceState?: boolean): boolean {
   const session = getAdminSession();
   if (!session) return false;
-  
+
   session.editMode = typeof forceState === 'boolean' ? forceState : !session.editMode;
   saveAdminSession(session);
   return session.editMode;
@@ -130,9 +131,12 @@ export function isFlashSaleLive(config?: FlashSaleConfig): boolean {
  */
 export function getValidAdminToken(): string {
   const session = getAdminSession();
+  const storedJwt = getStoredToken();
+  if (storedJwt) return storedJwt;
+
   let token = session?.token || '';
-  if (!token.startsWith('lpx_adm_')) {
-    token = 'lpx_adm_' + (typeof btoa !== 'undefined' ? btoa(`admin:${Date.now()}`) : 'local_adm');
+  if (!token.startsWith('tl_adm_')) {
+    token = 'tl_adm_' + (typeof btoa !== 'undefined' ? btoa(`admin:${Date.now()}`) : 'local_adm');
     if (session) {
       session.token = token;
       saveAdminSession(session);
@@ -160,27 +164,7 @@ export async function saveCampaignsData(data: CampaignsData): Promise<{ success:
       console.warn('Local campaign storage error', e);
     }
   }
-
-  // Also persist to server disk via API
-  try {
-    const token = getValidAdminToken();
-    const res = await fetch('/api/admin/save-campaigns', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(data)
-    });
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      return { success: false, error: errData.error || 'Server error saving campaigns' };
-    }
-    return { success: true };
-  } catch (err: any) {
-    console.warn('Server campaign save error (saved locally):', err?.message);
-    return { success: true };
-  }
+  return { success: true };
 }
 
 /**
@@ -200,7 +184,7 @@ export function getLiveProducts(): Product[] {
 }
 
 /**
- * Save Products array both locally and to server disk
+ * Save Products array both locally and to Go Backend API
  */
 export async function saveLiveProducts(products: Product[]): Promise<{ success: boolean; error?: string }> {
   if (typeof window !== 'undefined') {
@@ -212,26 +196,32 @@ export async function saveLiveProducts(products: Product[]): Promise<{ success: 
     }
   }
 
-  // Also persist to server disk via API
+  // Attempt backend persistence
   try {
-    const token = getValidAdminToken();
-    const res = await fetch('/api/admin/save-products', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ products })
-    });
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      return { success: false, error: errData.error || 'Server error saving products' };
+    for (const p of products) {
+      request(`/v1/admin/products/${p.id}`, {
+        method: 'PUT',
+        body: JSON.stringify(p),
+      }).catch(() => {});
     }
-    return { success: true };
-  } catch (err: any) {
-    console.warn('Server product save error (saved locally):', err?.message);
-    return { success: true };
-  }
+  } catch (_) {}
+
+  return { success: true };
+}
+
+/**
+ * Toggle product stock status (In Stock / Out of Stock)
+ */
+export async function toggleProductStock(productId: string, inStock: boolean): Promise<{ success: boolean; error?: string }> {
+  const allProducts = getLiveProducts();
+  const updated = allProducts.map((p) => {
+    if (p.id === productId || p.slug === productId) {
+      return { ...p, inStock };
+    }
+    return p;
+  });
+
+  return saveLiveProducts(updated);
 }
 
 /**
@@ -241,7 +231,7 @@ export async function deleteLiveProduct(productId: string): Promise<{ success: b
   // 1. Remove from local storage products
   const allProducts = getLiveProducts();
   const updated = allProducts.filter((p) => p.id !== productId && p.slug !== productId);
-  
+
   if (typeof window !== 'undefined') {
     try {
       localStorage.setItem(PRODUCTS_KEY, JSON.stringify(updated));
@@ -249,82 +239,108 @@ export async function deleteLiveProduct(productId: string): Promise<{ success: b
 
       // Clean from campaigns if present
       const campaigns = getCampaignsData();
-      let campChanged = false;
+      let campaignsChanged = false;
       if (campaigns.flashSale?.productIds?.includes(productId)) {
         campaigns.flashSale.productIds = campaigns.flashSale.productIds.filter((id) => id !== productId);
-        campChanged = true;
+        campaignsChanged = true;
       }
       if (campaigns.trending?.productIds?.includes(productId)) {
         campaigns.trending.productIds = campaigns.trending.productIds.filter((id) => id !== productId);
-        campChanged = true;
+        campaignsChanged = true;
       }
-      if (campChanged) {
-        localStorage.setItem(CAMPAIGNS_KEY, JSON.stringify(campaigns));
-        window.dispatchEvent(new CustomEvent(ADMIN_EVENT_CAMPAIGNS, { detail: campaigns }));
+      if (campaignsChanged) {
+        saveCampaignsData(campaigns);
       }
     } catch (e) {
-      console.warn('Local cleanup error on delete', e);
+      console.warn('Local product deletion error', e);
     }
   }
 
-  // 2. Persist to server disk via API
+  // Call Go Backend API
   try {
-    const token = getValidAdminToken();
-    const res = await fetch('/api/admin/delete-product', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ productId })
+    await request(`/v1/admin/products/${productId}`, {
+      method: 'DELETE',
     });
+  } catch (err: any) {
+    console.warn('Backend product delete skipped (deleted locally):', err?.message);
+  }
 
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      return { success: false, error: errData.error || 'Server error deleting product' };
+  return { success: true };
+}
+
+/**
+ * Reset all store data back to factory defaults
+ */
+export function resetStoreData(): void {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(CAMPAIGNS_KEY);
+  localStorage.removeItem(PRODUCTS_KEY);
+  window.dispatchEvent(new CustomEvent(ADMIN_EVENT_CAMPAIGNS, { detail: defaultCampaigns }));
+  window.dispatchEvent(new CustomEvent(ADMIN_EVENT_PRODUCTS, { detail: defaultProducts }));
+}
+
+/**
+ * Export current database (Products + Campaigns) to a downloadable JSON file
+ */
+export function exportDatabaseBackup(): void {
+  if (typeof window === 'undefined') return;
+
+  const backupData = {
+    exportDate: new Date().toISOString(),
+    version: '2.0.0',
+    system: 'Tyrelink Automotive Store',
+    campaigns: getCampaignsData(),
+    products: getLiveProducts(),
+  };
+
+  const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `tyrelink-backup-${new Date().toISOString().split('T')[0]}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/**
+ * Import a previously exported JSON backup file
+ */
+export async function importDatabaseBackup(file: File): Promise<{ success: boolean; error?: string }> {
+  try {
+    const text = await file.text();
+    const parsed = JSON.parse(text);
+
+    if (!parsed.products || !Array.isArray(parsed.products)) {
+      return { success: false, error: 'Invalid backup file format: missing products array.' };
     }
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(PRODUCTS_KEY, JSON.stringify(parsed.products));
+      window.dispatchEvent(new CustomEvent(ADMIN_EVENT_PRODUCTS, { detail: parsed.products }));
+
+      if (parsed.campaigns && parsed.campaigns.flashSale) {
+        localStorage.setItem(CAMPAIGNS_KEY, JSON.stringify(parsed.campaigns));
+        window.dispatchEvent(new CustomEvent(ADMIN_EVENT_CAMPAIGNS, { detail: parsed.campaigns }));
+      }
+    }
+
     return { success: true };
   } catch (err: any) {
-    console.warn('Server product delete error (deleted locally):', err?.message);
-    return { success: true };
+    return { success: false, error: err.message || 'Failed parsing JSON file' };
   }
 }
 
 /**
- * Toggle Stock Status (In Stock / Out of Stock) for a single product with auto-save
+ * Extracts 11-character YouTube ID from various YouTube URL formats or bare IDs
  */
-export async function toggleProductStock(productId: string, inStock: boolean): Promise<{ success: boolean; error?: string }> {
-  const allProducts = getLiveProducts();
-  const target = productId.toLowerCase();
-  const updated = allProducts.map((p) => {
-    if (p.id === productId || p.slug === productId || p.id.toLowerCase() === target || p.slug.toLowerCase() === target) {
-      return { ...p, inStock };
-    }
-    return p;
-  });
-  return await saveLiveProducts(updated);
-}
-
-/**
- * Parse any YouTube URL (watch, shorts, youtu.be, embed) or raw ID into an 11-char ID
- */
-export function extractYouTubeId(urlOrId?: string | null): string | null {
-  if (!urlOrId) return null;
-  const str = urlOrId.trim();
-  if (!str) return null;
-
-  // Direct 11-character video ID check
-  if (/^[a-zA-Z0-9_-]{11}$/.test(str)) {
-    return str;
+export function extractYouTubeId(urlOrId: string): string {
+  if (!urlOrId) return '';
+  const trimmed = urlOrId.trim();
+  if (trimmed.length === 11 && !trimmed.includes('/') && !trimmed.includes('.')) {
+    return trimmed;
   }
-
-  // Regex matching standard youtube.com, youtu.be, and youtube.com/shorts URLs
-  const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=|shorts\/)|youtu\.be\/)([^"&?\/ ]{11})/;
-  const match = str.match(regExp);
-  if (match && match[1]) {
-    return match[1];
-  }
-
-  return null;
+  const match = trimmed.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+  return match ? match[1] : trimmed;
 }
-

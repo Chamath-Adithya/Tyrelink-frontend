@@ -181,42 +181,43 @@ export default function TrendingCuratorModal({
               {filteredProducts.map((p) => {
                 const isSelected = selectedProductIds.includes(p.id);
                 return (
-                  <div
-                    key={p.id}
-                    onClick={() => toggleProduct(p.id)}
+                <div
+                  key={p.id}
+                  onClick={() => toggleProduct(p.id)}
+                  className={`flex items-center justify-between p-3 cursor-pointer transition-colors ${
                     isSelected ? 'bg-brand-500/10' : 'hover:bg-slate-900'
                   }`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <div
-                      className={`w - 5 h - 5 rounded - md flex items - center justify - center border transition - all ${
-                isSelected
-                  ? 'bg-brand-500 border-brand-500 text-white font-bold'
+                      className={`w-5 h-5 rounded-md flex items-center justify-center border transition-all ${
+                        isSelected
+                          ? 'bg-brand-500 border-brand-500 text-white font-bold'
                           : 'border-slate-700 bg-slate-900'
                       }`}
                     >
-              {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
-            </div>
-            <img
-              src={p.featuredImage}
-              alt={p.title}
-              className="w-10 h-10 rounded-lg object-cover bg-white shrink-0 border border-slate-700"
-            />
-            <div className="truncate">
-              <p className="font-bold text-white truncate text-xs">{p.title}</p>
-              <p className="text-[11px] text-slate-400">
-                {p.brand} • <span className="capitalize">{p.category}</span>
-              </p>
-            </div>
-          </div>
+                      {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                    </div>
+                    <img
+                      src={p.featuredImage}
+                      alt={p.title}
+                      className="w-10 h-10 rounded-lg object-cover bg-white shrink-0 border border-slate-700"
+                    />
+                    <div className="truncate">
+                      <p className="font-bold text-white truncate text-xs">{p.title}</p>
+                      <p className="text-[11px] text-slate-400">
+                        {p.brand} • <span className="capitalize">{p.category}</span>
+                      </p>
+                    </div>
+                  </div>
 
-          <div className="text-right shrink-0 ml-3">
-              <span className="font-mono font-bold text-brand-400 text-xs">
-                Rs. {p.price.toLocaleString()}
-              </span>
-          </div>
-        </div>
-        );
+                  <div className="text-right shrink-0 ml-3">
+                    <span className="font-mono font-bold text-brand-400 text-xs">
+                      Rs. {p.price.toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+              );
             })}
       </div>
     </div>
