@@ -5,7 +5,7 @@ import SEOHead from '../components/SEOHead.astro';
 import CartAndOrderModal from '../components/CartAndOrderModal';
 import WhatsAppChatWidget from '../components/WhatsAppChatWidget';
 import AdminControlBar from '../components/admin/AdminControlBar';
-import Matte3DBackground from '../components/Matte3DBackground.astro';
+import ArchitecturalGrid from '../components/ArchitecturalGrid.astro';
 import type { Product } from '../types';
 import '../styles/global.css';
 
@@ -75,8 +75,8 @@ const { title, description, image, product, faq, breadcrumbs, itemList } = Astro
     )}
   </head>
   <body class="min-h-screen flex flex-col text-slate-900 font-sans antialiased relative">
-    <!-- Interactive Pure Canvas Fluid Water Waves & Subtle Brand Red Ripples -->
-    <Matte3DBackground />
+    <!-- Architectural Precision Grid & CAD Blueprint Background (Pure CSS & SVG · Zero JS) -->
+    <ArchitecturalGrid />
 
     <!-- Merchant Live Edit Mode & Control HUD Bar (Loads dynamically for logged-in admin) -->
     <AdminControlBar client:load />
