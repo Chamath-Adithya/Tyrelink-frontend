@@ -149,10 +149,7 @@ export default function SearchBar() {
                       className="w-12 h-12 rounded-xl object-contain border border-slate-200/80 group-hover:scale-105 transition-transform shrink-0 bg-slate-50 p-1"
                     />
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] text-emerald-600 font-semibold">In Stock</span>
-                      </div>
-                      <p className="text-xs sm:text-sm font-bold text-slate-800 truncate group-hover:text-brand-600 transition-colors mt-0.5">
+                      <p className="text-xs sm:text-sm font-bold text-slate-800 truncate group-hover:text-brand-600 transition-colors">
                         {product.title}
                       </p>
                       <div className="flex items-baseline gap-2 mt-0.5">

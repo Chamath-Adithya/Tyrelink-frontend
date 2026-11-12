@@ -182,24 +182,11 @@ export default function HomeExploreProducts() {
                         </span>
                       )}
                     </div>
-
-                    {/* Stock pill */}
-                    {typeof product.stockCount === 'number' && product.stockCount > 0 && product.stockCount <= 5 && (
-                      <div className="absolute bottom-2 left-2 z-10 pointer-events-none">
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-slate-900/80 text-amber-300 backdrop-blur-sm">
-                          Only {product.stockCount} left
-                        </span>
-                      </div>
-                    )}
                   </a>
 
-                  {/* Brand & In-Stock Micro-Strip */}
+                  {/* Brand Micro-Strip */}
                   <div className="flex items-center justify-between text-[11px] mb-1.5">
                     <span className="text-brand-600 uppercase tracking-widest font-mono text-[10px] font-extrabold bg-brand-50/80 px-2 py-0.5 rounded-md border border-brand-100/60">{product.brand}</span>
-                    <span className="text-[10px] font-bold text-emerald-600 flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                      In Stock
-                    </span>
                   </div>
 
                   {/* Title & Sinhala Title */}
