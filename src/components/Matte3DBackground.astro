@@ -1,6 +1,6 @@
 ---
-// Animated Flowing Tread-Line Background — Pure Canvas 2D
-// Lightweight, matte, mouse-reactive flowing wave lines
+// Tyrelink Animated Background — Flowing Tread Waves with Brand Red Accents
+// Pure Canvas 2D · Matte · Mouse-reactive · Scroll-parallax
 ---
 
 <div
@@ -18,7 +18,6 @@
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Respect reduced-motion preference
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     let W = 0;
@@ -33,7 +32,6 @@
       canvas!.height = H * dpr;
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
-
     resize();
 
     let resizeTimer: ReturnType<typeof setTimeout> | null = null;
@@ -42,41 +40,75 @@
       resizeTimer = setTimeout(resize, 120);
     }, { passive: true });
 
-    // Mouse tracking (smooth lerp)
-    let mouseX = W * 0.5;
-    let mouseY = H * 0.5;
-    let targetMX = mouseX;
-    let targetMY = mouseY;
+    // ── Mouse ──
+    let mouseX = W * 0.5, mouseY = H * 0.5;
+    let tMX = mouseX, tMY = mouseY;
+    window.addEventListener('pointermove', (e) => { tMX = e.clientX; tMY = e.clientY; }, { passive: true });
 
-    window.addEventListener('pointermove', (e: PointerEvent) => {
-      targetMX = e.clientX;
-      targetMY = e.clientY;
-    }, { passive: true });
+    // ── Scroll ──
+    let scrollY = 0, tScrollY = 0;
+    window.addEventListener('scroll', () => { tScrollY = window.scrollY; }, { passive: true });
 
-    // Scroll tracking
-    let scrollY = 0;
-    let targetScrollY = 0;
-    window.addEventListener('scroll', () => {
-      targetScrollY = window.scrollY;
-    }, { passive: true });
-
-    // Tab visibility
+    // ── Visibility ──
     let visible = !document.hidden;
-    document.addEventListener('visibilitychange', () => {
-      visible = !document.hidden;
+    document.addEventListener('visibilitychange', () => { visible = !document.hidden; });
+
+    // ═══════════════════════════════════════════
+    //  CONFIG
+    // ═══════════════════════════════════════════
+    const WAVE_GROUPS = [
+      // Group 1: Wide, slow-moving tread grooves (slate)
+      { count: 7, speed: 0.25, ampBase: 22, freq: 3.5, lineWidth: 1.8,
+        color: (a: number) => `rgba(100,116,139,${a})`, alphaBase: 0.06 },
+      // Group 2: Fine detail lines (slate, thinner)
+      { count: 9, speed: 0.4,  ampBase: 14, freq: 6.0, lineWidth: 1,
+        color: (a: number) => `rgba(148,163,184,${a})`, alphaBase: 0.04 },
+      // Group 3: Brand red accent sweeps (sparse, elegant)
+      { count: 4, speed: 0.18, ampBase: 30, freq: 2.2, lineWidth: 2,
+        color: (a: number) => `rgba(237,28,36,${a})`, alphaBase: 0.045 },
+    ];
+
+    const POINTS = 90;
+
+    // Pre-seed each line for organic variation
+    type LineSeed = { seed: number; yOffset: number; phaseShift: number; group: number };
+    const lines: LineSeed[] = [];
+    WAVE_GROUPS.forEach((g, gi) => {
+      for (let i = 0; i < g.count; i++) {
+        const t = i / (g.count - 1 || 1);
+        lines.push({
+          seed: Math.random() * 1000,
+          yOffset: t,
+          phaseShift: Math.random() * Math.PI * 2,
+          group: gi,
+        });
+      }
     });
 
-    // Wave configuration — flowing horizontal tread lines
-    const LINE_COUNT = 18;         // number of flowing lines
-    const POINTS_PER_LINE = 80;    // resolution of each line
-    const BASE_SPEED = 0.35;       // base animation speed
-
-    // Pre-compute per-line offsets for organic variation
-    const lineSeeds: number[] = [];
-    for (let i = 0; i < LINE_COUNT; i++) {
-      lineSeeds.push(Math.random() * 1000);
+    // Floating accent particles (brand red micro-dots drifting)
+    type Particle = { x: number; y: number; vx: number; vy: number; r: number; life: number; maxLife: number };
+    const particles: Particle[] = [];
+    const PARTICLE_COUNT = 24;
+    function spawnParticle(): Particle {
+      return {
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.2 - 0.1,
+        r: 1 + Math.random() * 1.5,
+        life: 0,
+        maxLife: 400 + Math.random() * 600,
+      };
+    }
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      const p = spawnParticle();
+      p.life = Math.random() * p.maxLife; // stagger initial life
+      particles.push(p);
     }
 
+    // ═══════════════════════════════════════════
+    //  DRAW LOOP
+    // ═══════════════════════════════════════════
     let time = 0;
     let frameId = 0;
 
@@ -84,100 +116,157 @@
       frameId = requestAnimationFrame(draw);
       if (!visible || !ctx) return;
 
-      // Smooth lerp mouse
-      mouseX += (targetMX - mouseX) * 0.06;
-      mouseY += (targetMY - mouseY) * 0.06;
-      scrollY += (targetScrollY - scrollY) * 0.08;
-
       const dt = prefersReducedMotion ? 0 : 0.016;
-      time += dt * BASE_SPEED;
+      time += dt;
 
-      // Normalized mouse position (0–1)
-      const mx = mouseX / W;
-      const my = mouseY / H;
+      // Smooth lerp
+      mouseX += (tMX - mouseX) * 0.05;
+      mouseY += (tMY - mouseY) * 0.05;
+      scrollY += (tScrollY - scrollY) * 0.07;
+
+      const mx = mouseX / W;   // 0–1 normalized
 
       ctx.clearRect(0, 0, W, H);
 
-      for (let i = 0; i < LINE_COUNT; i++) {
-        const t = i / (LINE_COUNT - 1);                 // 0→1 across lines
-        const seed = lineSeeds[i];
-        const baseY = H * 0.08 + t * H * 0.88;         // distribute vertically
-        const scrollShift = Math.sin(t * 3.14 + scrollY * 0.0015) * 12;
+      // ── 1. Draw subtle radial gradient wash that follows mouse ──
+      const gx = mouseX;
+      const gy = mouseY;
+      const gradRadius = Math.max(W, H) * 0.55;
+      const radGrad = ctx.createRadialGradient(gx, gy, 0, gx, gy, gradRadius);
+      radGrad.addColorStop(0, 'rgba(237, 28, 36, 0.018)');
+      radGrad.addColorStop(0.4, 'rgba(237, 28, 36, 0.006)');
+      radGrad.addColorStop(1, 'rgba(237, 28, 36, 0)');
+      ctx.fillStyle = radGrad;
+      ctx.fillRect(0, 0, W, H);
 
-        // Line color: subtle slate tone, alternating opacity for depth
-        const isEven = i % 2 === 0;
-        const alpha = isEven ? 0.07 : 0.045;
-        ctx.strokeStyle = `rgba(100, 116, 139, ${alpha})`;   // slate-500
-        ctx.lineWidth = isEven ? 1.5 : 1;
+      // ── 2. Flowing wave lines ──
+      for (const line of lines) {
+        const g = WAVE_GROUPS[line.group];
+        const baseY = H * 0.04 + line.yOffset * H * 0.92;
+        const scrollShift = Math.sin(line.yOffset * Math.PI + scrollY * 0.0012) * 14;
+        const tiltShift = (mx - 0.5) * 10 * Math.sin(line.yOffset * Math.PI * 2 + line.seed);
+
+        // Fade edges for clean blend into page
+        ctx.strokeStyle = g.color(g.alphaBase);
+        ctx.lineWidth = g.lineWidth;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
 
         ctx.beginPath();
 
-        for (let p = 0; p <= POINTS_PER_LINE; p++) {
-          const px = (p / POINTS_PER_LINE) * W;
-          const xNorm = p / POINTS_PER_LINE;            // 0→1
+        for (let p = 0; p <= POINTS; p++) {
+          const xNorm = p / POINTS;
+          const px = xNorm * W;
 
-          // Multi-frequency sine waves for organic flowing motion
-          const wave1 = Math.sin(xNorm * 4.5 + time * 1.2 + seed) * 18;
-          const wave2 = Math.sin(xNorm * 7.0 - time * 0.8 + seed * 0.7) * 8;
-          const wave3 = Math.cos(xNorm * 2.2 + time * 0.5 + seed * 1.3) * 12;
+          // Edge fade factor (fade out at left/right 8%)
+          const edgeFade = Math.min(xNorm / 0.08, (1 - xNorm) / 0.08, 1);
 
-          // Mouse proximity influence — gentle push away
+          // Multi-layer sine waves
+          const phase = line.phaseShift;
+          const t1 = time * g.speed;
+          const w1 = Math.sin(xNorm * g.freq + t1 * 1.3 + line.seed) * g.ampBase;
+          const w2 = Math.sin(xNorm * g.freq * 1.8 - t1 * 0.9 + line.seed * 0.6 + phase) * g.ampBase * 0.4;
+          const w3 = Math.cos(xNorm * g.freq * 0.5 + t1 * 0.4 + line.seed * 1.4) * g.ampBase * 0.55;
+
+          // Mouse proximity repulsion
           const dx = px - mouseX;
-          const dy = baseY - mouseY;
+          const dy = (baseY + w1) - mouseY;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          const mouseInfluence = dist < 220
-            ? (1 - dist / 220) * 28 * Math.sin(dist * 0.04 - time * 3)
+          const mouseWave = dist < 200
+            ? (1 - dist / 200) * 22 * Math.sin(dist * 0.035 - time * 2.8) * edgeFade
             : 0;
 
-          // Mouse horizontal tilt effect
-          const tiltShift = (mx - 0.5) * 8 * Math.sin(xNorm * 3.14 + t * 2);
+          const py = baseY + (w1 + w2 + w3) * edgeFade + mouseWave + scrollShift + tiltShift * edgeFade;
 
-          const py = baseY + wave1 + wave2 + wave3 + mouseInfluence + scrollShift + tiltShift;
-
-          if (p === 0) {
-            ctx.moveTo(px, py);
-          } else {
-            ctx.lineTo(px, py);
-          }
+          if (p === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
         }
-
         ctx.stroke();
       }
 
-      // Draw a few accent "nodes" (subtle dots at wave intersections)
-      for (let i = 0; i < LINE_COUNT; i += 3) {
-        const t = i / (LINE_COUNT - 1);
-        const seed = lineSeeds[i];
-        const baseY = H * 0.08 + t * H * 0.88;
+      // ── 3. Intersection accent nodes on red lines ──
+      for (const line of lines) {
+        if (line.group !== 2) continue; // only red group
+        const g = WAVE_GROUPS[line.group];
+        const baseY = H * 0.04 + line.yOffset * H * 0.92;
 
-        // Pick 2-3 positions along the line
         for (let n = 0; n < 3; n++) {
-          const xNorm = 0.2 + n * 0.3 + Math.sin(time * 0.4 + seed + n) * 0.08;
+          const xNorm = 0.15 + n * 0.3 + Math.sin(time * 0.3 + line.seed + n * 2) * 0.06;
           const px = xNorm * W;
-          const wave1 = Math.sin(xNorm * 4.5 + time * 1.2 + seed) * 18;
-          const wave2 = Math.sin(xNorm * 7.0 - time * 0.8 + seed * 0.7) * 8;
-          const wave3 = Math.cos(xNorm * 2.2 + time * 0.5 + seed * 1.3) * 12;
-          const scrollShift = Math.sin(t * 3.14 + scrollY * 0.0015) * 12;
-          const py = baseY + wave1 + wave2 + wave3 + scrollShift;
+          const t1 = time * g.speed;
+          const w1 = Math.sin(xNorm * g.freq + t1 * 1.3 + line.seed) * g.ampBase;
+          const w2 = Math.sin(xNorm * g.freq * 1.8 - t1 * 0.9 + line.seed * 0.6 + line.phaseShift) * g.ampBase * 0.4;
+          const w3 = Math.cos(xNorm * g.freq * 0.5 + t1 * 0.4 + line.seed * 1.4) * g.ampBase * 0.55;
+          const scrollShift = Math.sin(line.yOffset * Math.PI + scrollY * 0.0012) * 14;
+          const py = baseY + w1 + w2 + w3 + scrollShift;
 
-          // Pulse size with time
-          const radius = 1.5 + Math.sin(time * 2 + seed + n) * 0.8;
+          // Pulsing radius
+          const radius = 2 + Math.sin(time * 1.8 + line.seed + n) * 1;
 
           ctx.beginPath();
           ctx.arc(px, py, radius, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(148, 163, 184, 0.12)';  // slate-400
+          ctx.fillStyle = `rgba(237, 28, 36, 0.08)`;
           ctx.fill();
+
+          // Thin ring around it
+          ctx.beginPath();
+          ctx.arc(px, py, radius + 3, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(237, 28, 36, 0.035)`;
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
         }
       }
+
+      // ── 4. Floating micro-particles (drifting red dust) ──
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.life += 1;
+        if (p.life > p.maxLife) {
+          particles[i] = spawnParticle();
+          continue;
+        }
+
+        // Smooth fade in / out
+        const lifeRatio = p.life / p.maxLife;
+        const fade = lifeRatio < 0.15
+          ? lifeRatio / 0.15
+          : lifeRatio > 0.8
+            ? (1 - lifeRatio) / 0.2
+            : 1;
+
+        // Drift with slight mouse influence
+        const mDx = (mouseX - p.x) * 0.0003;
+        const mDy = (mouseY - p.y) * 0.0003;
+        p.x += p.vx + mDx;
+        p.y += p.vy + mDy;
+
+        // Wrap
+        if (p.x < -20) p.x = W + 20;
+        if (p.x > W + 20) p.x = -20;
+        if (p.y < -20) p.y = H + 20;
+        if (p.y > H + 20) p.y = -20;
+
+        const alpha = 0.09 * fade;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = i % 3 === 0
+          ? `rgba(237, 28, 36, ${alpha})`     // brand red
+          : `rgba(148, 163, 184, ${alpha * 0.7})`; // slate
+        ctx.fill();
+      }
+
+      // ── 5. Subtle horizontal scan-line shimmer (automotive HUD feel) ──
+      const scanY = (H * 0.3 + Math.sin(time * 0.6) * H * 0.25) % H;
+      const scanGrad = ctx.createLinearGradient(0, scanY - 40, 0, scanY + 40);
+      scanGrad.addColorStop(0, 'rgba(237, 28, 36, 0)');
+      scanGrad.addColorStop(0.5, 'rgba(237, 28, 36, 0.012)');
+      scanGrad.addColorStop(1, 'rgba(237, 28, 36, 0)');
+      ctx.fillStyle = scanGrad;
+      ctx.fillRect(0, scanY - 40, W, 80);
     }
 
     draw();
 
-    // Cleanup
-    window.addEventListener('beforeunload', () => {
-      cancelAnimationFrame(frameId);
-    });
+    window.addEventListener('beforeunload', () => { cancelAnimationFrame(frameId); });
   })();
 </script>
