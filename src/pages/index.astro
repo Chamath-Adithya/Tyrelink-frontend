@@ -150,12 +150,12 @@ const faqData = [
       </section>
 
     </div>
+  </div>
 
-    <!-- PART 2: Shop tyres & tools Explore Feed + Trust + Ready to Order (Clean Light Background with border-radius: 0) -->
-    <div 
-      class="w-full relative z-10 border-t border-slate-200/80"
-      style="background-color: #F4F6F8; background-image: radial-gradient(ellipse at 50% 0%, rgba(227, 27, 35, 0.045) 0%, transparent 55%), radial-gradient(ellipse at 90% 80%, rgba(15, 23, 42, 0.04) 0%, transparent 45%);"
-    >
+  <!-- PART 2: Shop tyres & tools Explore Feed + Trust + Ready to Order (Clean Transparent Canvas showing Architectural Grid) -->
+  <div 
+    class="w-full relative z-10 border-t border-slate-200/80 bg-transparent"
+  >
       <div class="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 pb-6">
         <HomeExploreProducts client:load />
       </div>
@@ -201,7 +201,8 @@ const faqData = [
 <!-- ============================================================
      CINEMATIC SCROLL STACKING & PROGRESSIVE BLUR ENGINE
      Tracks the physical overlap between Flash Deals and Trending,
-     progressively applying smooth optical blur & depth scaling
+     progressively applying smooth optical blur & depth scaling.
+     Hides Flash Deals once Trending fully covers it so no bleed occurs!
      ============================================================ -->
 <script>
   function initScrollStackingAndBlur() {
@@ -219,6 +220,7 @@ const faqData = [
         blurTarget.style.filter = 'none';
         blurTarget.style.opacity = '1';
         blurTarget.style.transform = 'none';
+        stickyWrapper.style.visibility = 'visible';
         ticking = false;
         return;
       }
@@ -226,8 +228,6 @@ const faqData = [
       const stickyRect = stickyWrapper.getBoundingClientRect();
       const stackingRect = stackingSection.getBoundingClientRect();
 
-      // The point where Flash Deals bottom meets the top of the stacking section
-      // In sticky state, stickyRect.bottom is fixed at (stickyRect.top + stickyRect.height)
       const stickyHeight = stickyRect.height || 500;
       const stickyBottom = stickyRect.top + stickyHeight;
       const overlapPx = stickyBottom - stackingRect.top;
@@ -247,10 +247,18 @@ const faqData = [
         blurTarget.style.opacity = opacity;
         blurTarget.style.transform = `scale(${scale})`;
         blurTarget.style.transformOrigin = 'center 15%';
+
+        // If Trending completely covers Flash Deals, hide it completely to prevent bleed-through
+        if (progress >= 0.98) {
+          stickyWrapper.style.visibility = 'hidden';
+        } else {
+          stickyWrapper.style.visibility = 'visible';
+        }
       } else {
         blurTarget.style.filter = 'none';
         blurTarget.style.opacity = '1';
         blurTarget.style.transform = 'none';
+        stickyWrapper.style.visibility = 'visible';
       }
 
       ticking = false;
