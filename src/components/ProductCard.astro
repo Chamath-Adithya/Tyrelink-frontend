@@ -8,33 +8,14 @@ interface Props {
 const { product } = Astro.props;
 const kokoCount = product.kokoInstallmentCount || product.installmentCount || 3;
 const kokoMonthly = product.kokoInstallmentAmount || product.installmentAmount || Math.round(product.price / kokoCount);
+const payzyCount = product.payzyInstallmentCount || 4;
+const payzyMonthly = product.payzyInstallmentAmount || Math.round(product.price / payzyCount);
 const savings = product.originalPrice ? product.originalPrice - product.price : null;
-
-// Determine tyre tier for badge (Value, Balanced, Premium)
-const getTyreTier = (prod: Product) => {
-  const brand = (prod.brand || '').toUpperCase();
-  const price = prod.price;
-  if (brand.includes('MICHELIN') || brand.includes('PIRELLI') || brand.includes('BRIDGESTONE') || price > 45000) {
-    return { name: 'PREMIUM', bg: 'bg-slate-900 text-white border-slate-700' };
-  }
-  if (brand.includes('DUNLOP') || brand.includes('YOKOHAMA') || brand.includes('HANKOOK') || (price >= 25000 && price <= 45000)) {
-    return { name: 'BALANCED', bg: 'bg-red-50 text-[#ed1c24] border-red-200' };
-  }
-  return { name: 'VALUE', bg: 'bg-slate-100 text-slate-700 border-slate-200' };
-};
-
-const tier = getTyreTier(product);
-
-// Extract tyre dimension if available in specs or title
-const tyreSize = product.specs?.['Tyre Size'] || product.specs?.['Size'] || product.specs?.['Rim Size'] || '';
-
-const whatsapp = '94783724920';
-const waOrderMsg = `Hello Tyrelink, I want to order ${product.brand} ${product.title} (Rs. ${product.price.toLocaleString('en-US')}). Please confirm stock and fitment.`;
 ---
 
 <div
   onclick={`if (!event.target.closest('a, button')) window.location.href='/product/${product.slug}'`}
-  class="product-card tyrelink-product-card bg-white reveal-scale flex flex-col justify-between p-4 group relative text-left rounded-2xl border border-slate-200 hover:border-[#ed1c24] shadow-[0_2px_8px_-2px_rgba(15,23,42,0.06),0_10px_24px_-4px_rgba(15,23,42,0.08)] hover:shadow-[0_20px_40px_-10px_rgba(237,28,36,0.18)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer"
+  class="product-card tyrelink-product-card bg-white reveal-scale flex flex-col justify-between p-4 sm:p-4.5 group relative text-left rounded-2xl sm:rounded-3xl border border-slate-200/90 hover:border-brand-500 shadow-[0_2px_8px_-2px_rgba(15,23,42,0.06),0_10px_24px_-4px_rgba(15,23,42,0.10),0_20px_35px_-6px_rgba(15,23,42,0.08)] hover:shadow-[0_24px_48px_-10px_rgba(15,23,42,0.18),0_12px_28px_-6px_rgba(237,28,36,0.22)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer"
 >
   <!-- Admin Edit Quick Button (Shown only when Edit Mode is active) -->
   <button
@@ -47,88 +28,49 @@ const waOrderMsg = `Hello Tyrelink, I want to order ${product.brand} ${product.t
   </button>
 
   <div>
-    <!-- Automotive Tyre Frame with Tread Shine Stage -->
+    <!-- Full-bleed Image Stage with Crisp Glass Canvas -->
     <a 
       href={`/product/${product.slug}`}
-      class="block relative aspect-square max-h-[220px] w-full rounded-xl overflow-hidden mb-3.5 bg-gradient-to-b from-[#f0f0eb] to-[#e8e8e3] border border-slate-200/80 flex items-center justify-center p-3 group-hover:border-[#ed1c24]/40 transition-colors"
+      class="block relative aspect-[4/3] sm:aspect-square max-h-[250px] sm:max-h-none w-full rounded-xl sm:rounded-2xl overflow-hidden mb-3 sm:mb-3.5 bg-gradient-to-b from-slate-100/60 to-slate-50/40 backdrop-blur-md border border-white/70 flex items-center justify-center p-3 sm:p-3"
     >
       <img
         src={product.featuredImage}
         alt={product.title}
         loading="lazy"
-        class="w-full h-full object-contain group-hover:scale-108 transition-transform duration-500 ease-out drop-shadow-[0_12px_18px_rgba(0,0,0,0.18)]"
+        class="w-full h-full object-contain group-hover:scale-106 transition-transform duration-500 ease-out"
       />
       
-      <!-- Top Left: Discount / Savings Badges -->
+      <!-- Top Left Discount / Savings Badges -->
       <div class="absolute top-2.5 left-2.5 flex flex-col gap-1 z-20 pointer-events-none">
         {product.isFlashDeal && product.flashDealDiscount && (
-          <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-[#ed1c24] text-white shadow-xs">
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-red-600 to-rose-500 text-white shadow-md">
             <svg class="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
             -{product.flashDealDiscount}% OFF
           </span>
         )}
         {savings && savings > 0 && !product.isFlashDeal && (
-          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-emerald-600 text-white shadow-xs">
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500 text-white shadow-sm">
             Save Rs. {savings.toLocaleString('en-US')}
           </span>
         )}
       </div>
 
-      <!-- Top Right: Tier Badge (VALUE, BALANCED, PREMIUM) -->
-      <span class={`absolute top-2.5 right-2.5 z-20 text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border ${tier.bg}`}>
-        {tier.name}
-      </span>
+      <!-- Wishlist Micro-Button (Pointer events active only when visible) -->
+      <button 
+        type="button"
+        class="absolute top-2.5 right-2.5 z-20 w-8 h-8 rounded-full bg-white/85 hover:bg-white text-slate-400 hover:text-red-500 backdrop-blur-md flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-200 hover:scale-110 active:scale-95 border border-white/80 cursor-pointer"
+        aria-label="Save to wishlist"
+        onclick="event.preventDefault(); event.stopPropagation(); this.classList.toggle('text-red-500'); this.classList.toggle('wished')"
+      >
+        <svg class="w-4 h-4 transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+      </button>
     </a>
 
-    <!-- Tyre Brand & Technical Size Code Row -->
+    <!-- Product Brand & In-Stock Micro-Strip -->
     <div class="flex items-center justify-between text-[11px] mb-1.5">
-      <span class="text-[#ed1c24] uppercase tracking-widest font-mono text-[10px] font-black">
-        {product.brand}
-      </span>
-      {tyreSize && (
-        <span class="font-mono text-[11px] font-black text-slate-800 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
-          {tyreSize}
-        </span>
-      )}
-    </div>
-
-    <!-- Product Title & Sinhala Subtitle -->
-    <div class="space-y-0.5">
-      <a href={`/product/${product.slug}`} class="block">
-        <h3 class="text-sm font-black text-slate-900 line-clamp-2 group-hover:text-[#ed1c24] transition-colors leading-snug font-display">
-          {product.title}
-        </h3>
-      </a>
-
-      {product.sinhalaTitle && (
-        <p class="text-[11px] text-slate-500 font-sinhala line-clamp-1">
-          {product.sinhalaTitle}
-        </p>
-      )}
-    </div>
-  </div>
-
-  <!-- Pricing & Action Footer -->
-  <div class="mt-3.5 pt-3 border-t border-slate-100 space-y-3">
-    <!-- Price & Installment Line -->
-    <div class="flex items-baseline justify-between gap-2 flex-wrap">
-      <div>
-        <div class="flex items-baseline gap-2">
-          <span class="text-lg font-black text-slate-900 font-display tracking-tight leading-none">
-            Rs. {product.price.toLocaleString('en-US')}
-          </span>
-          {product.originalPrice && (
-            <span class="text-xs text-slate-400 line-through font-mono">
-              Rs. {product.originalPrice.toLocaleString('en-US')}
-            </span>
-          )}
-        </div>
-        <div class="text-[10px] text-slate-500 mt-1 font-medium">
-          or 3× <b class="text-slate-800 font-mono font-bold">Rs. {kokoMonthly.toLocaleString('en-US')}</b> with Koko
-        </div>
-      </div>
-
-      <!-- In Stock Badge -->
+      <span class="text-brand-600 uppercase tracking-widest font-mono text-[10px] font-extrabold bg-brand-50/80 px-2 py-0.5 rounded-md border border-brand-100/60">{product.brand}</span>
       {product.inStock !== false ? (
         <span class="text-[10px] font-bold text-emerald-600 flex items-center gap-1">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
@@ -142,28 +84,75 @@ const waOrderMsg = `Hello Tyrelink, I want to order ${product.brand} ${product.t
       )}
     </div>
 
-    <!-- Action Buttons Row: WhatsApp 1-Click Order + View -->
-    <div class="flex items-center gap-2 pt-1">
-      <a 
-        href={`https://wa.me/${whatsapp}?text=${encodeURIComponent(waOrderMsg)}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        onclick="event.stopPropagation()"
-        class="flex-1 py-2 px-3 rounded-xl bg-[#25D366] hover:bg-[#1faa53] text-white text-[11px] font-black uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-2xs hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
-      >
-        <span>Buy via WhatsApp</span>
-        <span class="text-xs">↗</span>
+    <!-- Product Title & Sinhala Subtitle -->
+    <div class="space-y-0.5 sm:space-y-1">
+      <a href={`/product/${product.slug}`} class="block">
+        <h3 class="text-sm font-bold text-slate-900 line-clamp-2 group-hover:text-brand-600 transition-colors leading-snug font-sans">
+          {product.title}
+        </h3>
       </a>
 
-      <a 
-        href={`/product/${product.slug}`}
-        aria-label={`View ${product.title}`}
-        class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-900 text-slate-700 hover:text-white flex items-center justify-center transition-all shrink-0 cursor-pointer"
-      >
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-        </svg>
-      </a>
+      {product.sinhalaTitle && (
+        <p class="text-xs sm:text-[11px] text-slate-400 font-sinhala line-clamp-1">
+          {product.sinhalaTitle}
+        </p>
+      )}
     </div>
+  </div>
+
+  <!-- Pricing & Action Footer -->
+  <div class="mt-3.5 pt-3 sm:mt-4 sm:pt-3.5 border-t border-slate-100 flex items-end justify-between gap-2">
+    <div class="min-w-0 flex-1">
+      <div class="flex items-baseline gap-2 flex-wrap">
+        <span class="text-base sm:text-lg font-black text-slate-900 font-display tracking-tight leading-none">
+          Rs. {product.price.toLocaleString('en-US')}
+        </span>
+        {product.originalPrice && (
+          <span class="text-xs sm:text-[11px] text-slate-400 line-through font-mono">
+            Rs. {product.originalPrice.toLocaleString('en-US')}
+          </span>
+        )}
+      </div>
+      
+      <div class="flex items-center gap-1 text-[10px] text-slate-500 mt-1 font-medium flex-wrap">
+        <span>or {kokoCount}× <b class="text-slate-800 font-mono font-bold">Rs. {kokoMonthly.toLocaleString('en-US')}</b></span>
+        <div class="flex items-center gap-0.5 shrink-0">
+          <a
+            href="https://paykoko.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            onclick="event.stopPropagation()"
+            class="inline-flex items-center gap-0.5 hover:opacity-80 transition-opacity"
+            title="Pay with Koko (opens paykoko.com)"
+          >
+            <img src="/images/payments/koko-logo.png" alt="Koko" class="h-3 object-contain" />
+            <span class="w-3 h-3 rounded-full bg-slate-800 text-white inline-flex items-center justify-center text-[8px] font-serif font-bold">i</span>
+          </a>
+          <span class="text-slate-300">/</span>
+          <a
+            href="https://payzy.lk/"
+            target="_blank"
+            rel="noopener noreferrer"
+            onclick="event.stopPropagation()"
+            class="inline-flex items-center gap-0.5 hover:opacity-80 transition-opacity"
+            title="Pay with PayZy (opens payzy.lk)"
+          >
+            <img src="/images/payments/payzy-logo.png" alt="PayZy" class="h-2.5 object-contain" />
+            <span class="w-3 h-3 rounded-full bg-slate-800 text-white inline-flex items-center justify-center text-[8px] font-serif font-bold">i</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Animated CTA arrow button with frosted glass -->
+    <a 
+      href={`/product/${product.slug}`}
+      aria-label={`View ${product.title}`}
+      class="w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-xl sm:rounded-2xl bg-white/80 hover:bg-brand-500 text-slate-600 hover:text-white backdrop-blur-md border border-white/70 flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_8px_20px_rgba(237,28,36,0.35)] shrink-0 btn-magnetic"
+    >
+      <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+      </svg>
+    </a>
   </div>
 </div>

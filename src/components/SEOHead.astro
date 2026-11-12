@@ -140,7 +140,9 @@ if (product) {
       'priceCurrency': 'LKR',
       'price': product.price,
       'priceValidUntil': '2027-12-31',
-      'itemCondition': 'https://schema.org/NewCondition',
+      'itemCondition': product.laptopConfig?.condition === 'pre-owned-like-new'
+        ? 'https://schema.org/RefurbishedCondition'
+        : 'https://schema.org/NewCondition',
       'availability': product.inStock
         ? 'https://schema.org/InStock'
         : 'https://schema.org/OutOfStock',
@@ -324,7 +326,7 @@ const safeDesc = description.length > 160 ? description.substring(0, 157) + '...
 <meta name="keywords" content={
   product
     ? `${product.brand} ${product.title}, ${product.title} price Sri Lanka, buy ${product.title} Sri Lanka, ${product.title} COD Sri Lanka, ${product.brand} authorized dealer Sri Lanka`
-    : 'tyres Sri Lanka, buy tyres online Sri Lanka, CEAT tyres, DSI tyres, Michelin tyres Sri Lanka, Dunlop tyres, car tyres, SUV tyres, motorcycle tyres, garage equipment, tyre changers, wheel balancers, Tyrelink Sri Lanka, COD tyre delivery'
+    : 'keyboards Sri Lanka, gaming mice Sri Lanka, headsets Sri Lanka, laptops Sri Lanka, COD Sri Lanka, Tyrelink, computer accessories Horana'
 } />
 
 <!-- ═══════════════════════════════════════════════════

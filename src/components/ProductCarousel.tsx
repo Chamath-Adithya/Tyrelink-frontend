@@ -300,7 +300,7 @@ export default function ProductCarousel({
                       if (target.closest('a, button')) return;
                       window.location.href = `/product/${product.slug}`;
                     }}
-                    className="w-full sm:w-[250px] lg:w-[240px] xl:w-[255px] sm:shrink-0 sm:snap-start bg-white flex flex-col justify-between p-4 group text-left rounded-2xl border border-slate-200/90 hover:border-brand-500 shadow-[0_2px_8px_-2px_rgba(15,23,42,0.06),0_10px_24px_-4px_rgba(15,23,42,0.10),0_20px_35px_-6px_rgba(15,23,42,0.08)] hover:shadow-[0_24px_48px_-10px_rgba(15,23,42,0.18),0_12px_28px_-6px_rgba(237,28,36,0.28)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer"
+                    className="w-full sm:w-[250px] lg:w-[240px] xl:w-[255px] sm:shrink-0 sm:snap-start bg-white flex flex-col justify-between p-4 sm:p-4.5 group text-left rounded-2xl sm:rounded-3xl border border-slate-200/90 hover:border-brand-500 shadow-[0_2px_8px_-2px_rgba(15,23,42,0.06),0_10px_24px_-4px_rgba(15,23,42,0.10),0_20px_35px_-6px_rgba(15,23,42,0.08)] hover:shadow-[0_24px_48px_-10px_rgba(15,23,42,0.18),0_12px_28px_-6px_rgba(255,122,0,0.28)] transition-all duration-300 hover:-translate-y-1.5 cursor-pointer"
                     style={{ animationDelay: `${i * 60}ms` }}
                   >
                     <div>
@@ -397,7 +397,7 @@ export default function ProductCarousel({
                         </div>
                       </div>
 
-                      <div className="w-8.5 h-8.5 rounded-xl bg-slate-100 group-hover:bg-[#ed1c24] text-slate-700 group-hover:text-white flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_8px_20px_rgba(237,28,36,0.35)] shrink-0">
+                      <div className="w-8.5 h-8.5 sm:w-8.5 sm:h-8.5 rounded-xl sm:rounded-2xl bg-white/80 hover:bg-brand-500 text-slate-600 hover:text-white backdrop-blur-md border border-white/70 flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_8px_20px_rgba(255,122,0,0.35)] shrink-0">
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-300" />
                       </div>
                     </div>

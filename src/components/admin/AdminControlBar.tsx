@@ -200,7 +200,7 @@ export default function AdminControlBar() {
               <span>Edit: {session.editMode ? 'ON' : 'OFF'}</span>
             </button>
 
-            {/* Add Product Button (High-contrast Tyrelink red, clear and punchy) */}
+            {/* Add Product Button (High-contrast orange, clear and punchy) */}
             <button
               type="button"
               onClick={openNewProductModal}
@@ -388,7 +388,7 @@ export default function AdminControlBar() {
         }
         /* Highlight edit controls on products when Edit Mode is active */
         html.tyrelink-admin-edit-mode .tyrelink-product-card {
-          outline: 2px dashed rgba(237, 28, 36, 0.6);
+          outline: 2px dashed rgba(255, 122, 0, 0.45);
           outline-offset: 4px;
         }
         html.tyrelink-admin-edit-mode .admin-trending-controls,

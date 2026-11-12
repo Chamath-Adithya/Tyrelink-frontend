@@ -30,10 +30,10 @@ interface ProductCatalogFilterProps {
 const BATCH_SIZE = 10;
 
 const sortOptions = [
-  { id: 'featured', label: 'Featured Tyres & Tools', shortLabel: 'Featured', desc: 'Curated top-performing tyre models' },
+  { id: 'featured', label: 'Featured Products', shortLabel: 'Featured', desc: 'Curated top-performing gear' },
   { id: 'price-asc', label: 'Price: Low to High', shortLabel: 'Price: Low-High', desc: 'Budget-friendly first (Rs. ↑)' },
-  { id: 'price-desc', label: 'Price: High to Low', shortLabel: 'Price: High-Low', desc: 'Premium & commercial grade (Rs. ↓)' },
-  { id: 'discount', label: 'Biggest Hot Deal Discount', shortLabel: 'Top Deals', desc: 'Highest savings percentage' },
+  { id: 'price-desc', label: 'Price: High to Low', shortLabel: 'Price: High-Low', desc: 'Flagship hardware (Rs. ↓)' },
+  { id: 'discount', label: 'Biggest Flash Discount', shortLabel: 'Top Discount', desc: 'Highest savings percentage' },
 ];
 
 export default function ProductCatalogFilter({
@@ -974,7 +974,7 @@ export default function ProductCatalogFilter({
                           <div className="flex items-center justify-between text-xs font-bold text-slate-800">
                             <span className="flex items-center gap-2">
                               <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse" />
-                              Loaded {visibleProducts.length} of {filteredProducts.length} Tyres & Tools
+                              Loaded {visibleProducts.length} of {filteredProducts.length} Hardware Items
                             </span>
                             <span className="text-[11px] font-mono font-black text-brand-600 bg-brand-50 px-2.5 py-0.5 rounded-lg">
                               {Math.round((visibleProducts.length / filteredProducts.length) * 100)}% EXPLORED

@@ -472,7 +472,7 @@ export default function ProductEditorModal({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Card 1: Koko Pay */}
-              <div className="p-3.5 rounded-xl bg-red-950/20 border border-brand-500/30 space-y-3">
+              <div className="p-3.5 rounded-xl bg-orange-950/20 border border-orange-500/30 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <img
@@ -485,7 +485,7 @@ export default function ProductEditorModal({
                       href="https://paykoko.com/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-4 h-4 rounded-full bg-slate-700 hover:bg-brand-500 text-white flex items-center justify-center text-[10px] font-bold font-serif transition-colors"
+                      className="w-4 h-4 rounded-full bg-slate-700 hover:bg-orange-500 text-white flex items-center justify-center text-[10px] font-bold font-serif transition-colors"
                       title="Visit paykoko.com (opens in new tab)"
                     >
                       i
@@ -496,10 +496,10 @@ export default function ProductEditorModal({
                     <button
                       type="button"
                       onClick={() => setKokoAmount(Math.round(price / (kokoCount || 3)))}
-                      className="px-2 py-1 rounded-lg bg-brand-500/20 hover:bg-brand-500/30 text-brand-300 border border-brand-500/40 text-[9px] font-bold flex items-center gap-1 transition-all cursor-pointer"
+                      className="px-2 py-1 rounded-lg bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 border border-orange-500/40 text-[9px] font-bold flex items-center gap-1 transition-all cursor-pointer"
                       title="Auto-calculate Koko amount"
                     >
-                      <Calculator className="w-3 h-3 text-brand-400" />
+                      <Calculator className="w-3 h-3 text-orange-400" />
                       Auto (Rs. {Math.round(price / (kokoCount || 3)).toLocaleString('en-US')})
                     </button>
                   )}
@@ -519,7 +519,7 @@ export default function ProductEditorModal({
                               if (price > 0) setKokoAmount(Math.round(price / cnt));
                             }}
                             className={`px-1.5 py-0.2 rounded text-[9px] font-bold ${kokoCount === cnt
-                                ? 'bg-brand-500 text-white'
+                                ? 'bg-orange-500 text-white'
                                 : 'bg-slate-800 text-slate-400 hover:text-white'
                               }`}
                           >
@@ -535,7 +535,7 @@ export default function ProductEditorModal({
                       value={kokoCount || ''}
                       onChange={(e) => setKokoCount(Math.max(1, Number(e.target.value)))}
                       placeholder="3"
-                      className="w-full h-9 px-3 rounded-lg bg-slate-950 border border-slate-800 text-white font-mono text-xs focus:outline-none focus:border-brand-500"
+                      className="w-full h-9 px-3 rounded-lg bg-slate-950 border border-slate-800 text-white font-mono text-xs focus:outline-none focus:border-orange-500"
                     />
                   </div>
 
@@ -547,7 +547,7 @@ export default function ProductEditorModal({
                       value={kokoAmount || ''}
                       onChange={(e) => setKokoAmount(Math.max(0, Number(e.target.value)))}
                       placeholder="e.g. 23167"
-                      className="w-full h-9 px-3 rounded-lg bg-slate-950 border border-slate-800 text-brand-400 font-mono font-bold text-xs focus:outline-none focus:border-brand-500"
+                      className="w-full h-9 px-3 rounded-lg bg-slate-950 border border-slate-800 text-orange-400 font-mono font-bold text-xs focus:outline-none focus:border-orange-500"
                     />
                   </div>
                 </div>

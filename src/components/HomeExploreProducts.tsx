@@ -153,7 +153,7 @@ export default function HomeExploreProducts() {
             return (
               <div
                 key={product.id}
-                className="product-card bg-white flex flex-col justify-between p-4 rounded-2xl border border-slate-200/90 hover:border-brand-500 shadow-[0_2px_8px_-2px_rgba(15,23,42,0.06),0_10px_24px_-4px_rgba(15,23,42,0.10),0_20px_35px_-6px_rgba(15,23,42,0.08)] hover:shadow-[0_24px_48px_-10px_rgba(15,23,42,0.18),0_12px_28px_-6px_rgba(237,28,36,0.28)] transition-all duration-300 hover:-translate-y-1.5 text-left group relative"
+                className="product-card bg-white flex flex-col justify-between p-4 sm:p-4.5 rounded-2xl sm:rounded-3xl border border-slate-200/90 hover:border-brand-500 shadow-[0_2px_8px_-2px_rgba(15,23,42,0.06),0_10px_24px_-4px_rgba(15,23,42,0.10),0_20px_35px_-6px_rgba(15,23,42,0.08)] hover:shadow-[0_24px_48px_-10px_rgba(15,23,42,0.18),0_12px_28px_-6px_rgba(255,122,0,0.28)] transition-all duration-300 hover:-translate-y-1.5 text-left group relative"
               >
                 <div>
                   {/* Product Thumbnail Frame with Frosted Glass Canvas */}
