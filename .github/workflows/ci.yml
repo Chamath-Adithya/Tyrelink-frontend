@@ -60,8 +60,8 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts
 
-          # Sync built static assets directly to VPS webroot
-          rsync -avz --delete -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" dist/ "$VPS_USER@$VPS_HOST:/var/www/tyrelink.lk/"
+          # Sync built static assets directly to VPS webroot (dedicated preview domain)
+          rsync -avz --delete -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" dist/ "$VPS_USER@$VPS_HOST:/var/www/tyrelink.solveo.lk/"
 
           # Ensure Nginx configuration is validated and reloaded smoothly
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no "$VPS_USER@$VPS_HOST" "nginx -t && systemctl reload nginx"
