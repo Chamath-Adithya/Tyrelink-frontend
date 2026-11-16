@@ -1,10 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import HeroCarousel from '../components/HeroCarousel';
+import VelorettiHero from '../components/VelorettiHero';
 import CategoryStrip from '../components/CategoryStrip.astro';
 import ProductCard from '../components/ProductCard.astro';
-import ProductCarousel from '../components/ProductCarousel';
-import HomeExploreProducts from '../components/HomeExploreProducts';
+import GoogleReviewsAndMap from '../components/GoogleReviewsAndMap.astro';
 import TrustSection from '../components/TrustSection.astro';
 import CinematicVideoShowcase from '../components/CinematicVideoShowcase.astro';
 
@@ -16,14 +15,11 @@ const products = productsData as Product[];
 
 // Map flash deals directly from campaigns.json schedule / selection
 const flashIds = new Set(campaignsData.flashSale?.productIds || []);
-const flashDeals = products.filter(p => flashIds.has(p.id) || p.isFlashDeal).slice(0, 5);
-const flashDealIds = new Set(flashDeals.map(p => p.id));
+const flashDeals = products.filter(p => flashIds.has(p.id) || p.isFlashDeal).slice(0, 4);
 
-// Map trending products directly from campaigns.json selection
+// Map trending products
 const trendingIds = new Set(campaignsData.trending?.productIds || []);
-// A curated shelf should always end as a complete row. The full catalog remains
-// available through the section CTA for customers who want more choice.
-const bestSellers = products.filter(p => (trendingIds.has(p.id) || p.isBestSeller) && !flashDealIds.has(p.id)).slice(0, 5);
+const bestSellers = products.filter(p => trendingIds.has(p.id) || p.isBestSeller).slice(0, 8);
 
 const faqData = [
   {
@@ -46,246 +42,110 @@ const faqData = [
   description="Find, compare and fit tyres with confidence. 1-Click WhatsApp Quick Order, Islandwide Cash on Delivery (COD), verified manufacture dates, and genuine company warranty in Sri Lanka."
   faq={faqData}
 >
-  <!-- Hero Stage: confident, editorial, and immediately useful. -->
-  <section aria-labelledby="home-hero-heading" class="w-full pt-3 sm:pt-6 pb-4 px-3 sm:px-6 lg:px-8 max-w-[1680px] mx-auto">
+  <!-- Hero Section: Veloretti Minimalist Engineering + Interactive Dimension Finder -->
+  <section aria-labelledby="home-hero-heading" class="w-full pt-4 sm:pt-6 pb-6 px-4 sm:px-6 lg:px-8 max-w-[1600px] mx-auto">
     <h1 id="home-hero-heading" class="sr-only">Find the right tyres and garage equipment in Sri Lanka</h1>
-    <HeroCarousel client:load />
+    <VelorettiHero client:load />
   </section>
 
-  <!-- Categories Strip (Full Screen Width Edge-to-Edge) -->
+  <!-- Curated Vehicle Categories -->
   <CategoryStrip />
 
-  <!-- ============================================================
-       FLASH DEALS SECTION — FREEZES IN PLACE (Sticky on Desktop)
-       Pins under the sticky navbar as the user scrolls on desktop;
-       scrolls naturally and fluidly on mobile
-       ============================================================ -->
-  <div id="flash-deals-sticky-wrapper" class="relative md:sticky md:top-[var(--header-height,98px)] transition-[top] duration-300 ease-out z-10 w-full overflow-hidden">
-    <div id="flash-deals-blur-stage" class="w-full will-change-transform will-change-[filter,opacity] transition-all duration-75">
-      <ProductCarousel 
-        client:load 
-        title="Today's Flash Deals" 
-        sinhalaTitle="අද දවසේ සුවිශේෂී මිල අඩුකිරීම්"
-        badge="FLASH DEALS"
-        products={flashDeals}
-        countdownTimer="04h : 35m : 22s"
-      />
-    </div>
-  </div>
-
-  <!-- ============================================================
-       STACKING CARD SHEET: Trending & Best Sellers + Remaining Feed
-       Slides up OVER Today's Flash Deals with smooth rounded corners,
-       deep physical drop-shadow, and causes Flash Deals to softly blur
-       ============================================================ -->
-  <div 
-    id="trending-stacking-section" 
-    class="relative z-20 w-full rounded-none shadow-none border-t-0 overflow-hidden bg-slate-950"
-  >
-    <!-- Background tech dot grid -->
-    <div class="absolute inset-0 tech-dot-grid-dark opacity-10 pointer-events-none"></div>
-
-    <div class="relative z-10 max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10 pb-10 space-y-4">
-
-      <!-- Best Selling Products Grid -->
-      <section class="py-6 sm:py-8 reveal">
-        <div class="flex items-end justify-between mb-6 sm:mb-8 flex-wrap gap-3 sm:gap-4">
-          <div>
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 text-brand-400 border border-brand-500/35 text-[11px] font-black uppercase tracking-wider backdrop-blur-md shadow-md mb-2 sm:mb-3">
-              <svg class="w-3.5 h-3.5 text-brand-400 fill-brand-400 animate-pulse" viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-              </svg>
-              <span>Top Picks • ප්‍රමුඛතම තේරීම්</span>
-            </div>
-            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-white font-display tracking-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.3)]">
-              Trending & Best Sellers
-            </h2>
-            <p class="text-xs sm:text-sm text-slate-400 font-sinhala font-medium mt-1">
-              ලංකාවේ වැඩිපුරම අලෙවි වන ටයර් සහ වැඩබිම් උපකරණ
-            </p>
+  <!-- Featured Products & Fast Movers (Veloretti Minimalist Luxury Grid) -->
+  <section class="w-full py-12 sm:py-16 bg-white border-b border-slate-200/80">
+    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 border border-red-200/80 text-brand-600 text-[10px] font-bold uppercase tracking-widest mb-2">
+            Top Picks • ප්‍රමුඛතම තේරීම්
           </div>
-
-          <div class="flex items-center gap-1.5 sm:gap-2.5 flex-wrap">
-            <!-- Admin In-Section Actions (Shown only when in Edit Mode) -->
-            <div class="admin-trending-controls hidden items-center gap-1.5 sm:gap-2">
-              <button
-                type="button"
-                onclick="window.dispatchEvent(new CustomEvent('tyrelink:open-trending-modal'))"
-                title="Select Existing Products for Trending"
-                class="inline-flex items-center gap-1 px-3 py-1.5 sm:px-3.5 sm:py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-[11px] sm:text-xs font-black transition-all shadow-md hover:scale-105 active:scale-95 cursor-pointer"
-              >
-                <svg class="w-3.5 h-3.5 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                <span>+ Pick Products</span>
-              </button>
-
-              <button
-                type="button"
-                onclick="window.dispatchEvent(new CustomEvent('tyrelink:open-trending-modal'))"
-                title="Manage Trending & Best Sellers Collection"
-                class="inline-flex items-center gap-1 px-3 py-1.5 sm:px-3.5 sm:py-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-950 border border-brand-500/50 text-brand-300 text-[11px] sm:text-xs font-bold transition-all shadow-sm hover:scale-105 active:scale-95 cursor-pointer backdrop-blur-md"
-              >
-                <svg class="w-3.5 h-3.5 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                <span>Edit Trending Collection</span>
-              </button>
-            </div>
-
-            <a 
-              href="/shop" 
-              class="inline-flex items-center gap-1.5 sm:gap-2 text-xs font-bold text-white bg-white/10 hover:bg-white/20 px-3.5 py-1.5 sm:px-4 sm:py-2.5 rounded-xl transition-all border border-white/15 backdrop-blur-md group shadow-sm"
-            >
-              <span>View All Tyres</span>
-              <svg class="w-3.5 h-3.5 text-red-400 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-              </svg>
-            </a>
-          </div>
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-950 font-display tracking-tight">
+            Featured Tyres & Fast Movers
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-500 font-sinhala font-medium mt-1">
+            ශ්‍රී ලංකාවේ වැඩිපුරම අලෙවි වන, 100% ක් සහතික කළ සමාගම් වගකීම් සහිත ටයර්
+          </p>
         </div>
 
-        <!-- Product grid: balanced responsive presentation (centered when < 5 or uneven rows) -->
-        <div class="max-w-[1440px] mx-auto flex flex-wrap justify-center items-stretch gap-4 sm:gap-5 stagger-children">
-          {bestSellers.map((prod, i) => (
-            <div class="w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-13.33px)] lg:w-[calc(20%-16px)] max-w-[320px] lg:max-w-none flex reveal-scale shrink-0" style={`transition-delay: ${i * 70}ms`}>
-              <ProductCard product={prod} />
-            </div>
-          ))}
-        </div>
-      </section>
-
-    </div>
-  </div>
-
-  <!-- PART 2: Shop tyres & tools Explore Feed + Trust + Ready to Order (Clean Transparent Canvas showing Architectural Grid) -->
-  <div 
-    class="w-full relative z-10 border-t border-slate-200/80 bg-transparent"
-  >
-      <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 pb-6">
-        <HomeExploreProducts client:load />
+        <a 
+          href="/shop" 
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-sm hover:-translate-y-0.5 active:scale-95 shrink-0 self-start sm:self-auto cursor-pointer"
+        >
+          <span>View All Products</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
       </div>
 
-      <!-- Full-width Trust Section -->
-      <TrustSection />
+      <!-- Minimalist Luxury 4-Column Product Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {bestSellers.map((prod) => (
+          <div class="flex">
+            <ProductCard product={prod} />
+          </div>
+        ))}
+      </div>
 
-      <!-- Cinematic Automotive Video Showcase (Full-width expanding viewport with blur slide-over) -->
-      <CinematicVideoShowcase />
+    </div>
+  </section>
 
-      <!-- Bottom CTA strip (Ready to Order? Chat With Us Now! on original light background) -->
-      <div id="ready-to-order-section" class="relative z-20 max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="relative rounded-[1.75rem] overflow-hidden p-8 sm:p-12 text-center reveal shadow-[0_28px_70px_rgba(227,27,35,.22)]"
-          style="background: linear-gradient(135deg, #f02a32 0%, #cf1820 52%, #941017 100%);">
-          <!-- Background texture -->
-          <div class="absolute inset-0 tech-dot-grid opacity-15 pointer-events-none"></div>
-          
-          <div class="relative z-10 max-w-xl mx-auto space-y-5">
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/20 text-white text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm">
-              <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-              Instant WhatsApp Order
-            </div>
-            <h2 class="text-2xl sm:text-3xl font-black text-white font-display tracking-tight">
-Not sure what fits? We&apos;ll help you choose.
-            </h2>
-            <p class="text-sm text-white/80 font-sinhala">
-              ඔබේ order WhatsApp හරහා ක්ෂණිකව දෙන්න — Cash on Delivery
-            </p>
+  <!-- Interactive Google Reviews Wall & Horana Hub Location Map -->
+  <GoogleReviewsAndMap />
+
+  <!-- Core Trust & Brand Guarantees -->
+  <TrustSection />
+
+  <!-- Cinematic Video Showcase -->
+  <CinematicVideoShowcase />
+
+  <!-- Ready to Order Bottom Strip (Clean Studio Minimalist CTA) -->
+  <section class="w-full py-16 bg-[#FAFBFC] border-t border-slate-200/80">
+    <div class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="p-8 sm:p-14 rounded-3xl bg-slate-950 text-white text-center shadow-card border border-slate-800 relative overflow-hidden">
+        
+        {/* Subtle grid accent */}
+        <div class="absolute inset-0 bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:20px_20px] opacity-25 pointer-events-none"></div>
+
+        <div class="relative z-10 max-w-xl mx-auto space-y-4">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 text-white text-[11px] font-bold uppercase tracking-wider">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Zero-Friction Ordering</span>
+          </div>
+
+          <h2 class="text-2xl sm:text-4xl font-black text-white font-display tracking-tight">
+            Not Sure Which Tyre Fits? <br />
+            <span class="text-brand-500">We Verify Fitment Before You Pay.</span>
+          </h2>
+
+          <p class="text-xs sm:text-sm text-slate-300 font-normal">
+            Send your car model or tyre photo on WhatsApp. Our tyre specialists confirm the exact profile, rim clearance, and dispatch date within minutes.
+          </p>
+
+          <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
-              href="https://wa.me/94783724920?text=Hi%20Tyrelink,%20I%20would%20like%20to%20place%20an%20order"
+              href="https://wa.me/94783724920?text=Hi%20Tyrelink,%20I%20need%20help%20choosing%20the%20right%20tyres"
               target="_blank"
               rel="noopener noreferrer"
-              class="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-white text-brand-600 font-bold text-sm hover:scale-105 hover:shadow-[0_12px_32px_rgba(0,0,0,0.2)] active:scale-95 transition-all"
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs sm:text-sm shadow-md transition-all hover:-translate-y-0.5 active:scale-95 cursor-pointer"
             >
               <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-              Chat on WhatsApp
+              <span>WhatsApp Fitment Advice</span>
+            </a>
+
+            <a
+              href="/shop"
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm border border-white/15 transition-all cursor-pointer"
+            >
+              <span>Browse All Tyres</span>
             </a>
           </div>
+
         </div>
+
       </div>
     </div>
-  </div>
+  </section>
 
 </Layout>
-
-<!-- ============================================================
-     CINEMATIC SCROLL STACKING & PROGRESSIVE BLUR ENGINE
-     Tracks the physical overlap between Flash Deals and Trending,
-     progressively applying smooth optical blur & depth scaling.
-     Hides Flash Deals once Trending fully covers it so no bleed occurs!
-     ============================================================ -->
-<script>
-  function initScrollStackingAndBlur() {
-    const stickyWrapper = document.getElementById('flash-deals-sticky-wrapper');
-    const blurTarget = document.getElementById('flash-deals-blur-stage');
-    const stackingSection = document.getElementById('trending-stacking-section');
-
-    if (!stickyWrapper || !blurTarget || !stackingSection) return;
-
-    let ticking = false;
-
-    function update() {
-      // On mobile screens (< 768px), allow native, fluid scrolling without trapping or blurring sections
-      if (window.innerWidth < 768) {
-        blurTarget.style.filter = 'none';
-        blurTarget.style.opacity = '1';
-        blurTarget.style.transform = 'none';
-        stickyWrapper.style.visibility = 'visible';
-        ticking = false;
-        return;
-      }
-
-      const stickyRect = stickyWrapper.getBoundingClientRect();
-      const stackingRect = stackingSection.getBoundingClientRect();
-
-      const stickyHeight = stickyRect.height || 500;
-      const stickyBottom = stickyRect.top + stickyHeight;
-      const overlapPx = stickyBottom - stackingRect.top;
-
-      let progress = overlapPx / stickyHeight;
-      progress = Math.max(0, Math.min(1, progress));
-
-      if (progress > 0.01) {
-        // Smooth progressive blur from 0px up to 14px
-        const blurAmount = (progress * 14).toFixed(1);
-        // Progressive dimming from 1 down to 0.45
-        const opacity = (1 - progress * 0.55).toFixed(2);
-        // 3D card depth scale from 1.0 down to 0.96
-        const scale = (1 - progress * 0.04).toFixed(3);
-
-        blurTarget.style.filter = `blur(${blurAmount}px)`;
-        blurTarget.style.opacity = opacity;
-        blurTarget.style.transform = `scale(${scale})`;
-        blurTarget.style.transformOrigin = 'center 15%';
-
-        // If Trending completely covers Flash Deals, hide it completely to prevent bleed-through
-        if (progress >= 0.98) {
-          stickyWrapper.style.visibility = 'hidden';
-        } else {
-          stickyWrapper.style.visibility = 'visible';
-        }
-      } else {
-        blurTarget.style.filter = 'none';
-        blurTarget.style.opacity = '1';
-        blurTarget.style.transform = 'none';
-        stickyWrapper.style.visibility = 'visible';
-      }
-
-      ticking = false;
-    }
-
-    function onScroll() {
-      if (!ticking) {
-        requestAnimationFrame(update);
-        ticking = true;
-      }
-    }
-
-    window.removeEventListener('scroll', onScroll);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll, { passive: true });
-    update();
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initScrollStackingAndBlur);
-  } else {
-    initScrollStackingAndBlur();
-  }
-  document.addEventListener('astro:page-load', initScrollStackingAndBlur);
-</script>
