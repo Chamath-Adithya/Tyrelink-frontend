@@ -21,7 +21,7 @@ const waOrderMsg = `Hello Tyrelink, I want to order ${product.brand} ${product.t
 
 <div
   onclick={`if (!event.target.closest('a, button')) window.location.href='/product/${product.slug}'`}
-  class="product-card tyrelink-product-card bg-white reveal-scale w-full h-[410px] flex flex-col justify-between p-4 group relative text-left rounded-xl border border-slate-200 hover:border-brand-500 transition-all duration-300 hover:-translate-y-1 cursor-pointer overflow-hidden select-none"
+  class="product-card tyrelink-product-card bg-white reveal-scale w-full h-[430px] flex flex-col justify-between p-4 sm:p-5 group relative text-left rounded-[1.35rem] border border-slate-200/80 hover:border-brand-500 transition-all duration-300 hover:-translate-y-2 cursor-pointer overflow-hidden select-none"
 >
   <!-- Admin Edit Quick Button (Shown only when Edit Mode is active) -->
   <button
@@ -37,7 +37,7 @@ const waOrderMsg = `Hello Tyrelink, I want to order ${product.brand} ${product.t
     <!-- Uniform Fixed-Height Image Stage -->
     <a 
       href={`/product/${product.slug}`}
-      class="product-image-stage block relative h-[190px] w-full rounded-lg overflow-hidden mb-2.5 border border-slate-200/80 bg-slate-50/50 flex items-center justify-center p-3 shrink-0"
+      class="product-image-stage block relative h-[210px] w-full rounded-[1rem] overflow-hidden mb-3 border border-slate-200/80 bg-slate-50/50 flex items-center justify-center p-3 shrink-0"
     >
       <img
         src={product.featuredImage}

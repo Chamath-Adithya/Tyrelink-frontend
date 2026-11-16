@@ -128,7 +128,7 @@ export default function HeroCarousel() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[280px] sm:h-[400px] md:h-[480px] lg:h-[540px] xl:h-[600px] rounded-xl overflow-hidden bg-slate-950 shadow-[0_16px_50px_rgba(0,0,0,0.22)] border border-slate-800 group select-none cursor-pointer will-change-transform transition-[transform,box-shadow] duration-150 ease-out"
+      className="relative w-full h-[430px] sm:h-[510px] md:h-[590px] lg:h-[650px] rounded-[2rem] overflow-hidden bg-slate-950 shadow-[0_28px_80px_rgba(13,15,18,0.24)] border border-white/15 group select-none cursor-pointer will-change-transform transition-[transform,box-shadow] duration-150 ease-out"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onTouchStart={handleTouchStart}
@@ -156,7 +156,8 @@ export default function HeroCarousel() {
           />
 
           {/* Deep Cinematic Black Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/55 to-black/20" />
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(8,10,12,.94)_0%,rgba(8,10,12,.67)_42%,rgba(8,10,12,.08)_100%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_24%,rgba(227,27,35,.38),transparent_28%)] mix-blend-screen" />
 
           {/* Editorial Content Stage Over Slide */}
           <div className="absolute inset-0 flex items-center p-6 sm:p-12 lg:p-16 text-left">
