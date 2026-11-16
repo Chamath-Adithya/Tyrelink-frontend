@@ -770,9 +770,56 @@ h1, h2, h3, .font-display {
   box-shadow: 0 1px 1px rgba(13,15,18,.04), 0 10px 26px rgba(15,23,42,.09);
 }
 
-.tyrelink-product-card:hover {
-  box-shadow: 0 16px 36px rgba(15,23,42,.14), 0 0 0 1px rgba(227,27,35,.10);
-}
+  .tyrelink-product-card:hover {
+    box-shadow: 0 20px 42px rgba(15,23,42,.14), 0 0 0 1px rgba(227,27,35,.18);
+  }
+
+  /* Cohesive premium retail language across shared components. */
+  .category-card-automotive {
+    min-height: 188px;
+    border-radius: 1.25rem;
+    background: linear-gradient(145deg, #1c2026 0%, #0d0f12 100%) !important;
+    border-color: rgba(255,255,255,.12) !important;
+    box-shadow: 0 12px 30px rgba(13,15,18,.16) !important;
+  }
+
+  .category-card-automotive:nth-child(4n + 1) {
+    background: linear-gradient(145deg, #d9232e 0%, #95131b 100%) !important;
+  }
+
+  .category-card-automotive:hover {
+    transform: translateY(-6px) scale(1.015);
+    box-shadow: 0 24px 44px rgba(13,15,18,.22) !important;
+  }
+
+  footer {
+    background: #0d0f12 !important;
+    border-top-color: rgba(255,255,255,.1) !important;
+  }
+
+  footer a { transition: color .2s ease, transform .2s ease; }
+  footer a:hover { transform: translateX(2px); }
+
+  .product-image-stage {
+    border-radius: 1rem !important;
+    background: linear-gradient(145deg, #fbfbf8, #eceeea) !important;
+  }
+
+  #flash-deals-sticky-wrapper > div > section {
+    background: #171a1f !important;
+    border-top: 1px solid rgba(255,255,255,.08);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+
+  #flash-deals-sticky-wrapper .tyrelink-product-card {
+    border-radius: 1.25rem;
+    border-color: rgba(13,15,18,.08);
+    box-shadow: 0 14px 30px rgba(13,15,18,.18);
+  }
+
+  @media (max-width: 640px) {
+    .category-card-automotive { min-width: 156px !important; min-height: 172px; }
+  }
 
 .product-image-stage {
   background-color: #eef1f4;
