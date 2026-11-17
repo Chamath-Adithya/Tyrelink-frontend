@@ -8,7 +8,7 @@ interface WhatsAppChatWidgetProps {
 }
 
 export default function WhatsAppChatWidget({
-  phoneNumber = '94783724920',
+  phoneNumber = '94712500420',
   storeName = 'Tyrelink Store',
   subtitle = 'Typically replies within minutes'
 }: WhatsAppChatWidgetProps) {

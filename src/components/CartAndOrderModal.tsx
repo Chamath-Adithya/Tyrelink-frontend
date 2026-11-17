@@ -270,7 +270,7 @@ ${phone2.trim() ? `📱 *Alternative Mobile:* ${phone2.trim()}\n` : ''}🏷️ *
 ━━━━━━━━━━━━━━━━━━━━━━━
 කරුණාකර මගේ මෙම ඇණවුම තහවුරු කර ඉක්මනින් dispatch කිරීමට කටයුතු කරන්න. ස්තූතියි!`;
 
-    const whatsappNumber = '94783724920';
+    const whatsappNumber = '94712500420';
     const waUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 
     setIsSuccess(true);
@@ -451,7 +451,7 @@ ${phone2.trim() ? `📱 *Alternative Mobile:* ${phone2.trim()}\n` : ''}🏷️ *
 
                   {/* Clean In-Drawer WhatsApp Assistance Shortcut */}
                   <a
-                    href="https://wa.me/94783724920?text=Hi%20Tyrelink,%20I%20have%20a%20question%20about%20my%20cart"
+                    href="https://wa.me/94712500420?text=Hi%20Tyrelink,%20I%20have%20a%20question%20about%20my%20cart"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-1.5 text-[11px] font-semibold text-slate-500 hover:text-emerald-600 transition-colors pt-0.5 cursor-pointer"

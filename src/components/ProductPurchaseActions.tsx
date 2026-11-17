@@ -42,7 +42,7 @@ export default function ProductPurchaseActions({ product }: ProductPurchaseActio
     setTimeout(() => setAdded(false), 2000);
   };
 
-  const whatsappInquiryUrl = `https://wa.me/94783724920?text=${encodeURIComponent(
+  const whatsappInquiryUrl = `https://wa.me/94712500420?text=${encodeURIComponent(
     `Hi Tyrelink, I would like to inquire about: ${product.title} (Rs. ${product.price.toLocaleString('en-US')})`
   )}`;
 
@@ -74,7 +74,7 @@ export default function ProductPurchaseActions({ product }: ProductPurchaseActio
       {/* Quantity Selector Bar with Max Limit Enforcement */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 px-5 sm:px-6 rounded-2xl bg-white border border-slate-200/90 shadow-2xs gap-2">
         <div className="flex items-center gap-2">
-          <span className="text-xs sm:text-sm font-bold text-slate-800">Quantity (ප්‍රමාණය):</span>
+          <span className="text-xs sm:text-sm font-bold text-slate-800">Quantity:</span>
           <span className="text-[11px] text-slate-500 font-mono">
             Rs. {(product.price * quantity).toLocaleString('en-US')}
           </span>
@@ -119,7 +119,7 @@ export default function ProductPurchaseActions({ product }: ProductPurchaseActio
           className="w-full flex items-center justify-center gap-2.5 py-4 px-6 rounded-2xl bg-gradient-to-r from-brand-600 via-brand-500 to-red-600 hover:from-brand-500 hover:to-red-500 text-white font-extrabold text-sm sm:text-base shadow-lg shadow-brand-500/20 transition-all hover:scale-[1.02] active:scale-98 cursor-pointer"
         >
           <Zap className="w-5 h-5 fill-current" />
-          <span>Order Now (ඇණවුම් කරන්න)</span>
+          <span>Order Now</span>
         </button>
 
         {/* 2. Add to Cart */}
@@ -136,7 +136,7 @@ export default function ProductPurchaseActions({ product }: ProductPurchaseActio
           ) : (
             <>
               <ShoppingBag className="w-5 h-5 text-slate-600" />
-              <span>Add to Cart (බාස්කට් එකට)</span>
+              <span>Add to Cart</span>
             </>
           )}
         </button>

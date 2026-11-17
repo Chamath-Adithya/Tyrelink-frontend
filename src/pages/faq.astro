@@ -1,109 +1,27 @@
 ---
 import Layout from '../layouts/Layout.astro';
-
-const breadcrumbs = [
-  { name: 'Home', item: 'https://tyrelink.lk/' },
-  { name: 'Frequently Asked Questions', item: 'https://tyrelink.lk/faq' }
-];
-
 const faqs = [
-  {
-    q: 'How do I place an order with 1-Click WhatsApp Quick Order?',
-    qSi: 'WhatsApp හරහා තත්පර 15න් ඇණවුම් කරන්නේ කෙසේද?',
-    a: 'Simply click "Buy via WhatsApp" or "Quick Order" on any product card or product page. Enter your Name, Delivery Address, and Mobile number in the quick modal. Your order will be registered in our database, and WhatsApp will open with your pre-formatted order message ready to send.'
-  },
-  {
-    q: 'How does Cash on Delivery (COD) work?',
-    qSi: 'භාණ්ඩය ලැබුණු පසු මුදල් ගෙවීම (COD) සිදු කරන්නේ කෙසේද?',
-    a: 'We deliver islandwide via trusted courier partners. When the courier rider arrives at your doorstep, you can inspect the package condition and pay the cash directly to the rider.'
-  },
-  {
-    q: 'How long does delivery take across Sri Lanka?',
-    qSi: 'දිවයින පුරා බෙදාහැරීමට කොපමණ කාලයක් ගතවේද?',
-    a: 'Western Province deliveries usually take 1-2 business days. Outstation and other regional districts take 2-3 business days. Our team will share courier updates through WhatsApp or SMS.'
-  },
-  {
-    q: 'How do I claim or verify warranty for my items?',
-    qSi: 'වගකීම් සහතිකය පරීක්ෂා කිරීම හෝ Claim කරන්නේ කෙසේද?',
-    a: 'Eligible genuine products include the stated manufacturer warranty. For assistance, message our WhatsApp support desk with your invoice and product serial or DOT number.'
-  },
-  {
-    q: 'Can I pay in monthly installments with Koko or Mintpay?',
-    qSi: 'Koko හෝ Mintpay මගින් මාසික වාරික වශයෙන් ගෙවිය හැකිද?',
-    a: 'Yes! We support 3 interest-free monthly installment payments via Koko and Mintpay debit/credit card solutions at checkout.'
-  }
+  {question:'Do I need an account to order?',answer:'No. Browse the collection, choose your products and use the cart or quick-order option. You can send your enquiry through WhatsApp without creating a customer account.'},
+  {question:'How do I find the right tyre size?',answer:'Look for the size on your current tyre sidewall, such as 195/65 R15, and check your vehicle handbook. Send us a photo and your vehicle details if you need help. Our team can help confirm fitment before you order.'},
+  {question:'Are online prices and stock final?',answer:'Please confirm the current price, available quantity and product details with our team before making payment. Availability and the final order total are confirmed when we discuss your order.'},
+  {question:'Can you arrange delivery?',answer:'Contact us with your town and the items you need. We will confirm whether delivery is available for your order, together with its cost and estimated timing before you proceed.'},
+  {question:'Can I collect my order?',answer:'Ask our team to confirm your items and arrange collection from TyreLink in Walasmulla. Our listed opening hours are 8:00 am to 5:00 pm daily. Calling ahead helps us prepare your order.'},
+  {question:'Which payment methods can I use?',answer:'Our team will explain the payment options available for your order. Please confirm any cash-on-delivery or instalment arrangement, including its conditions, before paying.'},
+  {question:'How do I check the manufacture date and warranty?',answer:'Ask our team to confirm the manufacture date and applicable warranty for the exact tyre or product you are buying. Warranty terms vary by product and supplier. Keep your invoice and contact us if you need help with a claim.'},
+  {question:'What if I need to change or return an order?',answer:'Contact us as soon as possible with your order details. We will explain the options and any applicable conditions for your particular order. Please confirm suitability before fitting or using a product.'},
+  {question:'Where can I leave a Google review?',answer:'Our verified Google review link will be added once our business profile is connected. In the meantime, you can share feedback by phone, email or WhatsApp.'}
 ];
 ---
-
-<Layout
-  title="Frequently Asked Questions (FAQ) | Tyrelink Sri Lanka"
-  description="Find answers to common questions about Cash on Delivery (COD), warranty claims, islandwide delivery times, and 1-Click WhatsApp checkout on Tyrelink."
-  breadcrumbs={breadcrumbs}
-  faq={faqs.map(f => ({ question: f.q, answer: f.a }))}
->
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-20 space-y-12 sm:space-y-16">
-    
-    <!-- Hero Header Stage -->
-    <div class="text-center space-y-4 max-w-2xl mx-auto reveal">
-      <span class="section-badge">
-        <span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse"></span>
-        Help & Customer Guidance
-      </span>
-      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 font-display tracking-tight leading-[1.08]">
-        Frequently Asked Questions
-      </h1>
-      <p class="text-xs sm:text-sm text-slate-500 font-sinhala leading-relaxed">
-        ඇණවුම් කිරීම, බෙදාහැරීම සහ වගකීම් පිළිබඳ නිතර අසන ප්‍රශ්න
-      </p>
-    </div>
-
-    <!-- FAQ List -->
-    <div class="space-y-4">
-      {faqs.map((faq, idx) => (
-        <div 
-          class="reveal bg-white/80 backdrop-blur-2xl rounded-xl p-7 sm:p-9 shadow-[0_12px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_48px_rgba(237,28,36,0.12)] transition-all duration-300 hover:-translate-y-1 text-left space-y-3 group border border-white/90 glass-card"
-          data-delay={idx * 80}
-        >
-          <div class="flex items-start gap-4">
-            <span class="w-9 h-9 rounded-2xl bg-brand-50 text-brand-600 font-black text-xs flex items-center justify-center shrink-0 mt-0.5 border border-brand-100">
-              Q{idx + 1}
-            </span>
-            <div class="space-y-1.5 flex-1">
-              <h2 class="text-base sm:text-lg font-black text-slate-900 font-display group-hover:text-brand-600 transition-colors leading-snug">
-                {faq.q}
-              </h2>
-              <p class="text-xs font-semibold text-slate-400 font-sinhala">
-                {faq.qSi}
-              </p>
-            </div>
-          </div>
-          <div class="pl-[52px] text-xs sm:text-sm text-slate-600 leading-relaxed">
-            {faq.a}
-          </div>
-        </div>
-      ))}
-    </div>
-
-    <!-- Need More Help Banner -->
-    <div class="reveal p-8 sm:p-12 rounded-xl bg-gradient-to-br from-slate-950 to-slate-900 text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.35)] text-left relative overflow-hidden">
-      <div class="absolute inset-0 tech-dot-grid-dark opacity-25 pointer-events-none"></div>
-      <div class="absolute -bottom-16 -left-16 w-48 h-48 bg-emerald-500/8 rounded-full blur-3xl pointer-events-none"></div>
-
-      <div class="relative space-y-1.5 text-center sm:text-left">
-        <h3 class="text-lg sm:text-xl font-bold font-display text-white">Still have a question or need advice?</h3>
-        <p class="text-xs text-slate-400">Our Tyrelink support desk is available on WhatsApp daily.</p>
-      </div>
-      <a
-        href="https://wa.me/94783724920?text=Hi%20Tyrelink,%20I%20have%20a%20question"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="relative shrink-0 inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-xs hover:scale-105 active:scale-95 transition-all cursor-pointer"
-        style="box-shadow: 0 4px 20px rgba(37,211,102,0.30);"
-      >
-        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-        Chat on WhatsApp
-      </a>
-    </div>
-
+<Layout title="Questions, answered | TyreLink" description="Straightforward answers about tyre sizes, guest orders, delivery, payment and product support at TyreLink." faq={faqs}>
+  <div class="tl-container">
+    <section class="tl-section"><p class="tl-eyebrow">Good to know</p><h1 class="tl-title">A clearer road<br />to the right choice.</h1><p class="tl-copy">Straightforward answers to the questions we hear most. If yours is not here, our team is a message away.</p></section>
+    <section class="faq-layout" aria-label="Frequently asked questions">
+      <aside><p class="tl-eyebrow">Personal assistance</p><h2>Rather talk it through?</h2><p class="tl-copy">Send us your question or a photo of your tyre. Let’s work it out together.</p><a class="tl-button" href="https://wa.me/94712500420" target="_blank" rel="noopener noreferrer">Ask on WhatsApp ↗</a></aside>
+      <div class="faq-list">{faqs.map((faq,index)=><details open={index===0}><summary><span>{faq.question}</span><span class="faq-plus" aria-hidden="true">+</span></summary><p class="faq-answer tl-copy">{faq.answer}</p></details>)}</div>
+    </section>
+    <section class="tl-section"><a href="/shop" class="tl-button-secondary">Back to the collection ↗</a></section>
   </div>
 </Layout>
+<style>
+.faq-layout{display:grid;grid-template-columns:1fr 2fr;gap:clamp(2rem,6vw,7rem)}.faq-layout aside h2{font-size:2rem;line-height:1.2;margin:1rem 0}.faq-layout aside .tl-button{margin-top:1.5rem}.faq-list details{border-top:1px solid var(--tl-line,#ddd9d0)}.faq-list details:last-child{border-bottom:1px solid var(--tl-line,#ddd9d0)}.faq-list summary{display:flex;justify-content:space-between;align-items:center;gap:2rem;padding:1.6rem 0;cursor:pointer;font-size:1.05rem;list-style:none}.faq-list summary::-webkit-details-marker{display:none}.faq-plus{font-size:1.6rem;font-weight:300;transition:transform .2s}.faq-list details[open] .faq-plus{transform:rotate(45deg)}.faq-answer{padding:0 2rem 1.6rem 0;line-height:1.8}@media(max-width:760px){.faq-layout{grid-template-columns:1fr}.faq-layout aside{padding-bottom:1.5rem}}
+</style>

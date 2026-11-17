@@ -296,8 +296,8 @@ export default function HomeExploreProducts() {
               className="w-full max-w-md sm:max-w-lg md:max-w-xl inline-flex items-center justify-between gap-4 px-6 sm:px-10 py-5 sm:py-6 rounded-2xl sm:rounded-xl bg-gradient-to-r from-brand-600 via-brand-500 to-red-500 hover:from-brand-500 hover:to-red-600 text-white font-black shadow-[0_20px_50px_-10px_rgba(237,28,36,0.35),0_8px_20px_rgba(0,0,0,0.08)] hover:shadow-[0_25px_60px_-10px_rgba(237,28,36,0.5)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 group cursor-pointer border-t border-white/30 border-b border-black/10"
             >
               <div className="flex items-center gap-3.5 min-w-0">
-                <span className="text-lg sm:text-2xl font-black tracking-tight text-white font-sinhala leading-normal">
-                  සියලුම භාණ්ඩ බලන්න
+                <span className="text-lg sm:text-2xl font-black tracking-tight text-white font-sans leading-normal">
+                  Explore all products
                 </span>
                 <span className="inline-flex items-center justify-center px-3 py-1 rounded-xl bg-white/25 text-white text-xs sm:text-sm font-mono font-black tracking-wide shadow-sm">
                   +{remainingCount}
@@ -312,12 +312,12 @@ export default function HomeExploreProducts() {
             /* Finished Shop tyres & tools in Category */
             <div className="inline-flex items-center gap-3 px-6 py-4 rounded-2xl bg-white/80 backdrop-blur-md border border-white/90 shadow-sm text-slate-600 text-xs sm:text-sm font-semibold">
               <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-              <span>ඔබ මෙම කාණ්ඩයේ සියලුම භාණ්ඩ බලා ඇත</span>
+              <span>You have seen every product in this category.</span>
               <a
                 href="/shop#catalog-products"
                 className="text-brand-600 font-bold hover:underline ml-1 inline-flex items-center gap-1"
               >
-                Shop එකට යන්න <ArrowRight className="w-3.5 h-3.5" />
+                Visit the shop <ArrowRight className="w-3.5 h-3.5" />
               </a>
             </div>
           )}

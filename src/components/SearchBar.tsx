@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useId } from 'react';
 import Fuse from 'fuse.js';
 import { Search, X, Sparkles, ArrowUpRight } from 'lucide-react';
 import productsData from '../data/products.json';
 import type { Product } from '../types';
 
 export default function SearchBar() {
+  const resultsId = useId();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Product[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -37,6 +38,7 @@ export default function SearchBar() {
     function handleKeyDown(event: KeyboardEvent) {
       if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
         event.preventDefault();
+        if (!containerRef.current?.getClientRects().length) return;
         inputRef.current?.focus();
         if (query.trim().length >= 2) setIsOpen(true);
       }
@@ -83,7 +85,7 @@ export default function SearchBar() {
   };
 
   return (
-    <div ref={containerRef} className="relative w-full">
+    <div ref={containerRef} className="search-shell relative w-full">
       <form onSubmit={handleFormSubmit} className="relative flex items-center group">
         <button
           type="submit"
@@ -95,7 +97,11 @@ export default function SearchBar() {
 
         <input
           ref={inputRef}
-          type="text"
+          type="search"
+          aria-label="Search tyres, sizes, brands and tools"
+          aria-expanded={isOpen}
+          aria-controls={isOpen ? resultsId : undefined}
+          autoComplete="off"
           value={query}
           onChange={handleSearchChange}
           onFocus={() => {
@@ -125,7 +131,7 @@ export default function SearchBar() {
 
       {/* Live Dropdown Results with Auto-Navigation */}
       {isOpen && (
-        <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-card border border-slate-200/90 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-150 text-left">
+        <div id={resultsId} className="search-results absolute left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-card border border-slate-200/90 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-150 text-left">
           {results.length > 0 ? (
             <div className="py-2">
               <div className="px-4 py-2 flex items-center justify-between text-[11px] font-semibold text-slate-400 uppercase tracking-wider border-b border-slate-100">
@@ -140,7 +146,7 @@ export default function SearchBar() {
                   <a
                     key={product.id}
                     href={`/product/${product.slug}`}
-                    className="flex items-center gap-3 px-4 py-3 hover:bg-red-50/50 transition-colors group"
+                    className="search-result flex items-center gap-3 px-4 py-3 hover:bg-red-50/50 transition-colors group"
                     onClick={() => setIsOpen(false)}
                   >
                     <img

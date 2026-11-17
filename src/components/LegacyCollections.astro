@@ -1,0 +1,22 @@
+---
+const items = [
+ {name:'Jacks',image:'H464abae489cf4f04bd1b26a9a6b947754.avif',query:'hydraulic jack'},
+ {name:'Tool sets',image:'HTB1d_p.dA5E3KVjSZFCq6zuzXXaq-e1730624378651.avif',query:'tool sets'},
+ {name:'Impact wrenches',image:'BIG-1.jpg',query:'impact wrench'},
+ {name:'Machinery',image:'1000022240.jpg',query:'nitrogen machine'},
+ {name:'Tyre & tube patches',image:'tyre-and-tube-patches.webp',query:'tyre patches'},
+ {name:'Valves',image:'valves-sri-lanka.webp',query:'valves'}
+];
+---
+<section class="legacy-section reveal" aria-labelledby="accessories-heading"><div class="legacy-heading"><div><span class="legacy-kicker">Ready for every repair</span><h2 id="accessories-heading">Accessories.</h2><p>The practical essentials that keep your vehicle and workshop moving.</p></div><a class="legacy-link" href="/category/garage-tools">Explore tools ↗</a></div><div class="accessories-layout"><img class="accessories-photo reveal-left" src="/images/legacy/H464abae489cf4f04bd1b26a9a6b947754.avif" alt="Heavy-duty air hydraulic jacks from the TyreLink range" width="700" height="500" loading="lazy"/><div class="accessories-items">{items.map(item=><a class="reveal-scale" href={`https://wa.me/94712500420?text=${encodeURIComponent('Hi TyreLink, please send current options and prices for '+item.query)}`} target="_blank" rel="noopener noreferrer"><img src={`/images/legacy/${item.image}`} alt={item.name} loading="lazy" width="200" height="180"/><span>{item.name} ↗</span></a>)}</div></div></section>
+<section class="legacy-section reveal" aria-labelledby="battery-heading"><div class="battery-feature"><div><span class="legacy-kicker">Power for your next start</span><h2 id="battery-heading">Batteries.</h2><p>Get help choosing a battery for your vehicle. Share your model with our team to confirm fitment, availability and warranty.</p><a class="tl-button" href="https://wa.me/94712500420?text=Hi%20TyreLink%2C%20please%20help%20me%20choose%20a%20battery" target="_blank" rel="noopener noreferrer">Find your battery ↗</a></div><img src="/images/legacy/1-removebg-preview.png" alt="Amaron battery range from the original TyreLink website; confirm current availability" width="700" height="350" loading="lazy"/></div></section>
+
+<script>
+const media=Array.from(document.querySelectorAll<HTMLElement>('.accessories-photo,.battery-feature img'));
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+let pending=0;
+function updateMedia(){pending=0;media.forEach(image=>{const rect=image.getBoundingClientRect();if(reduced.matches){image.style.translate='none';return;}if(rect.bottom<0||rect.top>innerHeight)return;const progress=Math.max(-1,Math.min(1,(innerHeight/2-(rect.top+rect.height/2))/innerHeight));image.style.translate=`0 ${progress*(innerWidth<768?16:44)}px`;});}
+function scheduleMedia(){if(!pending)pending=requestAnimationFrame(updateMedia);}
+window.addEventListener('scroll',scheduleMedia,{passive:true});window.addEventListener('resize',scheduleMedia,{passive:true});reduced.addEventListener('change',scheduleMedia);updateMedia();
+document.addEventListener('astro:before-swap',()=>{cancelAnimationFrame(pending);window.removeEventListener('scroll',scheduleMedia);window.removeEventListener('resize',scheduleMedia);reduced.removeEventListener('change',scheduleMedia);},{once:true});
+</script>

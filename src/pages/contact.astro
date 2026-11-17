@@ -1,114 +1,20 @@
 ---
 import Layout from '../layouts/Layout.astro';
-
-const breadcrumbs = [
-  { name: 'Home', item: 'https://tyrelink.lk/' },
-  { name: 'Contact Us', item: 'https://tyrelink.lk/contact' }
-];
+const mapsSearch = 'https://www.google.com/maps/search/?api=1&query=Tyrelink+Walasmulla+Sri+Lanka';
+const breadcrumbs = [{ name: 'Home', item: 'https://tyrelink.lk/' }, { name: 'Contact', item: 'https://tyrelink.lk/contact' }];
 ---
-
-<Layout
-  title="Contact Us & Direct WhatsApp Desk | Tyrelink Sri Lanka"
-  description="Connect with Tyrelink customer care, sales desk, and technical support. Direct WhatsApp hotline and Tyrelink fulfilment desk assistance."
-  breadcrumbs={breadcrumbs}
->
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-20 space-y-16 sm:space-y-20">
-    
-    <!-- Hero Header Stage -->
-    <div class="text-center space-y-4 max-w-2xl mx-auto reveal">
-      <span class="section-badge">
-        <span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse"></span>
-        Dedicated Customer Care
-      </span>
-      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 font-display tracking-tight leading-[1.08]">
-        Contact Support Desk
-      </h1>
-      <p class="text-xs sm:text-sm text-slate-500 font-sinhala leading-relaxed">
-        ඕනෑම විමසීමක්, Warranty ගැටලුවක් හෝ ඇණවුමක් සඳහා අප අමතන්න
-      </p>
-    </div>
-
-    <!-- Contact Bento Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 stagger-children">
-      
-      <!-- WhatsApp Support -->
-      <div class="reveal-scale bg-white/80 backdrop-blur-2xl rounded-xl p-8 sm:p-10 shadow-[0_12px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_48px_rgba(37,211,102,0.18)] hover:-translate-y-2 border border-white/90 transition-all duration-300 text-center space-y-5 glass-card">
-        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500/15 to-teal-500/8 text-emerald-600 flex items-center justify-center mx-auto shadow-sm">
-          <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-        </div>
-        <div class="space-y-1.5">
-          <h3 class="text-base font-black text-slate-900 font-display">Direct WhatsApp Desk</h3>
-          <p class="text-xs text-slate-500">Fastest response for inquiries, specs advice, and 1-click orders.</p>
-        </div>
-        <a
-          href="https://wa.me/94783724920"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-block w-full py-3.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all hover:scale-105 active:scale-95"
-          style="box-shadow: 0 4px 20px rgba(37,211,102,0.30);"
-        >
-          Chat 078 372 4920
-        </a>
-      </div>
-
-      <!-- Phone Hotline -->
-      <div class="reveal-scale bg-white/80 backdrop-blur-2xl rounded-xl p-8 sm:p-10 shadow-[0_12px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_48px_rgba(15,17,20,0.14)] hover:-translate-y-2 border border-white/90 transition-all duration-300 text-center space-y-5 glass-card">
-        <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-slate-900/12 to-slate-500/5 text-slate-800 flex items-center justify-center mx-auto shadow-sm">
-          <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-        </div>
-        <div class="space-y-1.5">
-          <h3 class="text-base font-black text-slate-900 font-display">Voice Hotline</h3>
-          <p class="text-xs text-slate-500">24/7 Tyre & Fitting Guidance Hotline for Sri Lanka.</p>
-        </div>
-        <a
-          href="tel:+94783724920"
-          class="inline-block w-full py-3.5 px-4 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-all hover:scale-105 active:scale-95"
-        >
-          Call 078 372 4920
-        </a>
-      </div>
-
-      <!-- Fulfillment Hub -->
-      <div class="reveal-scale bg-white/80 backdrop-blur-2xl rounded-xl p-8 sm:p-10 shadow-[0_12px_40px_rgba(0,0,0,0.04)] hover:shadow-[0_20px_48px_rgba(237,28,36,0.18)] hover:-translate-y-2 border border-white/90 transition-all duration-300 text-center space-y-5 glass-card">
-        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-500/15 to-red-500/8 text-brand-600 flex items-center justify-center mx-auto shadow-sm">
-          <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-        </div>
-        <div class="space-y-1.5">
-          <h3 class="text-base font-black text-slate-900 font-display">Islandwide Network</h3>
-          <p class="text-xs text-slate-500">Tyrelink Central Distribution & Garage Partner Network, Sri Lanka.</p>
-        </div>
-        <div class="py-3.5 px-4 rounded-2xl bg-brand-50/80 backdrop-blur-xs text-[11px] font-bold text-brand-700 border border-brand-200/50">
-          Dispatches Daily Islandwide • Cash on Delivery
-          Islandwide Dispatch Center
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Operating Hours & Dispatch Windows -->
-    <div class="reveal p-8 sm:p-12 rounded-xl bg-gradient-to-br from-slate-950 to-slate-900 text-white grid grid-cols-1 md:grid-cols-2 gap-10 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.35)] text-left relative overflow-hidden">
-      <div class="absolute inset-0 tech-dot-grid-dark opacity-25 pointer-events-none"></div>
-      <div class="absolute -top-20 right-0 w-64 h-64 bg-brand-500/8 rounded-full blur-3xl pointer-events-none"></div>
-      
-      <div class="relative space-y-3">
-        <div class="flex items-center gap-2 mb-1">
-          <span class="w-2 h-2 rounded-full bg-brand-400"></span>
-          <h3 class="text-base font-black text-brand-400 font-display">Order Dispatch Windows</h3>
-        </div>
-        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-          Orders confirmed before 2:00 PM are dispatched on the same day via prompt express logistics for fast 1-2 day doorstep delivery across Sri Lanka.
-        </p>
-      </div>
-      <div class="relative space-y-3">
-        <div class="flex items-center gap-2 mb-1">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <h3 class="text-base font-black text-emerald-400 font-display">Customer Support Schedule</h3>
-        </div>
-        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-          WhatsApp assistance is open Monday through Sunday (8:00 AM – 10:00 PM). Inquiries submitted after hours are addressed promptly the following morning.
-        </p>
-      </div>
-    </div>
-
+<Layout title="Contact TyreLink | Visit us in Walasmulla" description="Contact TyreLink in Walasmulla for tyre advice, product availability and delivery enquiries. Call 071 250 0420 or speak with our team on WhatsApp." breadcrumbs={breadcrumbs}>
+  <div class="tl-container">
+    <section class="tl-section tl-split">
+      <div><p class="tl-eyebrow">A little help goes a long way</p><h1 class="tl-title">Let’s get you<br />on your way.</h1><p class="tl-copy">Not sure which tyre fits? Looking for something for your workshop? Speak with our team. We will help you take the next step.</p><div class="contact-actions"><a class="tl-button" href="https://wa.me/94712500420" target="_blank" rel="noopener noreferrer">Chat on WhatsApp ↗</a><a class="tl-button-secondary" href="tel:+94712500420">Call our team</a></div></div>
+      <div class="tl-panel contact-details"><p class="tl-eyebrow">Visit TyreLink</p><h2>Walasmulla,<br />Sri Lanka.</h2><address>No. 69A, Thalahagamwaduwa,<br />Beliatta Road, Walasmulla 82450,<br />Sri Lanka</address><dl><div><dt>Opening hours</dt><dd>Daily · 8:00 am–5:00 pm</dd></div><div><dt>Telephone</dt><dd><a href="tel:+94712500420">071 250 0420</a><br /><a href="tel:+94472245600">047 224 5600</a></dd></div><div><dt>Email</dt><dd><a href="mailto:tyrelinkcin@gmail.com">tyrelinkcin@gmail.com</a></dd></div></dl></div>
+    </section>
+    <section class="tl-section tl-split contact-rule">
+      <div class="tl-panel map-placeholder"><svg viewBox="0 0 600 280" fill="none" aria-hidden="true"><path d="M0 70H600M0 190H600M140 0V280M430 0V280M0 280L600 0" stroke="currentColor" stroke-width="2"/><path d="M300 80a37 37 0 0 0-37 37c0 30 37 65 37 65s37-35 37-65a37 37 0 0 0-37-37Z" fill="var(--tl-canvas,#f6f3ec)" stroke="currentColor" stroke-width="3"/><circle cx="300" cy="117" r="11" stroke="currentColor" stroke-width="3"/></svg><p class="tl-eyebrow">Find your way here</p><h2>We look forward<br />to seeing you.</h2><a class="tl-button-secondary" href={mapsSearch} target="_blank" rel="noopener noreferrer">Search on Google Maps ↗</a><p class="map-note">This opens a general Maps search. Our verified store pin will be added soon; call us to confirm directions.</p></div>
+      <div class="contact-details"><p class="tl-eyebrow">Before you get in touch</p><h2>A few details help us<br />help you faster.</h2><ul><li>Your vehicle make, model and year.</li><li>The tyre size printed on the sidewall, or a clear photo.</li><li>The product and quantity you need.</li><li>Your town for collection or delivery advice.</li></ul><div class="review-note"><p class="tl-eyebrow">Customer experiences</p><h3>Your feedback matters.</h3><p class="tl-copy">Our Google review link and verified customer reviews will appear here once our business profile is connected. For now, share feedback directly with our team.</p><a href="mailto:tyrelinkcin@gmail.com" class="tl-button-secondary">Share your feedback ↗</a></div></div>
+    </section>
   </div>
 </Layout>
+<style>
+.contact-actions{display:flex;flex-wrap:wrap;gap:1rem;margin-top:2rem}.contact-details h2,.map-placeholder h2{font-size:clamp(2rem,4vw,3.2rem);line-height:1.1;margin:1rem 0 2rem}.contact-details address{font-style:normal;line-height:1.8}.contact-details dl{margin-top:2rem}.contact-details dl>div{display:grid;grid-template-columns:1fr 1.5fr;gap:1rem;padding:1.25rem 0;border-top:1px solid var(--tl-line,#ddd9d0)}dt{opacity:.65}dd{margin:0;overflow-wrap:anywhere}.contact-rule{border-top:1px solid var(--tl-line,#ddd9d0)}.map-placeholder{overflow:hidden}.map-placeholder svg{width:100%;opacity:.5}.map-note{font-size:.8rem;line-height:1.6;max-width:40ch;margin-top:1.5rem;opacity:.65}.contact-details ul{list-style:disc;padding-left:1.2rem;line-height:2}.review-note{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--tl-line,#ddd9d0)}.review-note h3{font-size:1.6rem;margin-bottom:1rem}.review-note .tl-button-secondary{margin-top:1.5rem}
+</style>

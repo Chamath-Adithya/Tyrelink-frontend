@@ -5,9 +5,10 @@ import SEOHead from '../components/SEOHead.astro';
 import CartAndOrderModal from '../components/CartAndOrderModal';
 import WhatsAppChatWidget from '../components/WhatsAppChatWidget';
 import AdminControlBar from '../components/admin/AdminControlBar';
-import ArchitecturalGrid from '../components/ArchitecturalGrid.astro';
+
 import type { Product } from '../types';
 import '../styles/global.css';
+import '../styles/brand.css';
 
 interface Props {
   title?: string;
@@ -26,6 +27,7 @@ const { title, description, image, product, faq, breadcrumbs, itemList } = Astro
 <html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
+    <script is:inline>document.documentElement.dataset.theme="light"; try { localStorage.removeItem("tyrelink-theme"); } catch {}</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
@@ -44,18 +46,18 @@ const { title, description, image, product, faq, breadcrumbs, itemList } = Astro
     <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
 
     <!-- Google Fonts Embed: Modern Sans & Sinhala Typography with font-display: swap -->
-    <link 
-      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Gemunu+Libre:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&family=Noto+Sans+Sinhala:wght@400;500;600;700&display=swap" 
-      rel="stylesheet" 
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Baloo+2:wght@500;600;700;800&family=Noto+Sans+Sinhala:wght@400;600;700&display=swap"
+      rel="stylesheet"
     />
 
     <!-- SEO, GEO & JSON-LD Schemas -->
-    <SEOHead 
-      title={title} 
-      description={description} 
-      image={image} 
-      product={product} 
-      faq={faq} 
+    <SEOHead
+      title={title}
+      description={description}
+      image={image}
+      product={product}
+      faq={faq}
       breadcrumbs={breadcrumbs}
       itemList={itemList}
     />
@@ -73,16 +75,17 @@ const { title, description, image, product, faq, breadcrumbs, itemList } = Astro
         }
       </script>
     )}
+  <noscript><style>.reveal,.reveal-left,.reveal-right,.reveal-scale,.reveal-blur,.reveal-clip,.reveal-3d{opacity:1!important;transform:none!important;filter:none!important;clip-path:none!important}</style></noscript>
   </head>
   <body class="min-h-screen flex flex-col text-slate-900 font-sans antialiased relative">
     <!-- Architectural Precision Grid & CAD Blueprint Background (Pure CSS & SVG · Zero JS) -->
-    <ArchitecturalGrid />
+
 
     <!-- Merchant Live Edit Mode & Control HUD Bar (Loads dynamically for logged-in admin) -->
     <AdminControlBar client:load />
-    
+
     <Header />
-    <main class="flex-1 page-enter">
+    <main class="flex-1">
       <slot />
     </main>
     <Footer />
@@ -104,12 +107,8 @@ const { title, description, image, product, faq, breadcrumbs, itemList } = Astro
           const allEls = document.querySelectorAll(REVEAL_SELECTOR);
           if (!allEls.length) return;
 
-          // Safety fallback: reveal all elements after 1.2s to guarantee zero blank areas
-          setTimeout(() => {
-            allEls.forEach((el) => el.classList.add('revealed'));
-          }, 1200);
 
-          if (!('IntersectionObserver' in window)) {
+          if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) {
             allEls.forEach((el) => el.classList.add('revealed'));
             return;
           }
@@ -139,7 +138,7 @@ const { title, description, image, product, faq, breadcrumbs, itemList } = Astro
                 }
               });
             },
-            { threshold: 0.01, rootMargin: '50px 0px 50px 0px' }
+            { threshold: 0.08, rootMargin: '0px 0px -30px 0px' }
           );
 
           allEls.forEach((el) => {
@@ -160,7 +159,7 @@ const { title, description, image, product, faq, breadcrumbs, itemList } = Astro
           const counterEls = document.querySelectorAll<HTMLElement>('[data-counter]');
           if (!counterEls.length) return;
 
-          if (!('IntersectionObserver' in window)) {
+          if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) {
             counterEls.forEach((el) => {
               const val = el.getAttribute('data-counter') || '';
               const prefix = el.getAttribute('data-prefix') || '';

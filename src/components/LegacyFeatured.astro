@@ -1,0 +1,60 @@
+---
+const products=[{name:'Valve cutter',image:'1000022246.png'},{name:'Dust cap valve key',image:'1000022239.jpg'},{name:'TR 13 valve',image:'valve-tr13-chambre-a-air.webp'},{name:'Air hydraulic jack',image:'H464abae489cf4f04bd1b26a9a6b947754.avif'}];
+const brands=[['CEAT','ceat.webp'],['Michelin','michelin.webp'],['Bridgestone','bridgestode.webp'],['Petlas','petlas.webp'],['Westlake','westlake.webp'],['GT Radial','gt-radial.webp'],['MRF','mrf-1.png'],['Federal','federal.jpg']];
+---
+<section class="legacy-section reveal"><div class="legacy-heading"><div><span class="legacy-kicker">Small details. A big difference.</span><h2>Featured Products.</h2></div><a href="/shop" class="legacy-link">See the collection ↗</a></div><div class="legacy-featured">{products.map(product=><a class="reveal-scale" href={`https://wa.me/94712500420?text=${encodeURIComponent('Hi TyreLink, please confirm price and stock for '+product.name)}`} target="_blank" rel="noopener noreferrer"><img src={`/images/legacy/${product.image}`} alt={product.name} width="300" height="300" loading="lazy"/><span>{product.name} ↗</span><small>Ask for current price & availability</small></a>)}</div></section>
+<section class="brand-journey" aria-labelledby="brand-heading">
+  <div class="brand-stage">
+    <div class="legacy-heading"><div><span class="legacy-kicker">More choice for your journey</span><h2 id="brand-heading">We Have Tyre Brands.</h2><p>A world of choice. Find the right fit for your road.</p></div><button type="button" class="brand-pause" aria-pressed="false">Pause motion</button></div>
+    <div class="brand-field">{brands.map(([name,image],i)=><a class="floating-brand" href={`https://wa.me/94712500420?text=${encodeURIComponent('Hi TyreLink, which '+name+' tyres are available?')}`} aria-label={`Ask about ${name} tyres`} style={`--float-delay:${-i*.7}s`}><img src={`/images/legacy/${image}`} alt={name} width="140" height="70" loading="lazy"/></a>)}</div>
+    <span class="brand-scroll-note" aria-hidden="true">KEEP EXPLORING <span>↓</span></span>
+  </div>
+</section>
+<script>
+function initBrandJourney() {
+ const section=document.querySelector<HTMLElement>('.brand-journey');
+ const stage=section?.querySelector<HTMLElement>('.brand-stage');
+ const field=section?.querySelector<HTMLElement>('.brand-field');
+ const logos=Array.from(section?.querySelectorAll<HTMLElement>('.floating-brand')||[]);
+ const button=section?.querySelector<HTMLButtonElement>('.brand-pause');
+ if(!section||!stage||!field||!button||!logos.length)return;
+ const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+ let paused=false,visible=false,frame=0,clock=0,last=0;
+ const targets=[[.12,.24],[.39,.12],[.69,.25],[.88,.51],[.64,.75],[.34,.65],[.12,.83],[.49,.92]];
+ const clamp=(v:number)=>Math.max(0,Math.min(1,v));
+ function draw(now:number){
+  frame=0;
+  if(!visible||paused||reduced.matches){last=0;return;}
+  if(last)clock+=Math.min(now-last,50);last=now;
+  const rect=section!.getBoundingClientRect();
+  const travel=Math.max(1,section!.offsetHeight-stage!.offsetHeight);
+  const headerHeight=document.getElementById('site-header')?.offsetHeight || 110;
+  const progress=clamp((headerHeight-rect.top)/travel);
+  const spread=clamp((progress-.08)/.65);
+  const eased=spread*spread*(3-2*spread);
+  const width=field!.clientWidth,height=field!.clientHeight;
+  const mobile=width<600;
+  const cardWidth=mobile?84:142,cardHeight=mobile?57:86;
+
+  const band=width+cardWidth*2;
+  logos.forEach((logo,i)=>{
+   const start=((i/logos.length*band-clock*.025)%band+band)%band-cardWidth;
+   const [tx,ty]=targets[i];
+   const x=start*(1-eased)+(cardWidth/2+tx*(width-cardWidth))*eased;
+   const y=height*.42*(1-eased)+(cardHeight/2+ty*(height-cardHeight))*eased;
+   const angle=(i%2===0?-1:1)*(mobile?5:9)*eased;
+   logo.style.transform=`translate3d(${x-cardWidth/2}px,${y-cardHeight/2}px,0) rotate(${angle}deg)`;
+   logo.style.opacity=String(.8+eased*.2);
+  });
+  section!.style.setProperty('--spread',String(eased));
+  frame=requestAnimationFrame(draw);
+ }
+ function start(){if(!frame&&visible&&!paused&&!reduced.matches)frame=requestAnimationFrame(draw);}
+ const observer=new IntersectionObserver(([entry])=>{visible=entry.isIntersecting;if(visible)start();else{cancelAnimationFrame(frame);frame=0;last=0;}},{rootMargin:'100px'});observer.observe(section);
+ button.onclick=()=>{paused=!paused;section.classList.toggle('motion-paused',paused);button.setAttribute('aria-pressed',String(paused));button.textContent=paused?'Resume motion':'Pause motion';if(paused){cancelAnimationFrame(frame);frame=0;last=0;}else start();};
+ const change=()=>{if(reduced.matches){cancelAnimationFrame(frame);frame=0;logos.forEach(l=>{l.style.transform='';l.style.opacity='';});}else start();};reduced.addEventListener('change',change);
+ section.addEventListener('focusin',(event)=>{if(!(event.target as HTMLElement).closest('.floating-brand'))return;paused=true;section.classList.add('motion-paused');button.textContent='Resume motion';button.setAttribute('aria-pressed','true');cancelAnimationFrame(frame);frame=0;});
+ document.addEventListener('astro:before-swap',()=>{observer.disconnect();cancelAnimationFrame(frame);reduced.removeEventListener('change',change);},{once:true});
+}
+initBrandJourney();
+</script>

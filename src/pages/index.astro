@@ -1,5 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import LegacyCollections from '../components/LegacyCollections.astro';
+import LegacyFeatured from '../components/LegacyFeatured.astro';
 import HeroCarousel from '../components/HeroCarousel';
 import CategoryStrip from '../components/CategoryStrip.astro';
 import ProductCard from '../components/ProductCard.astro';
@@ -162,8 +164,10 @@ const faqData = [
         <HomeExploreProducts client:load />
       </div>
 
+      <LegacyCollections />
       <!-- Full-width Trust Section -->
       <TrustSection />
+      <LegacyFeatured />
 
       <!-- Cinematic Automotive Video Showcase (Full-width expanding viewport with blur slide-over) -->
       <CinematicVideoShowcase />
@@ -187,7 +191,7 @@ Not sure what fits? We&apos;ll help you choose.
               ඔබේ order WhatsApp හරහා ක්ෂණිකව දෙන්න — Cash on Delivery
             </p>
             <a
-              href="https://wa.me/94783724920?text=Hi%20Tyrelink,%20I%20would%20like%20to%20place%20an%20order"
+              href="https://wa.me/94712500420?text=Hi%20Tyrelink,%20I%20would%20like%20to%20place%20an%20order"
               target="_blank"
               rel="noopener noreferrer"
               class="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-white text-brand-600 font-bold text-sm hover:scale-105 hover:shadow-[0_12px_32px_rgba(0,0,0,0.2)] active:scale-95 transition-all"

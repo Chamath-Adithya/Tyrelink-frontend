@@ -42,8 +42,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['"Inter"', 'system-ui', 'sans-serif'],
-        display: ['"Barlow Condensed"', '"Inter"', 'sans-serif'],
+        sans: ['"Manrope"', 'system-ui', 'sans-serif'],
+        display: ['"Manrope"', '"Manrope"', 'sans-serif'],
         sinhala: ['"Noto Sans Sinhala"', 'system-ui', 'sans-serif'],
         sinhalaDisplay: ['"Gemunu Libre"', '"Noto Sans Sinhala"', 'sans-serif'],
         mono: ['"JetBrains Mono"', 'monospace'],

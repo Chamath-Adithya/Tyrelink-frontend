@@ -45,9 +45,9 @@ export default function ProductCatalogFilter({
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 300000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000000]);
   const [minInputStr, setMinInputStr] = useState<string>('0');
-  const [maxInputStr, setMaxInputStr] = useState<string>('300000');
+  const [maxInputStr, setMaxInputStr] = useState<string>('1000000');
   const [sortBy, setSortBy] = useState<string>('featured');
   const [isSortOpen, setIsSortOpen] = useState<boolean>(false);
   const [isPriceOpen, setIsPriceOpen] = useState<boolean>(false);
@@ -144,7 +144,7 @@ export default function ProductCatalogFilter({
       if (brand) setSelectedBrands(brand.split(','));
       if (minP || maxP) {
         const parsedMin = minP ? Math.max(0, parseInt(minP, 10) || 0) : 0;
-        const parsedMax = maxP ? Math.max(parsedMin, parseInt(maxP, 10) || 300000) : 300000;
+        const parsedMax = maxP ? Math.max(parsedMin, parseInt(maxP, 10) || 1000000) : 1000000;
         setPriceRange([parsedMin, parsedMax]);
         setMinInputStr(parsedMin.toString());
         setMaxInputStr(parsedMax.toString());
@@ -177,7 +177,7 @@ export default function ProductCatalogFilter({
       if (selectedCategory !== 'all') params.set('category', selectedCategory);
       if (selectedBrands.length > 0) params.set('brand', selectedBrands.join(','));
       if (priceRange[0] > 0) params.set('minPrice', priceRange[0].toString());
-      if (priceRange[1] < 300000) params.set('maxPrice', priceRange[1].toString());
+      if (priceRange[1] < 1000000) params.set('maxPrice', priceRange[1].toString());
       if (sortBy !== 'featured') params.set('sort', sortBy);
 
       const hash = window.location.hash || '';
@@ -232,7 +232,7 @@ export default function ProductCatalogFilter({
     const sanitized = e.target.value.replace(/[^0-9]/g, '');
     setMaxInputStr(sanitized);
 
-    const val = sanitized === '' ? 300000 : parseInt(sanitized, 10);
+    const val = sanitized === '' ? 1000000 : parseInt(sanitized, 10);
     if (!isNaN(val) && val >= 0) {
       setPriceRange([Math.min(val, priceRange[0]), val]);
     }
@@ -375,15 +375,15 @@ export default function ProductCatalogFilter({
     setSearchQuery('');
     setSelectedCategory('all');
     setSelectedBrands([]);
-    setPriceRange([0, 300000]);
+    setPriceRange([0, 1000000]);
     setMinInputStr('0');
-    setMaxInputStr('300000');
+    setMaxInputStr('1000000');
     setSortBy('featured');
     setFlashOnly(false);
     setVisibleCount(BATCH_SIZE);
   };
 
-  const isPriceFiltered = priceRange[0] > 0 || priceRange[1] < 300000;
+  const isPriceFiltered = priceRange[0] > 0 || priceRange[1] < 1000000;
 
   const hasActiveFilters = searchQuery.trim() !== '' ||
     selectedCategory !== 'all' ||
@@ -523,7 +523,7 @@ export default function ProductCatalogFilter({
                     {isPriceFiltered && (
                       <button
                         type="button"
-                        onClick={() => setPricePreset(0, 300000)}
+                        onClick={() => setPricePreset(0, 1000000)}
                         className="text-[11px] font-bold text-brand-600 hover:underline cursor-pointer"
                       >
                         Reset
@@ -559,7 +559,7 @@ export default function ProductCatalogFilter({
                           pattern="[0-9]*"
                           value={maxInputStr}
                           onChange={handleMaxInputChange}
-                          placeholder="300000"
+                          placeholder="1000000"
                           className="w-full bg-transparent focus:outline-none font-bold text-xs"
                         />
                       </div>
@@ -573,14 +573,14 @@ export default function ProductCatalogFilter({
                       <div
                         className="absolute h-2 bg-gradient-to-r from-brand-600 to-brand-500 rounded-full shadow-[0_0_8px_rgba(237,28,36,0.3)] pointer-events-none"
                         style={{
-                          left: `${(priceRange[0] / 300000) * 100}%`,
-                          width: `${Math.max(0, ((priceRange[1] - priceRange[0]) / 300000) * 100)}%`,
+                          left: `${(priceRange[0] / 1000000) * 100}%`,
+                          width: `${Math.max(0, ((priceRange[1] - priceRange[0]) / 1000000) * 100)}%`,
                         }}
                       />
                       <input
                         type="range"
                         min="0"
-                        max="300000"
+                        max="1000000"
                         step="500"
                         value={priceRange[0]}
                         onChange={handleMinSliderChange}
@@ -589,7 +589,7 @@ export default function ProductCatalogFilter({
                       <input
                         type="range"
                         min="0"
-                        max="300000"
+                        max="1000000"
                         step="1000"
                         value={priceRange[1]}
                         onChange={handleMaxSliderChange}
@@ -629,7 +629,7 @@ export default function ProductCatalogFilter({
                     </button>
                     <button
                       type="button"
-                      onClick={() => setPricePreset(100000, 300000)}
+                      onClick={() => setPricePreset(100000, 1000000)}
                       className="px-2.5 py-1 rounded-xl text-[10px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all cursor-pointer"
                     >
                       &gt; Rs. 100K
@@ -779,10 +779,10 @@ export default function ProductCatalogFilter({
                     </span>
                   ))}
 
-                  {(priceRange[0] > 0 || priceRange[1] < 300000) && (
+                  {(priceRange[0] > 0 || priceRange[1] < 1000000) && (
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100 text-slate-800 text-xs font-bold font-mono">
                       Rs. {priceRange[0].toLocaleString()} – Rs. {priceRange[1].toLocaleString()}
-                      <X className="w-3 h-3 cursor-pointer" onClick={() => setPricePreset(0, 300000)} />
+                      <X className="w-3 h-3 cursor-pointer" onClick={() => setPricePreset(0, 1000000)} />
                     </span>
                   )}
 
@@ -987,7 +987,7 @@ export default function ProductCatalogFilter({
                           <div className="flex items-center justify-between text-xs font-bold text-slate-800">
                             <span className="flex items-center gap-2">
                               <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse" />
-                              Loaded {visibleProducts.length} of {filteredProducts.length} Hardware Items
+                              Loaded {visibleProducts.length} of {filteredProducts.length} products
                             </span>
                             <span className="text-[11px] font-mono font-black text-brand-600 bg-brand-50 px-2.5 py-0.5 rounded-lg">
                               {Math.round((visibleProducts.length / filteredProducts.length) * 100)}% EXPLORED
@@ -1015,7 +1015,7 @@ export default function ProductCatalogFilter({
                           ) : (
                             <>
                               <PackagePlus className="w-4 h-4 text-brand-400" />
-                              <span>Load Next Hardware ({filteredProducts.length - visibleProducts.length} Remaining)</span>
+                              <span>Show more products ({filteredProducts.length - visibleProducts.length} Remaining)</span>
                               <ArrowRight className="w-4 h-4" />
                             </>
                           )}
@@ -1032,16 +1032,16 @@ export default function ProductCatalogFilter({
 
                         <div className="space-y-1.5 max-w-md mx-auto">
                           <h4 className="text-base sm:text-lg font-black text-white font-display tracking-tight">
-                            You've Viewed All {filteredProducts.length} Matching Hardware Items
+                            You've Viewed All {filteredProducts.length} Matching products
                           </h4>
                           <p className="text-xs sm:text-sm text-white/85">
-                            Need a custom accessory bundle or bulk inquiry? Our Horana support desk is ready on WhatsApp.
+                            Need a custom accessory bundle or bulk inquiry? Our Walasmulla team is ready on WhatsApp.
                           </p>
                         </div>
 
                         <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
                           <a
-                            href="https://wa.me/94783724920?text=Hi%20Tyrelink,%20I%20am%20looking%20for%20a%20custom%20setup%20recommendation"
+                            href="https://wa.me/94712500420?text=Hi%20Tyrelink,%20I%20am%20looking%20for%20a%20custom%20setup%20recommendation"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-white hover:bg-slate-100 text-brand-600 font-bold text-xs shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"

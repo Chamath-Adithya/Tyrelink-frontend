@@ -34,100 +34,49 @@
 </section>
 
 <script>
-  import { gsap } from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-  gsap.registerPlugin(ScrollTrigger);
-
-  function initCinemaExpandAndBlur() {
-    const showcaseSec = document.getElementById('cinematic-showcase');
+  // Measure the actual document position each frame so lazy-loaded imagery
+  // above this section cannot leave stale scroll-trigger coordinates.
+  let cleanupCinema: (() => void) | undefined;
+  function initCinema() {
+    cleanupCinema?.();
+    const section = document.getElementById('cinematic-showcase');
     const frame = document.getElementById('cinema-frame');
-    const video = document.getElementById('cinema-player') as HTMLVideoElement;
+    const video = document.getElementById('cinema-player') as HTMLVideoElement | null;
     const scrim = document.getElementById('cinema-blur-scrim');
-    const nextSec = document.getElementById('ready-to-order-section');
-
-    if (!showcaseSec || !frame || !video) return;
-
-    // Ensure continuous reliable autoplay
-    video.muted = true;
-    const playPromise = video.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(() => {
-        const resumePlay = () => {
-          video.play();
-          window.removeEventListener('scroll', resumePlay);
-          window.removeEventListener('click', resumePlay);
-        };
-        window.addEventListener('scroll', resumePlay, { once: true });
-        window.addEventListener('click', resumePlay, { once: true });
-      });
+    const next = document.getElementById('ready-to-order-section');
+    if (!section || !frame || !video) return;
+    const motion = matchMedia('(prefers-reduced-motion: reduce)');
+    let pending = 0;
+    const clamp = (n: number) => Math.max(0, Math.min(1, n));
+    function update() {
+      pending = 0;
+      const vh = window.innerHeight;
+      const mobile = window.innerWidth < 768;
+      const progress = motion.matches ? 0 : clamp(-section!.getBoundingClientRect().top / (vh * .7));
+      const ease = progress * progress * (3 - 2 * progress);
+      const startWidth = mobile ? window.innerWidth - 32 : Math.min(window.innerWidth * .76, 1100);
+      const startHeight = Math.min(vh * (mobile ? .42 : .56), 620);
+      frame!.style.width = `${startWidth + (window.innerWidth - startWidth) * ease}px`;
+      frame!.style.maxWidth = '100vw';
+      frame!.style.height = `${startHeight + (vh - startHeight) * ease}px`;
+      frame!.style.maxHeight = '100vh';
+      frame!.style.borderRadius = `${24 * (1 - ease)}px`;
+      const overlap = motion.matches || !next ? 0 : clamp((vh - next.getBoundingClientRect().top) / vh);
+      video!.style.filter = `blur(${overlap * 14}px)`;
+      if (scrim) scrim.style.opacity = String(overlap * .55);
     }
-
-    const isMobile = window.innerWidth < 768;
-
-    // PHASE 1: Expand video from compact luxury card to FULL SCREEN as user scrolls through #cinematic-showcase
-    gsap.fromTo(frame, 
-      {
-        width: isMobile ? '92vw' : '72vw',
-        maxWidth: isMobile ? '92vw' : '1100px',
-        height: isMobile ? '42vh' : '56vh',
-        maxHeight: isMobile ? '42vh' : '620px',
-        borderRadius: isMobile ? '20px' : '32px',
-        boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.45)',
-      },
-      {
-        width: '100vw',
-        maxWidth: '100vw',
-        height: '100vh',
-        maxHeight: '100vh',
-        borderRadius: '0px',
-        boxShadow: 'none',
-        ease: 'power1.inOut',
-        scrollTrigger: {
-          trigger: showcaseSec,
-          start: 'top top',
-          end: 'top -70%',
-          scrub: 0.7,
-        }
-      }
-    );
-
-    // PHASE 2: As the Ready to Order CTA section slides up over the full-screen video,
-    // softly blur the video and fade in the dark scrim
-    if (nextSec) {
-      gsap.to(video, {
-        filter: 'blur(16px)',
-        scale: 1.05,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: nextSec,
-          start: 'top bottom',
-          end: 'top top',
-          scrub: true,
-        }
-      });
-
-      if (scrim) {
-        gsap.to(scrim, {
-          opacity: 0.55,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: nextSec,
-            start: 'top bottom',
-            end: 'top top',
-            scrub: true,
-          }
-        });
-      }
-    }
+    const schedule = () => { if (!pending) pending = requestAnimationFrame(update); };
+    window.addEventListener('scroll', schedule, {passive: true});
+    window.addEventListener('resize', schedule, {passive: true});
+    motion.addEventListener('change', schedule);
+    update();
+    if (!motion.matches) video.play().catch(() => {});
+    else video.pause();
+    cleanupCinema = () => { cancelAnimationFrame(pending); window.removeEventListener('scroll',schedule); window.removeEventListener('resize',schedule); motion.removeEventListener('change',schedule); };
   }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initCinemaExpandAndBlur);
-  } else {
-    initCinemaExpandAndBlur();
-  }
-  document.addEventListener('astro:page-load', initCinemaExpandAndBlur);
+  initCinema();
+  document.addEventListener('astro:page-load',initCinema);
+  document.addEventListener('astro:before-swap',()=>cleanupCinema?.());
 </script>
 
 <style>

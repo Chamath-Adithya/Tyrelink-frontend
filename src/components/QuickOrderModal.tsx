@@ -22,7 +22,7 @@ export default function QuickOrderModal({
   selectedUpgrades = [],
   isOpen,
   onClose,
-  whatsappNumber = '94783724920'
+  whatsappNumber = '94712500420'
 }: QuickOrderModalProps) {
   const [name, setName] = useState('');
   const [address, setAddress] = useState('');
