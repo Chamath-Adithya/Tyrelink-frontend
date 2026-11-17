@@ -1,0 +1,235 @@
+---
+import { business } from '../data/business';
+import CinematicVideoShowcase from './CinematicVideoShowcase.astro';
+const sampleReviews = [
+  ['A', 'Sample customer 01', 'Finding the right fit felt simple.', 'The team explained the options clearly and helped me understand which tyre size to look for.'],
+  ['N', 'Sample customer 02', 'Helpful advice, without the rush.', 'I could ask about my vehicle and compare the choices before making a decision.'],
+  ['S', 'Sample customer 03', 'A straightforward experience.', 'It was easy to enquire about availability and discuss delivery with the team.'],
+  ['R', 'Sample customer 04', 'Support for the everyday journey.', 'Being able to send a photo of my tyre and ask for guidance made the process easier.'],
+];
+import { faqs } from '../data/home-faq';
+const benefits = [
+  ['High quality', 'Tyres, tubes and accessories for everyday driving and workshop use.'],
+  ['Best price', 'Ask us for current prices and options that fit your budget.'],
+  ['Best warranty', 'We’ll explain the warranty that applies to your purchase.'],
+  ['Delivery available', 'Confirm delivery options and timing for your town.'],
+];
+const images = ['yokohama-tyres.jpg', '1-removebg-preview.png', 'H464abae489cf4f04bd1b26a9a6b947754.avif'];
+const orderUrl = business.whatsapp + '?text=' + encodeURIComponent('Hi Tyrelink, I would like to place an order');
+---
+<section class="home-trust" aria-labelledby="home-trust-title">
+  <div class="trust-intro">
+    <div class="trust-heading">
+      <p class="legacy-kicker">TyreLink · Since 1994</p>
+      <h2 id="home-trust-title"><span class="trust-line"><span class="trust-word">Good advice.</span></span><span class="trust-line"><span class="trust-word trust-word-muted">Every mile ahead.</span></span></h2>
+      <p>Why choose us? Because finding the right fit should feel simple. From our beginnings as CIN Distributors, we’ve helped drivers and workshops across Sri Lanka move forward.</p>
+      <a class="legacy-link" href="/about">Get to know TyreLink ↗</a>
+    </div>
+    <div class="trust-history" style="--step:1">
+      <span class="history-label">Our journey</span>
+      <strong>1994<span>→ Today</span></strong>
+      <p>Local knowledge.<br />A world of choice.</p>
+      <div class="history-line" aria-hidden="true"><i></i></div>
+    </div>
+  </div>
+  <ul class="benefits">
+    {benefits.map(([title, description], i) => <li class="trust-benefit" style={`--step:${i}`}><span class="benefit-number">0{i + 1}<span aria-hidden="true">↗</span></span><h3>{title}</h3><p>{description}</p></li>)}
+  </ul>
+</section>
+<section class="customer-reviews" aria-labelledby="reviews-heading">
+  <div class="reviews-heading closing-reveal"><div><p class="legacy-kicker">People & their journeys</p><h2 id="reviews-heading">Customer reviews.</h2></div><p class="sample-notice">Sample reviews · Design preview<br />These are illustrative, not real Google reviews.</p></div>
+  <div class="review-grid">
+    {sampleReviews.map(([initial, name, title, body], i) => <article class="review-story" style={`--step:${i}`}>
+      <span class="review-quote" aria-hidden="true">“</span><p class="sample-label">Sample review</p><h3>{title}</h3><p>{body}</p>
+      <div class="review-author"><img class="review-avatar" src={`/images/review-placeholder-${i + 1}.svg`} alt="Illustrated sample customer avatar" width="38" height="38" loading="lazy" /><div><strong>{name}</strong><small>Illustrative customer story</small></div></div>
+    </article>)}
+  </div>
+  <div class="review-footer closing-reveal"><p>Your experience matters. Explore customer feedback on Google Maps.</p><a class="legacy-link" href={business.googleReviewUrl || business.mapsUrl} target="_blank" rel="noopener noreferrer">Find TyreLink on Google Maps ↗</a></div>
+</section>
+<section class="home-faq" aria-labelledby="faq-heading">
+  <div class="faq-intro closing-reveal"><p class="legacy-kicker">A little clarity</p><h2 id="faq-heading">Before you<br />hit the road.</h2><p>A few answers to make choosing easier.</p><a class="legacy-link" href={orderUrl} target="_blank" rel="noopener noreferrer">Ask our team ↗</a></div>
+  <div class="faq-list">{faqs.map(([question, answer], i) => <details class="closing-reveal" style={`--step:${i}`}><summary><span class="faq-number">0{i + 1}</span><span>{question}</span><span class="faq-toggle" aria-hidden="true">+</span></summary><div class="faq-answer"><p>{answer}</p></div></details>)}</div>
+</section>
+<CinematicVideoShowcase />
+<section id="ready-to-order-section" class="home-order" aria-labelledby="home-order-title">
+  <div class="order-inner">
+    <div class="order-copy reveal-left">
+      <p class="legacy-kicker">Instant WhatsApp Order</p>
+      <h2 id="home-order-title">Not sure what fits? We’ll help you choose.</h2>
+      <p>Send us your vehicle model or a photo of your tyre sidewall.</p>
+      <a class="tl-button" href={orderUrl} target="_blank" rel="noopener noreferrer">Chat on WhatsApp ↗</a>
+    </div>
+    <div class="order-media reveal-right">
+      <div class="order-images" aria-hidden="true">{images.map((image, i) => <img src={`/images/legacy/${image}`} alt="" loading="lazy" style={`--delay:${i * 5}s`} />)}</div>
+      <button type="button" hidden class="order-pause" aria-pressed="false">Pause images</button>
+    </div>
+  </div>
+</section>
+<script>
+  // Viewport-triggered entrances replay when approached again from above.
+  let disposeTrustMotion: (() => void) | undefined;
+  function initTrustMotion() {
+    disposeTrustMotion?.();
+    const section = document.querySelector<HTMLElement>('.home-trust');
+    if (!section) return;
+    const media = matchMedia('(prefers-reduced-motion: reduce)');
+    const lines = [...section.querySelectorAll<HTMLElement>('.trust-word')];
+    const history = section.querySelector<HTMLElement>('.trust-history')!;
+    const rail = section.querySelector<HTMLElement>('.history-line i')!;
+    const benefits = [...section.querySelectorAll<HTMLElement>('.trust-benefit')];
+    const reviews = document.querySelector<HTMLElement>('.customer-reviews')!;
+    const reviewGrid = reviews.querySelector<HTMLElement>('.review-grid')!;
+    const cards = [...reviews.querySelectorAll<HTMLElement>('.review-story')];
+    let frame = 0;
+    const clamp = (value: number) => Math.max(0, Math.min(1, value));
+    const ease = (value: number) => 1 - Math.pow(1 - value, 3);
+    const layoutTop = (el: HTMLElement) => {
+      const transform = getComputedStyle(el).transform;
+      return el.getBoundingClientRect().top - (transform === 'none' ? 0 : new DOMMatrixReadOnly(transform).m42);
+    };
+    document.body.classList.add('home-background-motion');
+    const entranceStarts = new Map<HTMLElement, number>();
+    function render(now = performance.now()) {
+      frame = 0;
+      const viewportHeight = window.innerHeight;
+      const reviewBounds = reviews.getBoundingClientRect();
+      const inReviews = reviewBounds.top < viewportHeight * .72 &&
+        reviewBounds.bottom > viewportHeight * .46;
+      document.body.classList.toggle('home-background-red', inReviews);
+      reviews.classList.toggle('reviews-active', inReviews);
+      const elements = [...lines, history, rail, ...benefits, ...cards];
+      if (media.matches) {
+        entranceStarts.clear();
+        section!.classList.remove('trust-motion');
+        elements.forEach(el => {el.style.removeProperty('transform'); el.style.removeProperty('opacity'); el.style.removeProperty('--draw');});
+        return;
+      }
+      section!.classList.add('trust-motion');
+      const vh = window.innerHeight;
+      const mobile = window.innerWidth < 701;
+      // Start only once the element is in view. Play through even if scrolling stops.
+      let animating = false;
+      const entrance = (element: HTMLElement, top: number, delay: number, duration: number) => {
+        if (top >= vh) {
+          entranceStarts.delete(element);
+          return 0;
+        }
+        if (element.getBoundingClientRect().bottom < 0) return 1;
+        if (!entranceStarts.has(element)) {
+          if (top > vh * .8) return 0;
+          entranceStarts.set(element, now);
+        }
+        const progress = clamp((now - entranceStarts.get(element)! - delay) / duration);
+        if (progress < 1) animating = true;
+        return progress;
+      };
+      const headingTop = section!.querySelector('h2')!.getBoundingClientRect().top;
+      lines.forEach((line, i) => {
+        const progress = ease(entrance(line, headingTop, i * 135, 820));
+        line.style.transform = `translate3d(0,${(1-progress)*108}%,0) rotate(${(1-progress)*2}deg)`;
+        line.style.opacity = String(.2 + progress * .8);
+      });
+      // Each block uses its own viewport position so stacked mobile content
+      // animates when reached rather than finishing while still offscreen.
+      const historyProgress = ease(entrance(history, layoutTop(history), mobile ? 0 : 180, 950));
+      history.style.transform = `translate3d(${(1-historyProgress)*(mobile?0:110)}px,${(1-historyProgress)*64}px,0)`;
+      history.style.opacity = String(.25 + .75*historyProgress);
+      rail.style.transform = `scaleX(${historyProgress})`;
+      const gridTop = reviewGrid.getBoundingClientRect().top;
+      cards.forEach((card, i) => {
+        const top = gridTop + card.offsetTop;
+        const t = entrance(card, top, (mobile ? i % 2 : i) * 135, 1000);
+        // A controlled overshoot gives each card weight as it drops into place.
+        const drop = 1 + 2.70158 * Math.pow(t - 1, 3) + 1.70158 * Math.pow(t - 1, 2);
+        const remaining = 1 - drop;
+        card.style.transform = `translate3d(0,${-remaining*(mobile?70:150)}px,0) rotate(${remaining*(i%2?6:-6)}deg)`;
+        card.style.opacity = String(clamp(t * 4));
+      });
+      benefits.forEach((item, i) => {
+        const progress = ease(entrance(item, layoutTop(item), (mobile ? i % 2 : i) * 95, 780));
+        item.style.transform = `translate3d(${(1-progress)*(mobile?0:(i-1.5)*30)}px,${(1-progress)*(mobile?36:90)}px,0)`;
+        item.style.opacity = String(.18 + .82*progress);
+        item.style.setProperty('--draw', String(progress));
+      });
+      if (animating) schedule();
+    }
+    const schedule = () => {if (!frame) frame = requestAnimationFrame(render);};
+    window.addEventListener('scroll', schedule, {passive:true});
+    window.addEventListener('resize', schedule, {passive:true});
+    media.addEventListener('change', schedule);
+    render();
+    disposeTrustMotion = () => {document.body.classList.remove('home-background-motion', 'home-background-red');cancelAnimationFrame(frame);window.removeEventListener('scroll',schedule);window.removeEventListener('resize',schedule);media.removeEventListener('change',schedule);};
+  }
+  initTrustMotion();
+  document.addEventListener('astro:page-load', initTrustMotion);
+  document.addEventListener('astro:before-swap', () => disposeTrustMotion?.());
+
+  const closingElements = document.querySelectorAll<HTMLElement>('.closing-reveal');
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  if (!reducedMotion.matches && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(({isIntersecting, target}) => {
+        if (isIntersecting) { target.classList.add('is-visible'); observer.unobserve(target); }
+      });
+    }, {threshold: 0.12});
+    closingElements.forEach(el => { el.classList.add('motion-ready'); observer.observe(el); });
+  }
+  const toggle = document.querySelector<HTMLButtonElement>('.order-pause');
+  if (toggle) {
+    toggle.hidden = false;
+    toggle.addEventListener('click', () => {
+      const paused = toggle.closest('.order-media')?.classList.toggle('is-paused') ?? false;
+      toggle.setAttribute('aria-pressed', String(paused));
+    });
+  }
+</script>
+<style>
+  .home-trust,.order-inner{width:min(1240px,calc(100% - 40px));margin:auto;padding-block:clamp(48px,7vw,100px)}
+  h2{font-size:clamp(34px,4.6vw,68px);line-height:1.05;margin-block:12px 18px}
+  p{color:#59606a;line-height:1.65;max-width:61ch}
+  .home-trust,.customer-reviews,.home-faq{width:min(1240px,calc(100% - 48px));margin:auto;padding-block:clamp(56px,7vw,96px);color:var(--ink,#151b29)}
+  .trust-intro{display:grid;grid-template-columns:1.3fr 1fr;gap:70px;align-items:center}
+  .trust-heading h2,.reviews-heading h2,.faq-intro h2{font-size:clamp(32px,4vw,54px);letter-spacing:-.045em;line-height:1.1;margin:14px 0 22px}
+  .trust-line{display:block;overflow:hidden;padding-bottom:.08em;margin-bottom:-.08em}.trust-word{display:block;transform-origin:0 100%}.trust-word-muted{color:#74796f}.trust-heading>p:not(.legacy-kicker){font-size:15px;max-width:51ch}.trust-heading a,.faq-intro a{display:inline-block;margin-top:24px}
+  .trust-history{padding:36px 0 36px 44px;border-left:1px solid var(--line,#deded8)}
+  .history-label,.sample-label{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:#72766f;font-weight:700}
+  .trust-history strong{display:block;font-size:clamp(58px,7vw,94px);line-height:1.1;letter-spacing:-.07em;margin:18px 0;color:#df1825}
+  .trust-history strong span{font-size:17px;letter-spacing:-.02em;color:var(--ink);margin-left:16px}.trust-history p{font-size:20px;line-height:1.5}
+  .history-line{height:2px;background:#deded8;margin-top:24px;position:relative;overflow:hidden}.history-line i{display:block;width:100%;height:100%;background:#e11b26;transform-origin:left}
+  .benefits{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:30px;margin-top:52px;list-style:none;padding:0}
+  .benefits li{border-top:1px solid var(--line,#deded8);padding-top:18px;position:relative}.benefits li::before{content:"";position:absolute;top:-1px;left:0;width:100%;height:1px;background:#df1825;transform:scaleX(var(--draw,1));transform-origin:left}.trust-motion .trust-word,.trust-motion .trust-history,.trust-motion .trust-benefit{will-change:transform,opacity}.benefit-number{display:flex;justify-content:space-between;font-size:11px;color:#df1825;font-weight:700;margin-bottom:24px}.benefit-number span{font-size:18px}
+  .benefits h3{font-size:17px;font-weight:800;letter-spacing:-.025em}.benefits p{font-size:13px;margin-top:10px;line-height:1.8}
+  .customer-reviews{border-top:1px solid var(--line,#deded8)}.reviews-heading{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:30px}.sample-notice{font-size:11px;line-height:1.7;border-left:2px solid #df1825;padding-left:14px}
+  .review-grid{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.review-story{background:white;border:1px solid var(--line,#deded8);border-radius:14px;padding:24px;display:flex;flex-direction:column;align-items:start}.review-quote{font-size:64px;color:#e21d29;height:48px;line-height:1;font-family:Georgia,serif}.review-story h3{font-size:18px;line-height:1.4;margin:14px 0}.review-story>p:not(.sample-label){font-size:13px;line-height:1.8;margin-bottom:26px}.review-author{display:flex;align-items:center;gap:10px;margin-top:auto;padding-top:18px;border-top:1px solid #eeeee9;width:100%}.review-avatar{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;background:#eeede7;color:#464a41;font-weight:800;flex-shrink:0}.review-author strong{font-size:11px}.review-author small{display:block;font-size:9px;color:#767970;margin-top:3px}.review-footer{display:flex;justify-content:space-between;align-items:center;gap:24px;margin-top:28px}.review-footer p{font-size:12px}
+  .home-faq{display:grid;grid-template-columns:.85fr 1.3fr;gap:70px;border-top:1px solid var(--line,#deded8)}.faq-intro p{font-size:14px}.faq-list details{border-bottom:1px solid var(--line,#deded8)}.faq-list details:first-child{border-top:1px solid var(--line,#deded8)}.faq-list summary{display:flex;gap:18px;align-items:center;padding:24px 0;cursor:pointer;font-size:14px;font-weight:700;list-style:none}.faq-list summary::-webkit-details-marker{display:none}.faq-number{font-size:10px;color:#979b92}.faq-toggle{margin-left:auto;font-size:24px;font-weight:400;transition:transform .3s;color:#df1825}.faq-list details[open] .faq-toggle{transform:rotate(45deg)}.faq-answer{padding:0 24px 24px 32px}.faq-answer p{font-size:13px;line-height:1.9}.faq-list details[open] .faq-answer{animation:answer-in .35s ease-out}summary:focus-visible,a:focus-visible,button:focus-visible{outline:2px solid #df1825;outline-offset:5px}
+  .closing-reveal.motion-ready{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .9s cubic-bezier(.16,1,.3,1);transition-delay:calc(var(--step,0)*80ms)}.closing-reveal.is-visible{opacity:1;transform:none}
+  @keyframes answer-in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+  @media(max-width:1000px){.review-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.trust-intro,.home-faq{gap:32px}}
+  @media(max-width:700px){.home-trust,.customer-reviews,.home-faq{width:calc(100% - 36px)}.trust-intro,.home-faq{grid-template-columns:1fr}.trust-history{border-left:0;border-top:1px solid var(--line);padding:24px 0}.trust-history strong{font-size:64px}.benefits{margin-top:20px}.reviews-heading,.review-footer{flex-direction:column;align-items:start}.review-grid{gap:12px}.review-story{padding:18px}.review-story h3{font-size:16px}.review-author{flex-wrap:wrap}.review-footer a{white-space:normal}.faq-list summary{min-height:64px}.sample-notice{margin-bottom:10px}}
+  @media(max-width:400px){.review-grid{grid-template-columns:1fr}}
+  @media(prefers-reduced-motion:reduce){.closing-reveal.motion-ready{opacity:1;transform:none;transition:none}.history-line i{transform:none;transition:none}.faq-answer{animation:none!important}}
+  .customer-reviews{position:relative;isolation:isolate;border-top:0}
+  :global(body.home-background-motion) {
+    transition: background-color 750ms ease;
+  }
+  :global(body.home-background-red) {
+    background-color: #c91424 !important;
+  }
+  :global(body.home-background-red) .home-trust,
+  :global(body.home-background-red) .home-faq,
+  :global(body.home-background-red) :is(.home-trust, .home-faq) :is(p, .legacy-kicker, .history-label, .trust-word-muted, .trust-history strong, .trust-history strong span, .benefit-number, .faq-number, .faq-toggle) {
+    color: #fff;
+  }
+  .customer-reviews.reviews-active .reviews-heading h2,.customer-reviews.reviews-active .reviews-heading .legacy-kicker,.customer-reviews.reviews-active .sample-notice,.customer-reviews.reviews-active .review-footer p,.customer-reviews.reviews-active .review-footer a{color:#fff}
+  .customer-reviews.reviews-active .sample-notice,.customer-reviews.reviews-active .review-footer a{border-color:#ffffff80}
+  .review-story{transform-origin:50% 20%;will-change:transform,opacity;box-shadow:0 18px 38px #59091112}
+  .trust-history{transform-origin:center}.trust-intro{perspective:1000px}
+  @media(prefers-reduced-motion:reduce){:global(body.home-background-motion){transition:none}.review-story{transform:none!important;opacity:1!important}}
+  .home-order{background:#edece7}.order-inner{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,80px);align-items:center}
+  .order-copy a{margin-top:24px}.order-images{display:grid;background:#fbfaf7;aspect-ratio:4/3;overflow:hidden}
+  .order-images img{grid-area:1/1;min-height:0;width:100%;height:100%;object-fit:contain;padding:24px;mix-blend-mode:multiply;opacity:0;animation:order-image 15s infinite both;animation-delay:var(--delay)}
+  .order-pause{font-size:12px;text-decoration:underline;margin-top:8px;padding:6px;color:#424850}.is-paused img{animation-play-state:paused}
+  @keyframes order-image{0%{opacity:0;transform:scale(.98)} 5%,32%{opacity:1} 37%,100%{opacity:0} 37%{transform:scale(1.04)}}
+  @media(max-width:700px){.benefits{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.order-inner{grid-template-columns:1fr}}
+  @media(prefers-reduced-motion:reduce){.order-images img{animation:none;opacity:0}.order-images img:first-child{opacity:1}.order-pause{display:none}}
+</style>

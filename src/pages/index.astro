@@ -7,8 +7,8 @@ import CategoryStrip from '../components/CategoryStrip.astro';
 import ProductCard from '../components/ProductCard.astro';
 import ProductCarousel from '../components/ProductCarousel';
 import HomeExploreProducts from '../components/HomeExploreProducts';
-import TrustSection from '../components/TrustSection.astro';
-import CinematicVideoShowcase from '../components/CinematicVideoShowcase.astro';
+import HomeClosing from '../components/HomeClosing.astro';
+import { faqs } from '../data/home-faq';
 
 import productsData from '../data/products.json';
 import campaignsData from '../data/campaigns.json';
@@ -27,20 +27,7 @@ const trendingIds = new Set(campaignsData.trending?.productIds || []);
 // available through the section CTA for customers who want more choice.
 const bestSellers = products.filter(p => (trendingIds.has(p.id) || p.isBestSeller) && !flashDealIds.has(p.id)).slice(0, 5);
 
-const faqData = [
-  {
-    question: 'How do I place an order with 1-Click WhatsApp Quick Order?',
-    answer: 'Simply click "Buy via WhatsApp" or "Quick Order" on any tyre or tool, fill in your delivery name, address, and mobile number. Your order is registered in our system and pre-filled in WhatsApp to confirm fitment and delivery.'
-  },
-  {
-    question: 'Is Cash on Delivery (COD) available throughout Sri Lanka?',
-    answer: 'Yes! We provide islandwide Cash on Delivery (COD) to all 25 districts in Sri Lanka within 1-3 business days. You can inspect the tyre manufacture dates (DOT) and condition upon arrival.'
-  },
-  {
-    question: 'How do I get help with a product warranty?',
-    answer: 'Keep your invoice and contact our WhatsApp support desk. Our team will confirm the applicable manufacturer warranty and guide you through the claim process.'
-  }
-];
+const faqData = faqs.map(([question, answer]) => ({question, answer}));
 ---
 
 <Layout 
@@ -165,43 +152,8 @@ const faqData = [
       </div>
 
       <LegacyCollections />
-      <!-- Full-width Trust Section -->
-      <TrustSection />
       <LegacyFeatured />
-
-      <!-- Cinematic Automotive Video Showcase (Full-width expanding viewport with blur slide-over) -->
-      <CinematicVideoShowcase />
-
-      <!-- Bottom CTA strip (Ready to Order? Chat With Us Now! on original light background) -->
-      <div id="ready-to-order-section" class="relative z-20 max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div class="relative rounded-[1.75rem] overflow-hidden p-8 sm:p-12 text-center reveal shadow-[0_28px_70px_rgba(227,27,35,.22)]"
-          style="background: linear-gradient(135deg, #f02a32 0%, #cf1820 52%, #941017 100%);">
-          <!-- Background texture -->
-          <div class="absolute inset-0 tech-dot-grid opacity-15 pointer-events-none"></div>
-          
-          <div class="relative z-10 max-w-xl mx-auto space-y-5">
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/20 text-white text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm">
-              <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-              Instant WhatsApp Order
-            </div>
-            <h2 class="text-2xl sm:text-3xl font-black text-white font-display tracking-tight">
-Not sure what fits? We&apos;ll help you choose.
-            </h2>
-            <p class="text-sm text-white/80 font-sinhala">
-              ඔබේ order WhatsApp හරහා ක්ෂණිකව දෙන්න — Cash on Delivery
-            </p>
-            <a
-              href="https://wa.me/94712500420?text=Hi%20Tyrelink,%20I%20would%20like%20to%20place%20an%20order"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-white text-brand-600 font-bold text-sm hover:scale-105 hover:shadow-[0_12px_32px_rgba(0,0,0,0.2)] active:scale-95 transition-all"
-            >
-              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-              Chat on WhatsApp
-            </a>
-          </div>
-        </div>
-      </div>
+      <HomeClosing />
     </div>
   </div>
 
