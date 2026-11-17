@@ -131,7 +131,7 @@ export default function InfiniteProductFeed({ currentProductId }: InfiniteProduc
                 window.location.href = `/product/${product.slug}`;
               }}
               style={{ animationDelay: `${(idx % 5) * 60}ms` }}
-              className="product-card tyrelink-product-card bg-white w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-13.33px)] lg:w-[calc(20%-16px)] max-w-[320px] lg:max-w-none h-[410px] flex flex-col justify-between p-4 group relative text-left rounded-xl border border-slate-200 hover:border-brand-500 transition-all duration-300 hover:-translate-y-1 overflow-hidden animate-[fadeIn_0.45s_ease_both] cursor-pointer shrink-0 select-none"
+              className="recommended-card product-card tyrelink-product-card bg-white w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-13.33px)] lg:w-[calc(20%-16px)] max-w-[320px] lg:max-w-none h-[410px] flex flex-col justify-between p-4 group relative text-left rounded-xl border border-slate-200 hover:border-brand-500 transition-all duration-300 hover:-translate-y-1 overflow-hidden animate-[fadeIn_0.45s_ease_both] cursor-pointer shrink-0 select-none"
             >
               <div className="flex-1 flex flex-col min-h-0">
                 {/* Uniform Fixed-Height Image Stage */}

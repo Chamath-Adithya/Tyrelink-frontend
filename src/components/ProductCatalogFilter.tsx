@@ -84,6 +84,7 @@ export default function ProductCatalogFilter({
   const [isLoadingBatch, setIsLoadingBatch] = useState<boolean>(false);
 
   // Compact Sticky Floating Bar on Scroll
+  const hydratedFromUrl = useRef(false);
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState<boolean>(false);
 
@@ -150,6 +151,7 @@ export default function ProductCatalogFilter({
         setMaxInputStr(parsedMax.toString());
       }
       if (sort) setSortBy(sort);
+      hydratedFromUrl.current = true;
 
       // Smooth auto-scroll if redirected with #catalog-products hash
       if (window.location.hash === '#catalog-products') {
@@ -188,7 +190,11 @@ export default function ProductCatalogFilter({
   };
 
   useEffect(() => {
-    updateUrlParams();
+    if (hydratedFromUrl.current) {
+      const timer = window.setTimeout(updateUrlParams, 100);
+      setVisibleCount(BATCH_SIZE);
+      return () => window.clearTimeout(timer);
+    }
     // Reset visible count to first batch on any filter alteration
     setVisibleCount(BATCH_SIZE);
   }, [searchQuery, selectedCategory, selectedBrands, priceRange, sortBy, flashOnly]);
@@ -401,7 +407,7 @@ export default function ProductCatalogFilter({
 
       {/* Top Search & Filter Bar - Sticky on Desktop, Natural Flow on Mobile */}
       <div
-        className={`relative md:sticky md:top-[112px] z-30 transition-all duration-300 ease-out text-left border ${isScrolled
+        id="catalog-filter-start" className={`relative md:sticky md:top-[calc(var(--header-height,112px)+12px)] z-30 transition-all duration-300 ease-out text-left border ${isScrolled
               ? 'bg-white/95 backdrop-blur-2xl rounded-2xl md:rounded-full py-2.5 px-4 shadow-[0_16px_36px_-10px_rgba(0,0,0,0.14),0_0_0_1px_rgba(237,28,36,0.18)] border-brand-500/25 space-y-0'
               : 'bg-white/95 backdrop-blur-xl rounded-2xl sm:rounded-xl p-3.5 sm:p-5 shadow-[0_12px_36px_-6px_rgba(0,0,0,0.08),0_2px_8px_-2px_rgba(0,0,0,0.04)] border-slate-200/80 space-y-3 sm:space-y-3.5'
         }`}
@@ -838,7 +844,7 @@ export default function ProductCatalogFilter({
                         window.location.href = `/product/${product.slug}`;
                       }}
                       style={{ animationDelay: `${(idx % 8) * 60}ms` }}
-                      className="product-card tyrelink-product-card bg-white w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-13.33px)] lg:w-[calc(20%-16px)] max-w-[320px] lg:max-w-none h-[410px] flex flex-col justify-between p-4 group relative text-left rounded-xl border border-slate-200 hover:border-brand-500 transition-all duration-300 hover:-translate-y-1 overflow-hidden animate-[fadeIn_0.45s_ease_both] cursor-pointer shrink-0 select-none"
+                      className="catalog-card product-card tyrelink-product-card bg-white w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-13.33px)] lg:w-[calc(20%-16px)] max-w-[320px] lg:max-w-none h-[410px] flex flex-col justify-between p-4 group relative text-left rounded-xl border border-slate-200 hover:border-brand-500 transition-all duration-300 hover:-translate-y-1 overflow-hidden animate-[fadeIn_0.45s_ease_both] cursor-pointer shrink-0 select-none"
                     >
                       {/* Admin Quick Edit Button */}
                       <button
@@ -858,7 +864,7 @@ export default function ProductCatalogFilter({
                         {/* Uniform Fixed-Height Image Stage */}
                         <a
                           href={`/product/${product.slug}`}
-                          className="block relative h-[190px] w-full rounded-lg overflow-hidden border border-slate-200/80 mb-2.5 flex items-center justify-center p-3 bg-slate-50/50 shrink-0"
+                          className="catalog-image block relative h-[190px] w-full rounded-lg overflow-hidden border border-slate-200/80 mb-2.5 flex items-center justify-center p-3 bg-slate-50/50 shrink-0"
                         >
                           <img
                             src={product.featuredImage}
@@ -909,7 +915,7 @@ export default function ProductCatalogFilter({
                       </div>
 
                       {/* Price & Action Footer (Standardized 64px Height) */}
-                      <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2 h-[64px] shrink-0">
+                      <div className="catalog-price pt-3 border-t border-slate-100 flex items-center justify-between gap-2 h-[64px] shrink-0">
                         <div className="min-w-0 flex-1">
                           <div className="flex items-baseline gap-1.5 flex-nowrap">
                             <span className="text-base sm:text-lg font-black text-slate-900 font-display tracking-tight leading-none truncate">

@@ -237,41 +237,30 @@ const breadcrumbs = [
       function initProductScroll() {
         const stickyBar = document.getElementById('sticky-buy-bar');
         const mainCta = document.getElementById('main-buy-cta');
-        const footer = document.querySelector('footer');
+        const footer = document.getElementById('site-footer');
 
         if (stickyBar && mainCta) {
-          let pastMainCta = false;
-          let footerInView = false;
-
+          let ticking = false;
           function updateBarVisibility() {
-            if (pastMainCta && !footerInView) {
-              stickyBar.classList.add('is-visible');
-            } else {
-              stickyBar.classList.remove('is-visible');
-            }
+            ticking = false;
+            const pastMainCta = mainCta!.getBoundingClientRect().bottom < 0;
+            const overlap = footer ? Math.max(0, window.innerHeight - footer.getBoundingClientRect().top) : 0;
+            (stickyBar as HTMLElement).style.bottom = `${overlap}px`;
+            const visible = pastMainCta;
+            stickyBar!.classList.toggle('is-visible', visible);
+            stickyBar!.setAttribute('aria-hidden', String(!visible));
+            (stickyBar as HTMLElement).inert = !visible;
           }
-
-          // Monitor main buy CTA
-          const ctaObserver = new IntersectionObserver(
-            ([entry]) => {
-              pastMainCta = !entry.isIntersecting && entry.boundingClientRect.top < 0;
-              updateBarVisibility();
-            },
-            { threshold: 0 }
-          );
-          ctaObserver.observe(mainCta);
-
-          // Gracefully hide buy bar when footer is in view
-          if (footer) {
-            const footerObserver = new IntersectionObserver(
-              ([entry]) => {
-                footerInView = entry.isIntersecting;
-                updateBarVisibility();
-              },
-              { threshold: 0.05 }
-            );
-            footerObserver.observe(footer);
+          function scheduleUpdate() {
+            if (!ticking) { ticking = true; requestAnimationFrame(updateBarVisibility); }
           }
+          window.addEventListener('scroll', scheduleUpdate, { passive: true });
+          window.addEventListener('resize', scheduleUpdate, { passive: true });
+          updateBarVisibility();
+          document.addEventListener('astro:before-swap', () => {
+            window.removeEventListener('scroll', scheduleUpdate);
+            window.removeEventListener('resize', scheduleUpdate);
+          }, { once: true });
         }
       }
 

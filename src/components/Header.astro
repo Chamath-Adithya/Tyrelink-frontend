@@ -233,6 +233,13 @@ const filteredCategories = categories;
     window.addEventListener('scroll', updateNavScroll, { passive: true });
     window.addEventListener('resize', updateNavScroll, { passive: true });
     updateNavScroll();
+    if (headerEl && 'ResizeObserver' in window) {
+      const observer = new ResizeObserver(() => {
+        document.documentElement.style.setProperty('--header-height', `${Math.ceil(headerEl.getBoundingClientRect().height)}px`);
+      });
+      observer.observe(headerEl);
+      document.addEventListener('astro:before-swap', () => observer.disconnect(), { once: true });
+    }
   }
 
   if (document.readyState === 'loading') {
