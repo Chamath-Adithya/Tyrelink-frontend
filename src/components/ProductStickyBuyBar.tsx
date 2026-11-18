@@ -8,7 +8,9 @@ interface ProductStickyBuyBarProps {
 }
 
 export default function ProductStickyBuyBar({ product }: ProductStickyBuyBarProps) {
+  const available = product.inStock && product.stockCount !== 0;
   const handleOrderNow = () => {
+    if (!available) return;
     openCheckoutModal({
       items: [
         {
@@ -23,6 +25,7 @@ export default function ProductStickyBuyBar({ product }: ProductStickyBuyBarProp
   };
 
   const handleAddToCart = () => {
+    if (!available) return;
     addToCart({
       id: product.id,
       slug: product.slug,
@@ -30,14 +33,14 @@ export default function ProductStickyBuyBar({ product }: ProductStickyBuyBarProp
       price: product.price,
       image: product.featuredImage,
       brand: product.brand,
-      maxOrderQuantity: product.maxOrderQuantity || 3,
+      maxOrderQuantity: Math.min(product.maxOrderQuantity || 3, product.stockCount ?? 999),
     });
   };
 
   return (
     <div className="flex items-center gap-2 shrink-0">
       <button
-        onClick={handleAddToCart}
+        disabled={!available} onClick={handleAddToCart}
         type="button"
         className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition-colors cursor-pointer border border-slate-200 shadow-sm"
       >
@@ -46,7 +49,7 @@ export default function ProductStickyBuyBar({ product }: ProductStickyBuyBarProp
       </button>
 
       <button
-        onClick={handleOrderNow}
+        disabled={!available} onClick={handleOrderNow}
         type="button"
         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs sm:text-sm shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer"
       >

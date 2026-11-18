@@ -3,7 +3,7 @@ import products from '../data/products.json';
 import categories from '../data/categories.json';
 import { business } from '../data/business';
 export const GET: APIRoute = ({ site }) => {
-  const paths = ['/', '/shop', '/about', '/contact', '/faq',
+  const paths = ['/', '/shop', '/about', '/contact', '/faq', '/tools',
     ...categories.map(category => `/category/${category.id}`),
     ...products.map(product => `/product/${product.slug}`)];
   const escape = (value: string) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

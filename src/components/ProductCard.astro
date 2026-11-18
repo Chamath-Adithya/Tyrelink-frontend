@@ -65,8 +65,10 @@ const waOrderMsg = `Hello Tyrelink, I want to order ${product.brand} ${product.t
       <button 
         type="button"
         class="absolute top-2.5 right-2.5 z-20 w-8 h-8 rounded-full bg-white/85 hover:bg-white text-slate-400 hover:text-red-500 backdrop-blur-md flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-200 hover:scale-110 active:scale-95 border border-white/80 cursor-pointer"
-        aria-label="Save to wishlist"
-        onclick="event.preventDefault(); event.stopPropagation(); this.classList.toggle('text-red-500'); this.classList.toggle('wished')"
+        aria-label={`Save ${product.title}`}
+        data-save-product={product.id}
+        aria-pressed="false"
+        onclick="event.preventDefault(); event.stopPropagation(); window.dispatchEvent(new CustomEvent('tyrelink:save-product', {detail:this.dataset.saveProduct}))"
       >
         <svg class="w-4 h-4 transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
@@ -174,3 +176,11 @@ const waOrderMsg = `Hello Tyrelink, I want to order ${product.brand} ${product.t
     </div>
   </div>
 </div>
+
+<script>
+import { toggleSaved, readIds, SAVED_KEY } from '../utils/shoppingStore';
+function syncSavedCards(){const saved=readIds(SAVED_KEY);document.querySelectorAll<HTMLButtonElement>('[data-save-product]').forEach(button=>{const active=saved.includes(button.dataset.saveProduct!);button.setAttribute('aria-pressed',String(active));button.classList.toggle('text-red-500',active);});}
+window.addEventListener('tyrelink:save-product', (event:Event)=>{toggleSaved((event as CustomEvent<string>).detail);syncSavedCards();});
+window.addEventListener('tyrelink:shopping',syncSavedCards);document.addEventListener('astro:page-load',syncSavedCards);syncSavedCards();
+</script>
+<style>[data-save-product]:focus-visible{opacity:1;pointer-events:auto}[data-save-product][aria-pressed=true] svg{fill:currentColor}@media(hover:none){[data-save-product]{opacity:1;pointer-events:auto}}</style>

@@ -25,7 +25,7 @@ const canonical = new URL(canonicalUrl || Astro.url.pathname, origin);
 canonical.search = '';
 canonical.hash = '';
 const imageUrl = new URL(image, origin).href;
-const privatePage = Astro.url.pathname.startsWith('/admin') || Astro.url.pathname === '/404';
+const privatePage = Astro.url.pathname.startsWith('/admin') || Astro.url.pathname.startsWith('/merchant') || Astro.url.pathname === '/404';
 const absolute = (url: string) => new URL(url, origin).href;
 const schemas: Record<string, unknown>[] = [
   {

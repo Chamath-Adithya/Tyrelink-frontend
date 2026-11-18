@@ -44,10 +44,9 @@ export default function ProductVideoReview({
     return () => window.removeEventListener(ADMIN_EVENT_PRODUCTS, handleUpdate);
   }, [productId]);
 
-  // Default authentic tyre testing & fitment guide dummy video if no custom video is assigned
-  const DEFAULT_TYRE_VIDEO_ID = 'e_E3B2yO_mU';
-  const cleanId = (activeYoutubeId && activeYoutubeId.trim()) ? activeYoutubeId.trim() : DEFAULT_TYRE_VIDEO_ID;
-  const isCustomReview = Boolean(activeYoutubeId && activeYoutubeId.trim());
+  const cleanId = activeYoutubeId?.trim() || '';
+  if (!/^[A-Za-z0-9_-]{11}$/.test(cleanId)) return null;
+  const isCustomReview = true;
 
   // High-Res WebP thumbnail with fallback for low networks
   const primaryThumb = `https://i.ytimg.com/vi_webp/${cleanId}/maxresdefault.webp`;
@@ -62,7 +61,7 @@ export default function ProductVideoReview({
           <span className="w-2 h-2 rounded-full bg-[#ed1c24] animate-pulse"></span>
           {isCustomReview ? 'Hands-On Review & Sound Test' : 'Tyre Performance & Fitment Guide'}
         </span>
-        <span className="text-[11px] font-medium text-slate-400">Official YouTube</span>
+        <span className="text-[11px] font-medium text-slate-400">Product video</span>
       </div>
 
       {/* Main Responsive 16:9 Video Stage */}

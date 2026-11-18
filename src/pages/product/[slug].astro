@@ -2,204 +2,70 @@
 import Layout from '../../layouts/Layout.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import ProductVideoReview from '../../components/ProductVideoReview';
-import InfiniteProductFeed from '../../components/InfiniteProductFeed';
 import ProductImageGallery from '../../components/ProductImageGallery.astro';
 import ProductPurchaseActions from '../../components/ProductPurchaseActions';
 import ProductStickyBuyBar from '../../components/ProductStickyBuyBar';
 import ProductAdminBar from '../../components/admin/ProductAdminBar';
 import ProductKokoBanner from '../../components/ProductKokoBanner';
-
+import ProductExperience from '../../components/ProductExperience';
 import productsData from '../../data/products.json';
 import type { Product } from '../../types';
-
-export async function getStaticPaths() {
-  const products = productsData as Product[];
-  const categoryMap = new Map<string, Product[]>();
-  
-  for (const p of products) {
-    if (!categoryMap.has(p.category)) categoryMap.set(p.category, []);
-    categoryMap.get(p.category)!.push(p);
-  }
-
-  return products.map((product) => {
-    const relatedProducts = (categoryMap.get(product.category) || [])
-      .filter(p => p.id !== product.id)
-      .slice(0, 4);
-
-    return {
-      params: { slug: product.slug },
-      props: { product, relatedProducts },
-    };
-  });
+import '../../styles/product-detail.css';
+export function getStaticPaths() {
+  return (productsData as Product[]).map(product => ({ params: { slug: product.slug }, props: { product } }));
 }
-
-interface Props {
-  product: Product;
-  relatedProducts: Product[];
-}
-
-const { product, relatedProducts } = Astro.props;
-
+const { product } = Astro.props as { product: Product };
+const relatedProducts = (productsData as Product[]).filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
+const category = product.category.replaceAll('-', ' ');
+const faqs = [
+  { question: `Will ${product.title} fit my vehicle?`, answer: `Check the listed specifications against your vehicle requirements. Send our team a photo of your current tyre sidewall or equipment requirements to confirm compatibility before ordering.` },
+  { question: 'What warranty applies?', answer: `${product.warranty}. Ask our team to confirm the applicable manufacturer terms, exclusions and claim process before purchase.` },
+  { question: 'Can I pay in instalments?', answer: 'Koko and Payzy options are shown with the price. Provider eligibility and terms apply; confirm the available payment option when placing your order.' },
+  { question: 'How do I confirm delivery and manufacture date?', answer: 'Send us your town and required quantity. Our team will confirm stock, delivery charges, estimated timing and the available manufacture date before you pay.' },
+];
 const breadcrumbs = [
-  { name: 'Home', item: 'https://tyrelink.lk/' },
-  { name: product.category.toUpperCase(), item: `https://tyrelink.lk/category/${product.category}` },
-  { name: product.title, item: Astro.url.href }
+  { name: 'Home', item: new URL('/', Astro.url).href },
+  { name: category, item: new URL(`/category/${product.category}`, Astro.url).href },
+  { name: product.title, item: Astro.url.href },
 ];
 ---
-
-<Layout
-  title={`${product.title} Price in Sri Lanka | Tyrelink`}
-  description={`Buy ${product.title} at the best price in Sri Lanka. Rs. ${product.price.toLocaleString('en-US')}. 1-Click WhatsApp Quick Checkout with Islandwide Cash on Delivery.`}
-  image={product.featuredImage}
-  product={product}
-  breadcrumbs={breadcrumbs}
->
-  <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 pt-3 sm:pt-5 pb-28 sm:pb-36 space-y-12 sm:space-y-16">
-    
-    <!-- Merchant In-Page Admin Controls (Shown only when Edit Mode is active) -->
+<Layout title={`${product.title} | TyreLink Sri Lanka`} description={`${product.shortDescription} View specifications, payment options and compare ${category} at TyreLink.`} image={product.featuredImage} product={product} breadcrumbs={breadcrumbs} faq={faqs}>
+  <article class="product-detail">
     <ProductAdminBar client:load product={product} />
-
-    <!-- Subtle Modern Breadcrumbs -->
-    <nav class="flex items-center gap-2 text-xs text-slate-400 overflow-x-auto whitespace-nowrap font-medium -mb-4 sm:-mb-6">
-      <a href="/" class="hover:text-brand-600 transition-colors">Home</a>
-      <span class="text-slate-300">/</span>
-      <a href={`/category/${product.category}`} class="hover:text-brand-600 uppercase font-semibold transition-colors">
-        {product.category}
-      </a>
-      <span class="text-slate-300">/</span>
-      <span class="text-slate-800 font-bold truncate max-w-sm">{product.title}</span>
-    </nav>
-
-    <!-- Main Product Showcase Grid with 3D Spatial Framing -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 lg:gap-14 items-start">
-      
-      <!-- Left Column: Multi-Angle High-Res Studio Gallery Showcase -->
-      <div class="lg:col-span-6">
-        
-        {/* Interactive Studio Image Gallery Showcase (Hover Magnifier Lens + Fullscreen Lightbox) */}
-        <ProductImageGallery
-          title={product.title}
-          images={product.images && product.images.length > 0 ? product.images : [product.featuredImage]}
-          featuredImage={product.featuredImage}
-          isFlashDeal={product.isFlashDeal}
-          flashDealDiscount={product.flashDealDiscount}
-        />
-
-        {/* Interactive YouTube Video Review & Sound Test (Reactive island: renders video if present, returns null if absent) */}
-        <ProductVideoReview 
-          client:load 
-          productId={product.id}
-          productTitle={product.title} 
-          youtubeId={product.youtubeReviewId} 
-        />
+    <nav class="pd-breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><a href={`/category/${product.category}`}>{category}</a><span>/</span><span aria-current="page">{product.title}</span></nav>
+    <div class="pd-hero">
+      <div class="pd-visual">
+        <div class="pd-gallery-wrap" data-pd-reveal>
+          <div class="pd-eyebrow"><span>{product.brand}</span><span>Made for your next journey</span></div>
+          <ProductImageGallery title={product.title} images={product.images?.length ? product.images : [product.featuredImage]} featuredImage={product.featuredImage} isFlashDeal={product.isFlashDeal} flashDealDiscount={product.flashDealDiscount} />
+          <p class="pd-image-caption">Explore the details. Select the image for a closer look.</p>
+        </div>
       </div>
-
-      <!-- Right Column: Editorial Product Specs, Pricing & Purchase Engine -->
-      <div class="lg:col-span-6 space-y-8 text-left">
-        
-        {/* Product Title Header */}
-        <div class="space-y-3">
-          <h1 class="text-3xl sm:text-4xl lg:text-[2.6rem] font-black text-slate-900 font-display tracking-tight leading-[1.12]">
-            {product.title}
-          </h1>
-
-          {product.sinhalaTitle && (
-            <p class="text-sm font-medium text-slate-500 font-sinhala leading-relaxed pt-1">
-              {product.sinhalaTitle}
-            </p>
-          )}
-
-          {/* AEO / LLMO: Machine-readable speakable summary for AI answer engines */}
-          <p class="product-speakable-summary sr-only">
-            {product.title} is available at Tyrelink Sri Lanka for Rs. {product.price.toLocaleString('en-US')} with islandwide Cash on Delivery (COD). Brand: {product.brand}. Warranty: {product.warranty}. {product.shortDescription}
-          </p>
+      <div class="pd-summary" data-pd-reveal>
+        <div class="pd-eyebrow"><a href={`/category/${product.category}`}>{category}</a><span class:list={['pd-stock', { 'pd-unavailable': !product.inStock }]}>{product.inStock ? 'Available to order' : 'Enquire about availability'}</span></div>
+        <h1>{product.title}</h1>
+        <p class="pd-description product-speakable-summary">{product.shortDescription}</p>
+        <a class="pd-spec-link" href="#product-specifications">Explore specifications ↓</a>
+        <div class="pd-price-block">
+          <div class="pd-price"><strong>Rs. {product.price.toLocaleString('en-US')}</strong>{product.originalPrice && product.originalPrice > product.price && <del>Rs. {product.originalPrice.toLocaleString('en-US')}</del>}</div>
+          <p class="pd-price-note">Price per item · Confirm current stock with our team</p>
+          <ProductKokoBanner client:load product={product} />
         </div>
-
-        {/* Pricing Card with 3D Elevation */}
-        <div class="p-6 sm:p-8 rounded-2xl bg-white/80 backdrop-blur-2xl shadow-[0_12px_40px_rgba(0,0,0,0.04)] space-y-5 border border-white/90">
-          
-          {/* Main Price & Stock Status Block */}
-          <div class="space-y-3">
-            {/* Price Line */}
-            <div class="flex flex-wrap items-baseline gap-3 sm:gap-4">
-              <span class="text-4xl sm:text-5xl font-black text-slate-900 font-display tracking-tight leading-none">
-                Rs. {product.price.toLocaleString('en-US')}
-              </span>
-              {product.originalPrice && (
-                <span class="text-base sm:text-lg text-slate-400 line-through font-mono">
-                  Rs. {product.originalPrice.toLocaleString('en-US')}
-                </span>
-              )}
-              {product.originalPrice && (
-                <span class="px-3 py-1 rounded-full text-xs font-black bg-emerald-50 text-emerald-700 border border-emerald-200/60 shadow-2xs">
-                  Save Rs. {(product.originalPrice - product.price).toLocaleString('en-US')}
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* Koko BNPL Widget (Dedicated block with clean margin) */}
-          <div class="w-full pt-1">
-            <ProductKokoBanner client:load product={product} />
-          </div>
-
-          {/* Delivery & Dispatch */}
-          <div class="flex items-center text-xs pt-3 border-t border-slate-100 font-medium">
-            <span class="text-slate-500 inline-flex items-center gap-1.5">
-              <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" /></svg>
-              Express Islandwide Delivery (1-3 Days)
-            </span>
-          </div>
-        </div>
-
-        {/* Primary Dual Actions: Order Now + Add to Cart */}
-        <div id="main-buy-cta">
-          <ProductPurchaseActions client:load product={product} />
-        </div>
-
-        {/* Technical Specs Table with 3D Borderless Elevation */}
-        <div class="bg-white/80 backdrop-blur-2xl rounded-xl p-8 sm:p-10 shadow-[0_12px_40px_rgba(0,0,0,0.04)] space-y-6 border border-white/90 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between border-b border-slate-100/80 pb-4 mb-2">
-              <h3 class="text-xs sm:text-sm font-black text-slate-900 uppercase tracking-widest font-display">
-                Technical Specifications
-              </h3>
-              <span class="text-[10px] font-mono text-slate-400 uppercase font-bold tracking-wider">
-                Official Specs
-              </span>
-            </div>
-
-            <div class="divide-y divide-slate-100/80 text-xs sm:text-sm">
-              {Object.entries(product.specs).map(([key, val]) => (
-                <div class="py-4 sm:py-4.5 flex items-center justify-between gap-6">
-                  <span class="text-slate-400 font-medium">{key}</span>
-                  <span class="font-bold text-slate-800 text-right">{val}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div class="pt-4 border-t border-slate-100/80 flex items-center justify-between text-xs text-slate-400 font-medium">
-            <span class="flex items-center gap-1.5 text-emerald-600 font-bold text-[11px]">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-              100% Factory Verified & Tested
-            </span>
-            <span class="text-[11px] font-mono text-slate-400">QA Inspected & Approved</span>
-          </div>
-        </div>
-
+        <div id="main-buy-cta"><ProductPurchaseActions client:load product={product} /></div>
+        <div class="pd-assurance"><span>01 / Fitment guidance</span><span>02 / Islandwide delivery enquiries</span><span>03 / {product.warranty}</span></div>
       </div>
-
     </div>
-
-    {/* Infinite Optimized Product Recommendation Feed with Skeletons */}
-    <InfiniteProductFeed 
-      client:load 
-      currentProductId={product.id} 
-    />
-
-  </div>
-
+    <section class="pd-details" id="product-specifications" aria-labelledby="spec-title">
+      <div class="pd-chapter" data-pd-reveal><span class="pd-eyebrow">01 / A closer look</span><h2 id="spec-title">The details.<br/><span>The right fit.</span></h2><p>Know what you’re choosing. Match these specifications to your vehicle or workshop before you order.</p>
+      <svg class="pd-road" viewBox="0 0 400 180" fill="none" aria-hidden="true"><path d="M-20 150C90 150 70 20 180 30S280 180 420 40" stroke="currentColor" stroke-width="38"/><path class="pd-road-line" d="M-20 150C90 150 70 20 180 30S280 180 420 40" stroke="#fafaf8" stroke-width="2" stroke-dasharray="12 12"/><circle cx="180" cy="30" r="10" fill="#ed1c24"/></svg>
+      </div>
+      <dl class="pd-specs" data-pd-reveal>{Object.entries(product.specs || {}).map(([key, value]) => <div><dt>{key}</dt><dd>{value}</dd></div>)}<div><dt>Brand</dt><dd>{product.brand}</dd></div><div><dt>Manufacture date</dt><dd>{product.specs['Manufacture date'] || 'Confirm available batch with our team'}</dd></div></dl>
+    </section>
+    <div class="pd-video" data-pd-reveal><ProductVideoReview client:load productId={product.id} productTitle={product.title} youtubeId={product.youtubeReviewId} /></div>
+    <ProductExperience client:load product={product} />
+    <section class="pd-faq" aria-labelledby="pd-faq-title"><div data-pd-reveal><span class="pd-eyebrow">Before you choose</span><h2 id="pd-faq-title">A little clarity.<br/><span>A better journey.</span></h2></div><div>{faqs.map((faq, i) => <details data-pd-reveal><summary><span>0{i+1}</span>{faq.question}<b>+</b></summary><p>{faq.answer}</p></details>)}</div></section>
+    {relatedProducts.length > 0 && <section class="pd-related" aria-labelledby="pd-related-title"><header data-pd-reveal><div><span class="pd-eyebrow">Keep exploring</span><h2 id="pd-related-title">More in {category}.</h2></div><a href={`/category/${product.category}`}>View the collection ↗</a></header><div class="pd-related-grid">{relatedProducts.map(p => <ProductCard product={p} />)}</div></section>}
+  </article>
   <!-- =====================================================
        NEXT-LEVEL FLOATING QUICK BUY DOCK (Appears on Scroll)
        ===================================================== -->
@@ -234,6 +100,21 @@ const breadcrumbs = [
   <!-- Product Detail Page Dynamic Scroll Behaviors -->
   <script>
     (function () {
+      function initProductReveals() {
+        const elements = document.querySelectorAll<HTMLElement>('[data-pd-reveal]');
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const el = entry.target as HTMLElement;
+            el.classList.add('pd-visible');
+            observer.unobserve(el);
+          }
+        }), { threshold: .12, rootMargin: '0px 0px -8% 0px' });
+        elements.forEach(el => { el.classList.add('pd-motion-ready'); observer.observe(el); });
+        document.addEventListener('astro:before-swap', () => observer.disconnect(), { once: true });
+      }
+      initProductReveals();
+      document.addEventListener('astro:page-load', initProductReveals);
       function initProductScroll() {
         const stickyBar = document.getElementById('sticky-buy-bar');
         const mainCta = document.getElementById('main-buy-cta');

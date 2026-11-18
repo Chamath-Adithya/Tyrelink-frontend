@@ -11,9 +11,11 @@ export default function ProductPurchaseActions({ product }: ProductPurchaseActio
   const [added, setAdded] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
-  const maxLimit = product.maxOrderQuantity && product.maxOrderQuantity > 0 ? product.maxOrderQuantity : 3;
+  const available = product.inStock && product.stockCount !== 0;
+  const maxLimit = Math.min(product.maxOrderQuantity || 3, product.stockCount ?? 999);
 
   const handleOrderNow = () => {
+    if (!available) return;
     openCheckoutModal({
       items: [
         {
@@ -28,6 +30,7 @@ export default function ProductPurchaseActions({ product }: ProductPurchaseActio
   };
 
   const handleAddToCart = () => {
+    if (!available) return;
     addToCart({
       id: product.id,
       slug: product.slug,
@@ -48,6 +51,7 @@ export default function ProductPurchaseActions({ product }: ProductPurchaseActio
 
   return (
     <div className="space-y-3.5">
+      {!available && <p role="status">Currently unavailable. Ask our team about the next batch.</p>}
       {/* WhatsApp Product Fitment & Assistance Banner */}
       <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-slate-900 via-slate-850 to-slate-900 text-white flex flex-col sm:flex-row items-center justify-between gap-3 border border-slate-800 shadow-md">
         <div className="flex items-center gap-3 text-left w-full sm:w-auto">
@@ -114,7 +118,7 @@ export default function ProductPurchaseActions({ product }: ProductPurchaseActio
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {/* 1. Order Now (Direct Checkout) */}
         <button
-          onClick={handleOrderNow}
+          disabled={!available} onClick={handleOrderNow}
           type="button"
           className="w-full flex items-center justify-center gap-2.5 py-4 px-6 rounded-2xl bg-gradient-to-r from-brand-600 via-brand-500 to-red-600 hover:from-brand-500 hover:to-red-500 text-white font-extrabold text-sm sm:text-base shadow-lg shadow-brand-500/20 transition-all hover:scale-[1.02] active:scale-98 cursor-pointer"
         >
@@ -124,7 +128,7 @@ export default function ProductPurchaseActions({ product }: ProductPurchaseActio
 
         {/* 2. Add to Cart */}
         <button
-          onClick={handleAddToCart}
+          disabled={!available} onClick={handleAddToCart}
           type="button"
           className="w-full flex items-center justify-center gap-2.5 py-4 px-6 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm sm:text-base border border-slate-200 hover:border-brand-500 shadow-sm transition-all hover:scale-[1.02] active:scale-98 cursor-pointer"
         >
