@@ -1,12 +1,13 @@
 import { request } from './apiClient';
 import type { Product } from '../types';
 import localProducts from '../data/products.json';
+const normalize = (p: Product & {name?:string}): Product => ({...p,title:p.title || p.name || '',specs:p.specs || {},images:p.images || [p.featuredImage]});
 
 export async function fetchProducts(): Promise<{ products: Product[]; isBackend: boolean }> {
   try {
     const res = await request<{ data: Product[] }>('/v1/products', { method: 'GET' });
     if (Array.isArray(res?.data) && res.data.length > 0) {
-      return { products: res.data, isBackend: true };
+      return { products: res.data.map(normalize), isBackend: true };
     }
   } catch (err) {
     console.warn('[productService] Backend products fetch failed, using local seed:', err);
@@ -17,7 +18,7 @@ export async function fetchProducts(): Promise<{ products: Product[]; isBackend:
 export async function fetchProductById(idOrSlug: string): Promise<Product | null> {
   try {
     const p = await request<Product>(`/v1/products/${idOrSlug}`, { method: 'GET' });
-    if (p?.id) return p;
+    if (p?.id) return normalize(p);
   } catch (_) {}
 
   const found = (localProducts as Product[]).find(
@@ -30,7 +31,7 @@ export async function createAdminProduct(product: Partial<Product>): Promise<{ s
   try {
     const res = await request<{ success: boolean; product: Product }>('/v1/admin/products', {
       method: 'POST',
-      body: JSON.stringify(product),
+      body: JSON.stringify({...product,name:product.title}),
     });
     return { success: true, product: res?.product };
   } catch (err: any) {
@@ -43,7 +44,7 @@ export async function updateAdminProduct(id: string, product: Partial<Product>):
   try {
     await request(`/v1/admin/products/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(product),
+      body: JSON.stringify({...product,name:product.title}),
     });
     return { success: true };
   } catch (err: any) {

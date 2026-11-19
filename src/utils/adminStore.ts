@@ -199,12 +199,12 @@ export async function saveLiveProducts(products: Product[]): Promise<{ success: 
   // Attempt backend persistence
   try {
     for (const p of products) {
-      request(`/v1/admin/products/${p.id}`, {
+      await request(`/v1/admin/products/${p.id}`, {
         method: 'PUT',
-        body: JSON.stringify(p),
-      }).catch(() => {});
+        body: JSON.stringify({...p,name:p.title}),
+      });
     }
-  } catch (_) {}
+  } catch (_) {return {success:false,error:"Saved in this browser only. Sign in and connect the API to publish."};}
 
   return { success: true };
 }

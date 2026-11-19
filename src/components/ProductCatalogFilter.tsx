@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import Fuse from 'fuse.js';
+import '../styles/catalog-brands.css';
 import {
   Search,
   SlidersHorizontal,
@@ -752,6 +753,12 @@ export default function ProductCatalogFilter({
             ))}
           </div>
         </div>
+
+        <details className="catalog-brands" open={!isScrolled}>
+          <summary>Shop by brand <span>{selectedBrands.length ? `${selectedBrands.length} selected` : 'All brands'}</span></summary>
+          <div aria-label="Filter by brand"><button type="button" aria-pressed={!selectedBrands.length} onClick={()=>setSelectedBrands([])}>All brands</button>{allBrandsWithCounts.map(([brand,count])=><button type="button" key={brand} aria-pressed={selectedBrands.includes(brand)} onClick={()=>toggleBrand(brand)}>{brand} <small>{count}</small></button>)}</div>
+          <a href="/tools">Not sure? Find your tyre size or compare products ↗</a>
+        </details>
 
         {/* Active Filter Chips Bar - Smooth Animated Collapse when Scrolled */}
         {hasActiveFilters && (

@@ -20,6 +20,8 @@ export default function ProductExperience({ product }: { product: Product }) {
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
   const [photo, setPhoto] = useState('');
+  const [rating,setRating] = useState(0);
+  const [hoverRating,setHoverRating] = useState(0);
   const [reviewState, setReviewState] = useState('loading');
   useEffect(() => {
     recordViewed(product.id);
@@ -34,11 +36,12 @@ export default function ProductExperience({ product }: { product: Product }) {
   const rate = rates.find(r => r.town === town);
   async function sendReview(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault(); const form=event.currentTarget;const data=new FormData(form);
+    if(!rating){setMessage('Choose your star rating first.');return;}
     setBusy(true);setMessage('');
     try {
-      await submitReview(product.id, {name: String(data.get('name')).trim(), rating: Number(data.get('rating')), text: String(data.get('text')).trim(), ...(photo ? {photoDataUrl:photo} : {})});
-      setMessage('Thank you. Your review was submitted for moderation.');form.reset();setPhoto('');
-    } catch {setMessage('We could not send your review. Please try again. Your text has been kept.');}
+      await submitReview(product.id, {name: String(data.get('name')).trim(), rating, text: String(data.get('text')).trim(), ...(photo ? {photoDataUrl:photo} : {})});
+      setMessage('Thank you. Your review was submitted for moderation.');form.reset();setPhoto('');setRating(0);
+    } catch (error) {setMessage(error instanceof TypeError ? 'Reviews are temporarily offline. Your text is still here—please try again shortly.' : error instanceof Error ? error.message : 'Please try again. Your text has been kept.');}
     finally {setBusy(false);}
   }
   async function loadPhoto(file?: File) {
@@ -72,9 +75,9 @@ export default function ProductExperience({ product }: { product: Product }) {
       {reviewState==='offline'&&<p role="status">Customer reviews are temporarily unavailable. The examples below are design previews.</p>}
       <div className="experience-review-grid">{(reviews.length?reviews:samples).map((r,i)=><article key={r.id||i}><span className="experience-eyebrow">{reviews.length?'CUSTOMER REVIEW':'SAMPLE · DESIGN PREVIEW'}</span><p aria-label={`${r.rating} out of 5 stars`} className="experience-stars">{'★'.repeat(r.rating)}{'☆'.repeat(5-r.rating)}</p><blockquote>{r.text}</blockquote>{r.photoDataUrl&&<img src={r.photoDataUrl} alt="Customer product photograph" loading="lazy" width="160" height="120"/>}<strong>{r.name}</strong></article>)}</div>
       <details className="write-review"><summary>Write a review <span>＋</span></summary><form onSubmit={sendReview}>
-        <p>Reviews are moderated before publication. Your name and review will be public once approved.</p>
-        <div className="review-fields"><label>Your name<input name="name" required minLength={2} maxLength={80} autoComplete="name"/></label><label>Rating<select name="rating" required defaultValue=""><option value="" disabled>Choose rating</option>{[5,4,3,2,1].map(n=><option key={n} value={n}>{n} / 5</option>)}</select></label></div>
-        <label>Your experience<textarea name="text" required minLength={10} maxLength={2000} rows={4}/></label>
+        <p>A few words can help another driver choose. Your review appears after approval.</p>
+        <div className="review-fields"><label>Your name<input name="name" required minLength={2} maxLength={80} autoComplete="name"/></label><fieldset className="review-rating"><legend>Your rating</legend><div className="review-star-buttons" onMouseLeave={()=>setHoverRating(0)}>{[1,2,3,4,5].map(n=><button key={n} type="button" aria-label={`${n} ${n===1?'star':'stars'}`} aria-pressed={rating===n} onMouseEnter={()=>setHoverRating(n)} onFocus={()=>setHoverRating(n)} onBlur={()=>setHoverRating(0)} onClick={()=>setRating(n)} className={n<=(hoverRating||rating)?'star-selected':''}>★</button>)}</div><span className="review-rating-caption">{['Tap a star','Poor','Fair','Good','Very good','Excellent'][hoverRating||rating]}</span></fieldset></div>
+        <label>Your experience<textarea placeholder="How was the product or service?" name="text" required minLength={10} maxLength={2000} rows={4}/></label>
         <label>Product photo (optional)<input type="file" accept="image/jpeg,image/png,image/webp" onChange={e=>loadPhoto(e.target.files?.[0])}/></label>
         {photo&&<img src={photo} alt="Your selected review photo" width="100"/>}
         <button type="submit" disabled={busy}>{busy?'Sending…':'Submit for review ↗'}</button>

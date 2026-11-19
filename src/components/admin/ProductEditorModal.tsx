@@ -179,7 +179,7 @@ export default function ProductEditorModal({
         imagesArray.unshift(featuredImage.trim());
       }
 
-      const finalVideoId = detectedVideoId || undefined;
+      const finalVideoId = detectedVideoId || '';
       const cleanMaxOrder = Math.max(1, Math.min(10, Number(maxOrderQuantity) || 3));
 
       const cleanKokoCount = Number(kokoCount) > 0 ? Number(kokoCount) : 3;
@@ -221,7 +221,8 @@ export default function ProductEditorModal({
           return p;
         });
 
-        await saveLiveProducts(updatedList);
+        const result = await saveLiveProducts(updatedList);
+        if(!result.success) throw new Error(result.error);
       } else {
         // Add new product
         const slug = generateSlug(title);
@@ -258,7 +259,8 @@ export default function ProductEditorModal({
         };
 
         const updatedList = [newProduct, ...allProducts];
-        await saveLiveProducts(updatedList);
+        const result = await saveLiveProducts(updatedList);
+        if(!result.success) throw new Error(result.error);
       }
 
       if (onSaved) onSaved();

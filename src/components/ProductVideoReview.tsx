@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { request } from '../services/apiClient';
 import { Play } from 'lucide-react';
 import { getLiveProducts, ADMIN_EVENT_PRODUCTS } from '../utils/adminStore';
 
@@ -44,7 +45,10 @@ export default function ProductVideoReview({
     return () => window.removeEventListener(ADMIN_EVENT_PRODUCTS, handleUpdate);
   }, [productId]);
 
-  const cleanId = activeYoutubeId?.trim() || '';
+  useEffect(()=>{setIsPlaying(false);setImgError(false)},[activeYoutubeId]);
+  useEffect(()=>{let active=true;if(productId)request<{youtubeReviewId?:string}>(`/v1/products/${encodeURIComponent(productId)}`).then(p=>{if(active && p.youtubeReviewId !== undefined)setActiveYoutubeId(p.youtubeReviewId || null)}).catch(()=>{});return()=>{active=false}},[productId]);
+  const raw = activeYoutubeId?.trim() || '';
+  const cleanId = /^[A-Za-z0-9_-]{11}$/.test(raw) ? raw : raw.match(/(?:v=|youtu.be\/|embed\/|shorts\/)([A-Za-z0-9_-]{11})/)?.[1] || '';
   if (!/^[A-Za-z0-9_-]{11}$/.test(cleanId)) return null;
   const isCustomReview = true;
 
@@ -59,7 +63,7 @@ export default function ProductVideoReview({
       <div className="flex items-center justify-between px-1">
         <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5 font-display uppercase tracking-wider">
           <span className="w-2 h-2 rounded-full bg-[#ed1c24] animate-pulse"></span>
-          {isCustomReview ? 'Hands-On Review & Sound Test' : 'Tyre Performance & Fitment Guide'}
+          {cleanId === 'kLktn4tgFp4' ? 'Meet TyreLink · Sample video' : 'A closer look'}
         </span>
         <span className="text-[11px] font-medium text-slate-400">Product video</span>
       </div>
@@ -84,7 +88,7 @@ export default function ProductVideoReview({
             className="relative w-full h-full cursor-pointer"
             role="button"
             tabIndex={0}
-            onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setIsPlaying(true)}
+            onKeyDown={(e) => {if(e.key === 'Enter' || e.key === ' '){e.preventDefault();setIsPlaying(true)}}}
             aria-label={`Play ${productTitle} video review`}
           >
             {/* YouTube WebP Optimized Poster Image */}
