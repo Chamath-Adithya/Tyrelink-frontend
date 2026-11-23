@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import ProductCard from '../../components/ProductCard.astro';
+import MoreProducts from '../../components/MoreProducts';
 import ProductVideoReview from '../../components/ProductVideoReview';
 import ProductImageGallery from '../../components/ProductImageGallery.astro';
 import ProductPurchaseActions from '../../components/ProductPurchaseActions';
@@ -64,7 +64,7 @@ const breadcrumbs = [
     <div class="pd-video" data-pd-reveal><ProductVideoReview client:load productId={product.id} productTitle={product.title} youtubeId={product.youtubeReviewId} /></div>
     <ProductExperience client:load product={product} />
     <section class="pd-faq" aria-labelledby="pd-faq-title"><div data-pd-reveal><span class="pd-eyebrow">Before you choose</span><h2 id="pd-faq-title">A little clarity.<br/><span>A better journey.</span></h2></div><div>{faqs.map((faq, i) => <details data-pd-reveal><summary><span>0{i+1}</span>{faq.question}<b>+</b></summary><p>{faq.answer}</p></details>)}</div></section>
-    {relatedProducts.length > 0 && <section class="pd-related" aria-labelledby="pd-related-title"><header data-pd-reveal><div><span class="pd-eyebrow">Keep exploring</span><h2 id="pd-related-title">More in {category}.</h2></div><a href={`/category/${product.category}`}>View the collection ↗</a></header><div class="pd-related-grid">{relatedProducts.map(p => <ProductCard product={p} />)}</div></section>}
+    <MoreProducts client:visible current={product} />
   </article>
   <!-- =====================================================
        NEXT-LEVEL FLOATING QUICK BUY DOCK (Appears on Scroll)
