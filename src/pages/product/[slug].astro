@@ -57,7 +57,7 @@ const breadcrumbs = [
     </div>
     <section class="pd-details" id="product-specifications" aria-labelledby="spec-title">
       <div class="pd-chapter" data-pd-reveal><span class="pd-eyebrow">01 / A closer look</span><h2 id="spec-title">The details.<br/><span>The right fit.</span></h2><p>Know what you’re choosing. Match these specifications to your vehicle or workshop before you order.</p>
-      <svg class="pd-road" viewBox="0 0 400 180" fill="none" aria-hidden="true"><path d="M-20 150C90 150 70 20 180 30S280 180 420 40" stroke="currentColor" stroke-width="38"/><path class="pd-road-line" d="M-20 150C90 150 70 20 180 30S280 180 420 40" stroke="#fafaf8" stroke-width="2" stroke-dasharray="12 12"/><circle cx="180" cy="30" r="10" fill="#ed1c24"/></svg>
+      <svg class="pd-road" viewBox="0 0 400 180" fill="none" aria-hidden="true"><path d="M-20 150C90 150 70 20 180 30S280 180 420 40" stroke="currentColor" stroke-width="38"/><path class="pd-road-line" d="M-20 150C90 150 70 20 180 30S280 180 420 40" stroke="#fafaf8" stroke-width="2" stroke-dasharray="12 12"/><circle class="pd-road-marker" cx="180" cy="30" r="10" fill="#ed1c24"/></svg>
       </div>
       <dl class="pd-specs" data-pd-reveal>{Object.entries(product.specs || {}).map(([key, value]) => <div><dt>{key}</dt><dd>{value}</dd></div>)}<div><dt>Brand</dt><dd>{product.brand}</dd></div><div><dt>Manufacture date</dt><dd>{product.specs['Manufacture date'] || 'Confirm available batch with our team'}</dd></div></dl>
     </section>
