@@ -61,7 +61,7 @@ const breadcrumbs = [
       </div>
       <dl class="pd-specs" data-pd-reveal>{Object.entries(product.specs || {}).map(([key, value]) => <div><dt>{key}</dt><dd>{value}</dd></div>)}<div><dt>Brand</dt><dd>{product.brand}</dd></div><div><dt>Manufacture date</dt><dd>{product.specs['Manufacture date'] || 'Confirm available batch with our team'}</dd></div></dl>
     </section>
-    <div class="pd-video" data-pd-reveal><ProductVideoReview client:load productId={product.id} productTitle={product.title} youtubeId={product.youtubeReviewId} /></div>
+    <div class="pd-video" data-pd-reveal><ProductVideoReview client:load productId={product.id} productTitle={product.title} youtubeId={product.youtubeReviewId} sampleYoutubeId={['car-tyres', 'suv-4x4', 'commercial'].includes(product.category) ? 'DB7VTBPJ5BQ' : undefined} /></div>
     <ProductExperience client:load product={product} />
     <section class="pd-faq" aria-labelledby="pd-faq-title"><div data-pd-reveal><span class="pd-eyebrow">Before you choose</span><h2 id="pd-faq-title">A little clarity.<br/><span>A better journey.</span></h2></div><div>{faqs.map((faq, i) => <details data-pd-reveal><summary><span>0{i+1}</span>{faq.question}<b>+</b></summary><p>{faq.answer}</p></details>)}</div></section>
     <MoreProducts client:visible current={product} />

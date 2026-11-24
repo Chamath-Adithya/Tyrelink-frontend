@@ -7,12 +7,14 @@ interface ProductVideoReviewProps {
   productId?: string;
   productTitle: string;
   youtubeId?: string | null;
+  sampleYoutubeId?: string;
 }
 
 export default function ProductVideoReview({
   productId,
   productTitle,
   youtubeId: initialYoutubeId,
+  sampleYoutubeId,
 }: ProductVideoReviewProps) {
   const [activeYoutubeId, setActiveYoutubeId] = useState<string | null>(initialYoutubeId || null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -47,10 +49,11 @@ export default function ProductVideoReview({
 
   useEffect(()=>{setIsPlaying(false);setImgError(false)},[activeYoutubeId]);
   useEffect(()=>{let active=true;if(productId)request<{youtubeReviewId?:string}>(`/v1/products/${encodeURIComponent(productId)}`).then(p=>{if(active && p.youtubeReviewId !== undefined)setActiveYoutubeId(p.youtubeReviewId || null)}).catch(()=>{});return()=>{active=false}},[productId]);
-  const raw = activeYoutubeId?.trim() || '';
+  const raw = activeYoutubeId?.trim() || sampleYoutubeId || '';
+  const isSample = !activeYoutubeId || activeYoutubeId === 'kLktn4tgFp4';
   const cleanId = /^[A-Za-z0-9_-]{11}$/.test(raw) ? raw : raw.match(/(?:v=|youtu.be\/|embed\/|shorts\/)([A-Za-z0-9_-]{11})/)?.[1] || '';
   if (!/^[A-Za-z0-9_-]{11}$/.test(cleanId)) return null;
-  const isCustomReview = true;
+
 
   // High-Res WebP thumbnail with fallback for low networks
   const primaryThumb = `https://i.ytimg.com/vi_webp/${cleanId}/maxresdefault.webp`;
@@ -63,9 +66,9 @@ export default function ProductVideoReview({
       <div className="flex items-center justify-between px-1">
         <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5 font-display uppercase tracking-wider">
           <span className="w-2 h-2 rounded-full bg-[#ed1c24] animate-pulse"></span>
-          {cleanId === 'kLktn4tgFp4' ? 'Meet TyreLink · Sample video' : 'A closer look'}
+          {isSample ? (cleanId === 'kLktn4tgFp4' ? 'Meet TyreLink · Sample video' : 'Tyre buying guide · Sample video') : 'A closer look'}
         </span>
-        <span className="text-[11px] font-medium text-slate-400">Product video</span>
+        <span className="text-[11px] font-medium text-slate-400">{isSample ? "General guide" : "Product video"}</span>
       </div>
 
       {/* Main Responsive 16:9 Video Stage */}
@@ -76,7 +79,7 @@ export default function ProductVideoReview({
           /* Active YouTube Responsive Iframe */
           <iframe
             src={embedUrl}
-            title={`${productTitle} Video Review`}
+            title={isSample ? "Sample video" : `${productTitle} product video`}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
             className="w-full h-full border-0 animate-in fade-in duration-300"
@@ -89,7 +92,7 @@ export default function ProductVideoReview({
             role="button"
             tabIndex={0}
             onKeyDown={(e) => {if(e.key === 'Enter' || e.key === ' '){e.preventDefault();setIsPlaying(true)}}}
-            aria-label={`Play ${productTitle} video review`}
+            aria-label={isSample ? "Play sample video" : `Play ${productTitle} product video`}
           >
             {/* YouTube WebP Optimized Poster Image */}
             <img
