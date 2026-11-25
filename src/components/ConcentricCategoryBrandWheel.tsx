@@ -27,8 +27,21 @@ const BRANDS_9 = [
 export default function ConcentricCategoryBrandWheel() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
+  const [marqueeDrift, setMarqueeDrift] = useState(0);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+
+  useEffect(() => {
+    let animId = 0;
+    let startTime = performance.now();
+    const tick = (now: number) => {
+      const elapsed = (now - startTime) / 1000;
+      setMarqueeDrift(Math.sin(elapsed * 0.7) * 45);
+      animId = requestAnimationFrame(tick);
+    };
+    animId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(animId);
+  }, []);
 
   useEffect(() => {
     let ticking = false;
@@ -122,38 +135,44 @@ export default function ConcentricCategoryBrandWheel() {
           </div>
 
           {/* Morphing Coordinate Stage */}
-          <div className="relative w-full max-w-[1280px] h-[760px] flex items-center justify-center">
+          <div className="relative w-full max-w-[1320px] h-[820px] flex items-center justify-center">
+            {/* Soft Studio Glow Behind Wheel */}
+            <div
+              className="absolute w-[760px] h-[760px] rounded-full bg-[radial-gradient(circle_at_center,rgba(227,27,35,0.06),transparent_65%)] pointer-events-none"
+              style={{ opacity: innerProgress }}
+            />
+
             {/* Concentric Ring Guides (Fade in as wheel forms) */}
             <div
-              className="absolute w-[680px] h-[680px] rounded-full border-2 border-dashed border-slate-300/80 pointer-events-none transition-transform duration-150"
+              className="absolute w-[700px] h-[700px] rounded-full border border-dashed border-slate-300 pointer-events-none transition-transform duration-150"
               style={{
                 opacity: innerProgress,
                 transform: `scale(${0.75 + 0.25 * innerProgress})`,
               }}
             />
             <div
-              className="absolute w-[400px] h-[400px] rounded-full border-2 border-dashed border-slate-300/80 pointer-events-none transition-transform duration-150"
+              className="absolute w-[420px] h-[420px] rounded-full border border-dashed border-slate-300 pointer-events-none transition-transform duration-150"
               style={{
                 opacity: innerProgress,
                 transform: `scale(${0.75 + 0.25 * innerProgress})`,
               }}
             />
 
-            {/* THE 7 CATEGORY CARDS: Morph smoothly from horizontal row to outer circle */}
+            {/* THE 7 CATEGORY CARDS: Morph smoothly from horizontal marquee row to outer circle */}
             {categoriesData.map((cat, idx) => {
-              // Start: Horizontal row across screen
-              const startX = (idx - 3) * 182;
-              const startY = -40;
+              // Start: Horizontal row near top of stage with gentle marquee drift
+              const startX = (idx - 3) * 186 + marqueeDrift * (1 - ease);
+              const startY = -230;
 
-              // End: Outer ring of the circle
+              // End: Outer ring of the circle (370px radius — zero overlap with inner ring)
               const angle = (idx / categoriesData.length) * 2 * Math.PI - Math.PI / 2;
-              const radius = 325;
+              const radius = 370;
               const endX = Math.cos(angle) * radius;
               const endY = Math.sin(angle) * radius;
 
               const x = startX + (endX - startX) * ease;
               const y = startY + (endY - startY) * ease;
-              const rot = Math.sin(ease * Math.PI) * (idx % 2 === 0 ? 8 : -8);
+              const rot = Math.sin(ease * Math.PI) * (idx % 2 === 0 ? 7 : -7);
               const isSelected = selectedCategories.includes(cat.id);
 
               return (
@@ -162,16 +181,16 @@ export default function ConcentricCategoryBrandWheel() {
                   type="button"
                   onClick={() => toggleCategory(cat.id)}
                   style={{
-                    transform: `translate(${x}px, ${y}px) rotate(${rot}deg)`,
+                    transform: `translate(${x}px, ${y}px) rotate(${rot}deg) scale(${isSelected ? 1.05 : 1})`,
                   }}
-                  className={`absolute z-20 w-[162px] p-3.5 rounded-2xl border-2 transition-colors duration-200 flex flex-col items-center text-center cursor-pointer shadow-md hover:shadow-xl ${
+                  className={`absolute z-20 w-[172px] p-3.5 rounded-2xl border-2 transition-all duration-300 flex flex-col items-center text-center cursor-pointer shadow-[0_10px_28px_rgba(15,23,42,0.08)] hover:shadow-xl ${
                     isSelected
                       ? 'bg-red-50 border-[#e31b23] ring-4 ring-[#e31b23]/20'
-                      : 'bg-white border-slate-200 hover:border-slate-400'
+                      : 'bg-white border-slate-200/90 hover:border-slate-400'
                   }`}
                 >
                   {isSelected && (
-                    <span className="absolute -top-2.5 -right-2.5 w-6 h-6 rounded-full bg-[#e31b23] text-white flex items-center justify-center shadow-md">
+                    <span className="absolute -top-2.5 -right-2.5 w-6 h-6 rounded-full bg-[#e31b23] text-white flex items-center justify-center shadow-md animate-in zoom-in-50 duration-200">
                       <Check className="w-3.5 h-3.5 stroke-[3]" />
                     </span>
                   )}
@@ -191,10 +210,10 @@ export default function ConcentricCategoryBrandWheel() {
               );
             })}
 
-            {/* INNER RING: 9 Brands (Emerge as categories form the outer circle) */}
+            {/* INNER RING: 9 Brands (215px radius — zero overlap with center or outer ring) */}
             {BRANDS_9.map((brand, idx) => {
               const angle = (idx / BRANDS_9.length) * 2 * Math.PI - Math.PI / 2;
-              const radius = 198;
+              const radius = 215;
               const x = Math.cos(angle) * radius * (0.4 + 0.6 * innerProgress);
               const y = Math.sin(angle) * radius * (0.4 + 0.6 * innerProgress);
               const isSelected = selectedBrands.includes(brand.id);
@@ -209,7 +228,7 @@ export default function ConcentricCategoryBrandWheel() {
                     opacity: innerProgress,
                     pointerEvents: innerProgress > 0.35 ? 'auto' : 'none',
                   }}
-                  className={`absolute z-20 w-[112px] h-[60px] p-2 rounded-2xl border-2 transition-colors duration-200 flex items-center justify-center cursor-pointer shadow-sm hover:shadow-lg ${
+                  className={`absolute z-20 w-[118px] h-[62px] p-2 rounded-2xl border-2 transition-colors duration-200 flex items-center justify-center cursor-pointer shadow-sm hover:shadow-lg ${
                     isSelected
                       ? 'bg-red-50 border-[#e31b23] ring-4 ring-[#e31b23]/20'
                       : 'bg-white border-slate-200 hover:border-slate-400'
@@ -237,14 +256,14 @@ export default function ConcentricCategoryBrandWheel() {
               );
             })}
 
-            {/* CENTER HUB: Clear & Go Buttons (Emerge with Inner Ring) */}
+            {/* CENTER HUB: Clear & Go Buttons (190px diameter — generous clearance) */}
             <div
               style={{
                 opacity: innerProgress,
                 transform: `scale(${0.65 + 0.35 * innerProgress})`,
                 pointerEvents: innerProgress > 0.4 ? 'auto' : 'none',
               }}
-              className="relative z-30 w-[210px] h-[210px] rounded-full bg-white border-2 border-slate-200 shadow-[0_18px_45px_rgba(15,23,42,0.12)] flex flex-col items-center justify-center p-5 text-center"
+              className="relative z-30 w-[190px] h-[190px] rounded-full bg-white border-2 border-slate-200 shadow-[0_18px_45px_rgba(15,23,42,0.12)] flex flex-col items-center justify-center p-4 text-center"
             >
               <span className="text-[10px] font-black uppercase tracking-widest text-[#e31b23] mb-1">
                 Quick Filter
@@ -292,13 +311,14 @@ export default function ConcentricCategoryBrandWheel() {
                   key={cat.id}
                   type="button"
                   onClick={() => toggleCategory(cat.id)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                  className={`px-3.5 py-2 rounded-xl text-xs font-bold border transition-all duration-200 active:scale-95 cursor-pointer flex items-center gap-1.5 ${
                     isSelected
-                      ? 'bg-[#e31b23] text-white border-[#e31b23]'
-                      : 'bg-slate-50 text-slate-700 border-slate-200'
+                      ? 'bg-[#e31b23] text-white border-[#e31b23] shadow-sm scale-[1.02]'
+                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:border-slate-300'
                   }`}
                 >
-                  {cat.name}
+                  {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                  <span>{cat.name}</span>
                 </button>
               );
             })}
