@@ -827,9 +827,6 @@ export default function ProductCatalogFilter({
             <span>
               Showing <b className="text-slate-900">{visibleProducts.length}</b> of {filteredProducts.length} items
             </span>
-            <span className="text-emerald-600 font-bold flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5" /> 100% Verified Warranty
-            </span>
           </div>
 
           {filteredProducts.length > 0 ? (

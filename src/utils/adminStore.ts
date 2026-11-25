@@ -1,7 +1,8 @@
 import type { AdminSession, CampaignsData, FlashSaleConfig, Product } from '../types';
 import defaultCampaigns from '../data/campaigns.json';
 import defaultProducts from '../data/products.json';
-import { request, getStoredToken } from '../services/apiClient';
+import { request, getStoredToken, clearStoredToken } from '../services/apiClient';
+import { createAdminProduct, updateAdminProduct, deleteAdminProduct, saveCampaignsToApi } from '../services/productService';
 
 const SESSION_KEY = 'tyrelink_admin_session_v2';
 const CAMPAIGNS_KEY = 'tyrelink_campaigns_override_v2';
@@ -12,9 +13,6 @@ export const ADMIN_EVENT_AUTH = 'tyrelink:admin-auth-changed';
 export const ADMIN_EVENT_CAMPAIGNS = 'tyrelink:campaigns-updated';
 export const ADMIN_EVENT_PRODUCTS = 'tyrelink:products-updated';
 
-/**
- * Get active Admin session
- */
 export function getAdminSession(): AdminSession | null {
   if (typeof window === 'undefined') return null;
   try {
@@ -22,9 +20,10 @@ export function getAdminSession(): AdminSession | null {
     if (!raw) return null;
     const session: AdminSession = JSON.parse(raw);
 
-    // Check if session has expired (24 hours)
-    const MAX_AGE = 24 * 60 * 60 * 1000;
-    if (Date.now() - session.loginTime > MAX_AGE) {
+    // Require active backend JWT alongside session metadata (12h expiry matching backend HMAC)
+    const token = getStoredToken();
+    const MAX_AGE = 12 * 60 * 60 * 1000;
+    if (!token || Date.now() - session.loginTime > MAX_AGE) {
       clearAdminSession();
       return null;
     }
@@ -35,9 +34,6 @@ export function getAdminSession(): AdminSession | null {
   }
 }
 
-/**
- * Save Admin session
- */
 export function saveAdminSession(session: AdminSession): void {
   if (typeof window === 'undefined') return;
   try {
@@ -48,30 +44,22 @@ export function saveAdminSession(session: AdminSession): void {
   }
 }
 
-/**
- * Log out and clear session
- */
 export function clearAdminSession(): void {
   if (typeof window === 'undefined') return;
   try {
     localStorage.removeItem(SESSION_KEY);
+    clearStoredToken();
     window.dispatchEvent(new CustomEvent(ADMIN_EVENT_AUTH, { detail: null }));
   } catch (err) {
     console.error('Failed to clear admin session', err);
   }
 }
 
-/**
- * Check if Edit Mode is enabled for logged in admin
- */
 export function isEditModeActive(): boolean {
   const session = getAdminSession();
   return Boolean(session && session.editMode);
 }
 
-/**
- * Toggle Edit Mode on / off
- */
 export function toggleEditMode(forceState?: boolean): boolean {
   const session = getAdminSession();
   if (!session) return false;
@@ -81,9 +69,6 @@ export function toggleEditMode(forceState?: boolean): boolean {
   return session.editMode;
 }
 
-/**
- * Subscribe to admin session changes
- */
 export function subscribeAdmin(callback: (session: AdminSession | null) => void): () => void {
   if (typeof window === 'undefined') return () => {};
 
@@ -96,9 +81,6 @@ export function subscribeAdmin(callback: (session: AdminSession | null) => void)
   return () => window.removeEventListener(ADMIN_EVENT_AUTH, handler);
 }
 
-/**
- * Get current Campaigns configuration (Flash Sale schedule & Trending IDs)
- */
 export function getCampaignsData(): CampaignsData {
   if (typeof window === 'undefined') return defaultCampaigns as CampaignsData;
   try {
@@ -112,9 +94,6 @@ export function getCampaignsData(): CampaignsData {
   return defaultCampaigns as CampaignsData;
 }
 
-/**
- * Check if Flash Sale is currently active based on schedule
- */
 export function isFlashSaleLive(config?: FlashSaleConfig): boolean {
   const cfg = config || getCampaignsData().flashSale;
   if (!cfg || !cfg.isActive) return false;
@@ -127,33 +106,7 @@ export function isFlashSaleLive(config?: FlashSaleConfig): boolean {
 }
 
 /**
- * Get or regenerate a valid admin Bearer token
- */
-export function getValidAdminToken(): string {
-  const session = getAdminSession();
-  const storedJwt = getStoredToken();
-  if (storedJwt) return storedJwt;
-
-  let token = session?.token || '';
-  if (!token.startsWith('tl_adm_')) {
-    token = 'tl_adm_' + (typeof btoa !== 'undefined' ? btoa(`admin:${Date.now()}`) : 'local_adm');
-    if (session) {
-      session.token = token;
-      saveAdminSession(session);
-    } else {
-      saveAdminSession({
-        token,
-        username: 'admin',
-        loginTime: Date.now(),
-        editMode: true,
-      });
-    }
-  }
-  return token;
-}
-
-/**
- * Save Campaigns Data both locally and to server disk
+ * Save Campaigns Data to Go API Backend + localStorage cache
  */
 export async function saveCampaignsData(data: CampaignsData): Promise<{ success: boolean; error?: string }> {
   if (typeof window !== 'undefined') {
@@ -164,14 +117,18 @@ export async function saveCampaignsData(data: CampaignsData): Promise<{ success:
       console.warn('Local campaign storage error', e);
     }
   }
+  const apiRes = await saveCampaignsToApi(data);
+  if (!apiRes.success) {
+    return {
+      success: false,
+      error: apiRes.error || 'Saved in browser only. Sign in and ensure API is connected to persist.',
+    };
+  }
   return { success: true };
 }
 
-/**
- * Get Live Products (incorporating any real-time edits)
- */
 export function getLiveProducts(): Product[] {
-  if (typeof window === 'undefined') return (defaultProducts as unknown) as Product[];
+  if (typeof window === 'undefined') return defaultProducts as unknown as Product[];
   try {
     const local = localStorage.getItem(PRODUCTS_KEY);
     if (local) {
@@ -180,97 +137,119 @@ export function getLiveProducts(): Product[] {
   } catch (e) {
     console.warn('Failed reading products cache', e);
   }
-  return (defaultProducts as unknown) as Product[];
+  return defaultProducts as unknown as Product[];
+}
+
+export function setLocalProductsCache(products: Product[]): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
+    window.dispatchEvent(new CustomEvent(ADMIN_EVENT_PRODUCTS, { detail: products }));
+  } catch (e) {
+    console.warn('Local products storage error', e);
+  }
 }
 
 /**
- * Save Products array both locally and to Go Backend API
+ * Persist a single created or updated product to Go API Backend + local cache
+ */
+export async function saveSingleProduct(
+  product: Product,
+  isNew: boolean
+): Promise<{ success: boolean; product?: Product; error?: string }> {
+  const payload = {
+    ...product,
+    size: product.specs?.['Size'] || (product as any).size || '',
+  };
+
+  const apiRes = isNew
+    ? await createAdminProduct(payload)
+    : await updateAdminProduct(product.id, payload);
+
+  const savedProduct = apiRes.product || product;
+  const allProducts = getLiveProducts();
+  const updatedList = isNew
+    ? [savedProduct, ...allProducts.filter((p) => p.id !== savedProduct.id)]
+    : allProducts.map((p) => (p.id === savedProduct.id ? savedProduct : p));
+  setLocalProductsCache(updatedList);
+
+  if (!apiRes.success) {
+    return {
+      success: false,
+      error: apiRes.error || 'Saved in this browser only. Sign in and connect the API to publish.',
+    };
+  }
+  return { success: true, product: savedProduct };
+}
+
+/**
+ * Legacy multi-product updater (used by batch tools); updates only changed items or persists bulk stock/flags
  */
 export async function saveLiveProducts(products: Product[]): Promise<{ success: boolean; error?: string }> {
-  if (typeof window !== 'undefined') {
-    try {
-      localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
-      window.dispatchEvent(new CustomEvent(ADMIN_EVENT_PRODUCTS, { detail: products }));
-    } catch (e) {
-      console.warn('Local products storage error', e);
-    }
-  }
-
-  // Attempt backend persistence
+  setLocalProductsCache(products);
   try {
     for (const p of products) {
-      await request(`/v1/admin/products/${p.id}`, {
+      await request(`/v1/admin/products/${encodeURIComponent(p.id)}`, {
         method: 'PUT',
-        body: JSON.stringify({...p,name:p.title}),
+        body: JSON.stringify({ ...p, name: p.title }),
       });
     }
-  } catch (_) {return {success:false,error:"Saved in this browser only. Sign in and connect the API to publish."};}
-
+  } catch (err: any) {
+    return {
+      success: false,
+      error: err?.message || 'Saved in this browser only. Sign in and connect the API to publish.',
+    };
+  }
   return { success: true };
 }
 
 /**
- * Toggle product stock status (In Stock / Out of Stock)
+ * Toggle single product stock availability cleanly without touching all other products
  */
 export async function toggleProductStock(productId: string, inStock: boolean): Promise<{ success: boolean; error?: string }> {
   const allProducts = getLiveProducts();
-  const updated = allProducts.map((p) => {
-    if (p.id === productId || p.slug === productId) {
-      return { ...p, inStock };
-    }
-    return p;
-  });
+  const target = allProducts.find((p) => p.id === productId || p.slug === productId);
+  if (!target) return { success: false, error: 'Product not found' };
 
-  return saveLiveProducts(updated);
+  const updatedProduct: Product = {
+    ...target,
+    inStock,
+    stockCount: inStock ? Math.max(1, target.stockCount || 5) : 0,
+  };
+  return saveSingleProduct(updatedProduct, false);
 }
 
 /**
- * Delete a product permanently from products list and active campaigns
+ * Delete a product from local cache, campaigns, and Go Backend API
  */
-export async function deleteLiveProduct(productId: string): Promise<{ success: boolean; error?: string }> {
-  // 1. Remove from local storage products
+export async function deleteLiveProduct(productId: string, permanent = false): Promise<{ success: boolean; error?: string }> {
   const allProducts = getLiveProducts();
   const updated = allProducts.filter((p) => p.id !== productId && p.slug !== productId);
+  setLocalProductsCache(updated);
 
   if (typeof window !== 'undefined') {
-    try {
-      localStorage.setItem(PRODUCTS_KEY, JSON.stringify(updated));
-      window.dispatchEvent(new CustomEvent(ADMIN_EVENT_PRODUCTS, { detail: updated }));
-
-      // Clean from campaigns if present
-      const campaigns = getCampaignsData();
-      let campaignsChanged = false;
-      if (campaigns.flashSale?.productIds?.includes(productId)) {
-        campaigns.flashSale.productIds = campaigns.flashSale.productIds.filter((id) => id !== productId);
-        campaignsChanged = true;
-      }
-      if (campaigns.trending?.productIds?.includes(productId)) {
-        campaigns.trending.productIds = campaigns.trending.productIds.filter((id) => id !== productId);
-        campaignsChanged = true;
-      }
-      if (campaignsChanged) {
-        saveCampaignsData(campaigns);
-      }
-    } catch (e) {
-      console.warn('Local product deletion error', e);
+    const campaigns = getCampaignsData();
+    let campaignsChanged = false;
+    if (campaigns.flashSale?.productIds?.includes(productId)) {
+      campaigns.flashSale.productIds = campaigns.flashSale.productIds.filter((id) => id !== productId);
+      campaignsChanged = true;
+    }
+    if (campaigns.trending?.productIds?.includes(productId)) {
+      campaigns.trending.productIds = campaigns.trending.productIds.filter((id) => id !== productId);
+      campaignsChanged = true;
+    }
+    if (campaignsChanged) {
+      await saveCampaignsData(campaigns);
     }
   }
 
-  // Call Go Backend API
-  try {
-    await request(`/v1/admin/products/${productId}`, {
-      method: 'DELETE',
-    });
-  } catch (err: any) {
-    console.warn('Backend product delete skipped (deleted locally):', err?.message);
+  const res = await deleteAdminProduct(productId, permanent);
+  if (!res.success) {
+    return { success: false, error: res.error || 'Could not remove from backend database' };
   }
-
   return { success: true };
 }
 
-/**
- * Reset all store data back to factory defaults
- */
 export function resetStoreData(): void {
   if (typeof window === 'undefined') return;
   localStorage.removeItem(CAMPAIGNS_KEY);
@@ -279,9 +258,6 @@ export function resetStoreData(): void {
   window.dispatchEvent(new CustomEvent(ADMIN_EVENT_PRODUCTS, { detail: defaultProducts }));
 }
 
-/**
- * Export current database (Products + Campaigns) to a downloadable JSON file
- */
 export function exportDatabaseBackup(): void {
   if (typeof window === 'undefined') return;
 
@@ -304,9 +280,6 @@ export function exportDatabaseBackup(): void {
   URL.revokeObjectURL(url);
 }
 
-/**
- * Import a previously exported JSON backup file
- */
 export async function importDatabaseBackup(file: File): Promise<{ success: boolean; error?: string }> {
   try {
     const text = await file.text();
@@ -316,14 +289,10 @@ export async function importDatabaseBackup(file: File): Promise<{ success: boole
       return { success: false, error: 'Invalid backup file format: missing products array.' };
     }
 
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(PRODUCTS_KEY, JSON.stringify(parsed.products));
-      window.dispatchEvent(new CustomEvent(ADMIN_EVENT_PRODUCTS, { detail: parsed.products }));
+    setLocalProductsCache(parsed.products);
 
-      if (parsed.campaigns && parsed.campaigns.flashSale) {
-        localStorage.setItem(CAMPAIGNS_KEY, JSON.stringify(parsed.campaigns));
-        window.dispatchEvent(new CustomEvent(ADMIN_EVENT_CAMPAIGNS, { detail: parsed.campaigns }));
-      }
+    if (parsed.campaigns && parsed.campaigns.flashSale) {
+      await saveCampaignsData(parsed.campaigns);
     }
 
     return { success: true };
@@ -332,9 +301,6 @@ export async function importDatabaseBackup(file: File): Promise<{ success: boole
   }
 }
 
-/**
- * Extracts 11-character YouTube ID from various YouTube URL formats or bare IDs
- */
 export function extractYouTubeId(urlOrId: string): string {
   if (!urlOrId) return '';
   const trimmed = urlOrId.trim();

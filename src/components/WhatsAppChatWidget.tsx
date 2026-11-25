@@ -71,7 +71,7 @@ export default function WhatsAppChatWidget({
   const quickPrompts = [
     '🚗 Need help finding my tyre size',
     '🚚 Ask about delivery & fitment guidance',
-    '🛡️ Warranty & verified manufacture dates'
+    '🛡️ Check tyre batch / manufacture dates'
   ];
 
   return (

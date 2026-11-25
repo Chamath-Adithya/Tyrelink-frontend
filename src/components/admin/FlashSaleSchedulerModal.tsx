@@ -137,16 +137,17 @@ export default function FlashSaleSchedulerModal({
         flashSale: updatedFlashSale,
       };
 
-      // 1. Save campaigns schedule
-      await saveCampaignsData(updatedCampaigns);
+      // 1. Save campaigns schedule to API & sync local cache (API atomically updates is_flash_deal flags)
+      const saveRes = await saveCampaignsData(updatedCampaigns);
+      if (!saveRes.success) {
+        throw new Error(saveRes.error || 'Failed to save campaign to server');
+      }
 
-      // 2. Synchronize isFlashDeal attribute on all products
       const updatedProducts = products.map((p) => ({
         ...p,
         isFlashDeal: selectedProductIds.includes(p.id),
       }));
-
-      await saveLiveProducts(updatedProducts);
+      localStorage.setItem('tyrelink_products_override_v2', JSON.stringify(updatedProducts));
 
       setSuccess(true);
       if (onSaved) onSaved();

@@ -19,9 +19,8 @@ const relatedProducts = (productsData as Product[]).filter(p => p.category === p
 const category = product.category.replaceAll('-', ' ');
 const faqs = [
   { question: `Will ${product.title} fit my vehicle?`, answer: `Check the listed specifications against your vehicle requirements. Send our team a photo of your current tyre sidewall or equipment requirements to confirm compatibility before ordering.` },
-  { question: 'What warranty applies?', answer: `${product.warranty}. Ask our team to confirm the applicable manufacturer terms, exclusions and claim process before purchase.` },
   { question: 'Can I pay in instalments?', answer: 'Koko and Payzy options are shown with the price. Provider eligibility and terms apply; confirm the available payment option when placing your order.' },
-  { question: 'How do I confirm delivery and manufacture date?', answer: 'Send us your town and required quantity. Our team will confirm stock, delivery charges, estimated timing and the available manufacture date before you pay.' },
+  { question: 'How do I confirm delivery and manufacture date?', answer: 'Our flat islandwide delivery fee and estimated dispatch timing are shown below. Confirm stock and the available DOT manufacture date with our team before you pay.' },
 ];
 const breadcrumbs = [
   { name: 'Home', item: new URL('/', Astro.url).href },
@@ -52,14 +51,14 @@ const breadcrumbs = [
           <ProductKokoBanner client:load product={product} />
         </div>
         <div id="main-buy-cta"><ProductPurchaseActions client:load product={product} /></div>
-        <div class="pd-assurance"><span>01 / Fitment guidance</span><span>02 / Islandwide delivery enquiries</span><span>03 / {product.warranty}</span></div>
+        <div class="pd-assurance"><span>01 / Fitment guidance</span><span>02 / Islandwide flat-rate delivery</span><span>03 / Verified DOT batch dates</span></div>
       </div>
     </div>
     <section class="pd-details" id="product-specifications" aria-labelledby="spec-title">
       <div class="pd-chapter" data-pd-reveal><span class="pd-eyebrow">01 / A closer look</span><h2 id="spec-title">The details.<br/><span>The right fit.</span></h2><p>Know what you’re choosing. Match these specifications to your vehicle or workshop before you order.</p>
       <svg class="pd-road" viewBox="0 0 400 180" fill="none" aria-hidden="true"><path d="M-20 150C90 150 70 20 180 30S280 180 420 40" stroke="currentColor" stroke-width="38"/><path class="pd-road-line" d="M-20 150C90 150 70 20 180 30S280 180 420 40" stroke="#fafaf8" stroke-width="2" stroke-dasharray="12 12"/><circle class="pd-road-marker" cx="180" cy="30" r="10" fill="#ed1c24"/></svg>
       </div>
-      <dl class="pd-specs" data-pd-reveal>{Object.entries(product.specs || {}).map(([key, value]) => <div><dt>{key}</dt><dd>{value}</dd></div>)}<div><dt>Brand</dt><dd>{product.brand}</dd></div><div><dt>Manufacture date</dt><dd>{product.specs['Manufacture date'] || 'Confirm available batch with our team'}</dd></div></dl>
+      <dl class="pd-specs" data-pd-reveal>{Object.entries(product.specs || {}).filter(([key]) => key.toLowerCase() !== 'warranty').map(([key, value]) => <div><dt>{key}</dt><dd>{value}</dd></div>)}<div><dt>Brand</dt><dd>{product.brand}</dd></div><div><dt>Manufacture date</dt><dd>{product.specs['Manufacture date'] || 'Confirm available batch with our team'}</dd></div></dl>
     </section>
     <div class="pd-video" data-pd-reveal><ProductVideoReview client:load productId={product.id} productTitle={product.title} youtubeId={product.youtubeReviewId} sampleYoutubeId={['car-tyres', 'suv-4x4', 'commercial'].includes(product.category) ? 'DB7VTBPJ5BQ' : undefined} /></div>
     <ProductExperience client:load product={product} />

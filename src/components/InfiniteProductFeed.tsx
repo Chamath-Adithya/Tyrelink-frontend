@@ -107,7 +107,7 @@ export default function InfiniteProductFeed({ currentProductId }: InfiniteProduc
 
         <div className="hidden sm:flex items-center gap-1.5 text-xs text-emerald-600 font-bold">
           <ShieldCheck className="w-4 h-4 shrink-0" />
-          <span>Islandwide Delivery & Genuine Warranty</span>
+          <span>Flat-Rate Islandwide COD Dispatch</span>
         </div>
       </div>
 

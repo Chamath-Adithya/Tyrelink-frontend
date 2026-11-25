@@ -98,7 +98,7 @@ export default function HomeExploreProducts() {
               Explore Tyres & Garage Equipment
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 font-sinhala mt-1">
-              දිවයින පුරා COD සහ Genuine Company Warranty සහිත අපගේ සියලුම ටයර් සහ Garage Equipment එකම තැනින්
+              දිවයින පුරා එකම ගාස්තුවකට Cash on Delivery (COD) සහිත අපගේ සියලුම ටයර් සහ Garage Equipment එකම තැනින්
             </p>
           </div>
 

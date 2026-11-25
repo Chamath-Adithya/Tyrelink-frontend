@@ -120,7 +120,7 @@ export default function ProductPurchaseActions({ product }: ProductPurchaseActio
         <button
           disabled={!available} onClick={handleOrderNow}
           type="button"
-          className="w-full flex items-center justify-center gap-2.5 py-4 px-6 rounded-2xl bg-gradient-to-r from-brand-600 via-brand-500 to-red-600 hover:from-brand-500 hover:to-red-500 text-white font-extrabold text-sm sm:text-base shadow-lg shadow-brand-500/20 transition-all hover:scale-[1.02] active:scale-98 cursor-pointer"
+          className="w-full flex items-center justify-center gap-2.5 py-4 px-6 rounded-2xl bg-[#e31b23] hover:bg-[#c8151d] text-white font-extrabold text-sm sm:text-base shadow-lg shadow-red-600/20 transition-all hover:scale-[1.02] active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           <Zap className="w-5 h-5 fill-current" />
           <span>Order Now</span>
@@ -150,7 +150,7 @@ export default function ProductPurchaseActions({ product }: ProductPurchaseActio
       <div className="flex items-center justify-center gap-6 text-xs text-slate-500 pt-1 font-semibold">
         <span className="inline-flex items-center gap-1.5">
           <ShieldCheck className="w-4 h-4 text-emerald-500" />
-          Official Warranty
+          Fresh DOT Batches
         </span>
         <span className="text-slate-300">•</span>
         <span className="inline-flex items-center gap-1.5">

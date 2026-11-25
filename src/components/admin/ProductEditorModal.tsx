@@ -3,8 +3,7 @@ import { X, Plus, Trash2, Sparkles, Check, AlertCircle, Video, ShieldCheck, Cred
 import categoriesData from '../../data/categories.json';
 import type { Product, ProductCategory } from '../../types';
 import {
-  getLiveProducts,
-  saveLiveProducts,
+  saveSingleProduct,
   deleteLiveProduct,
   extractYouTubeId,
 } from '../../utils/adminStore';
@@ -25,7 +24,10 @@ export default function ProductEditorModal({
   const [title, setTitle] = useState('');
   const [sinhalaTitle, setSinhalaTitle] = useState('');
   const [brand, setBrand] = useState('');
+  const [sku, setSku] = useState('');
+  const [size, setSize] = useState('');
   const [category, setCategory] = useState<ProductCategory>('car-tyres');
+  const [published, setPublished] = useState<boolean>(true);
   const [price, setPrice] = useState<number>(0);
   const [originalPrice, setOriginalPrice] = useState<number>(0);
   const [kokoCount, setKokoCount] = useState<number>(3);
@@ -37,13 +39,12 @@ export default function ProductEditorModal({
   const [videoUrl, setVideoUrl] = useState('');
   const [featuredImage, setFeaturedImage] = useState('');
   const [galleryImages, setGalleryImages] = useState<string>('');
-  const [warranty, setWarranty] = useState('6 Months Genuine Warranty');
   const [isFlashDeal, setIsFlashDeal] = useState(false);
   const [isBestSeller, setIsBestSeller] = useState(false);
   const [shortDescription, setShortDescription] = useState('');
   const [specs, setSpecs] = useState<Array<{ key: string; value: string }>>([
     { key: 'Brand', value: '' },
-    { key: 'Warranty', value: '6 Months' },
+    { key: 'Manufacture date', value: '' },
   ]);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -52,10 +53,13 @@ export default function ProductEditorModal({
   // Populate fields if editing
   useEffect(() => {
     if (productToEdit) {
-      setTitle(productToEdit.title || '');
+      setTitle(productToEdit.title || (productToEdit as any).name || '');
       setSinhalaTitle(productToEdit.sinhalaTitle || '');
       setBrand(productToEdit.brand || '');
+      setSku((productToEdit as any).sku || '');
+      setSize((productToEdit as any).size || productToEdit.specs?.['Size'] || '');
       setCategory(productToEdit.category || 'car-tyres');
+      setPublished((productToEdit as any).published !== false);
       setPrice(productToEdit.price || 0);
       setOriginalPrice(productToEdit.originalPrice || 0);
       const kCount = productToEdit.kokoInstallmentCount || productToEdit.installmentCount || 3;
@@ -73,22 +77,26 @@ export default function ProductEditorModal({
       setVideoUrl(productToEdit.youtubeReviewId ? `https://www.youtube.com/watch?v=${productToEdit.youtubeReviewId}` : '');
       setFeaturedImage(productToEdit.featuredImage || '');
       setGalleryImages((productToEdit.images || []).join('\n'));
-      setWarranty(productToEdit.warranty || '6 Months Genuine Warranty');
       setIsFlashDeal(Boolean(productToEdit.isFlashDeal));
       setIsBestSeller(Boolean(productToEdit.isBestSeller));
       setShortDescription(productToEdit.shortDescription || '');
 
-      const specList = Object.entries(productToEdit.specs || {}).map(([key, value]) => ({
-        key,
-        value: String(value),
-      }));
+      const specList = Object.entries(productToEdit.specs || {})
+        .filter(([key]) => key.toLowerCase() !== 'warranty')
+        .map(([key, value]) => ({
+          key,
+          value: String(value),
+        }));
       setSpecs(specList.length > 0 ? specList : [{ key: '', value: '' }]);
     } else {
       // Defaults for new product
       setTitle('');
       setSinhalaTitle('');
       setBrand('');
+      setSku('');
+      setSize('');
       setCategory('car-tyres');
+      setPublished(true);
       setPrice(0);
       setOriginalPrice(0);
       setKokoCount(3);
@@ -96,17 +104,16 @@ export default function ProductEditorModal({
       setPayzyCount(4);
       setPayzyAmount(0);
       setInStock(true);
-      setMaxOrderQuantity(3);
+      setMaxOrderQuantity(4);
       setVideoUrl('');
-      setFeaturedImage('');
+      setFeaturedImage('/hero-tyre.png');
       setGalleryImages('');
-      setWarranty('6 Months Genuine Warranty');
       setIsFlashDeal(false);
       setIsBestSeller(false);
       setShortDescription('');
       setSpecs([
-        { key: 'Connectivity', value: 'Wired USB-C' },
-        { key: 'Compatibility', value: 'Windows / Mac' },
+        { key: 'Vehicle', value: '' },
+        { key: 'Manufacture date', value: '' },
       ]);
     }
     setError(null);
@@ -162,13 +169,15 @@ export default function ProductEditorModal({
     setError(null);
 
     try {
-      const allProducts = getLiveProducts();
       const specsObj: Record<string, string> = {};
       specs.forEach((s) => {
         if (s.key.trim() && s.value.trim()) {
           specsObj[s.key.trim()] = s.value.trim();
         }
       });
+      if (size.trim()) {
+        specsObj['Size'] = size.trim();
+      }
 
       const imagesArray = galleryImages
         .split('\n')
@@ -180,7 +189,7 @@ export default function ProductEditorModal({
       }
 
       const finalVideoId = detectedVideoId || '';
-      const cleanMaxOrder = Math.max(1, Math.min(10, Number(maxOrderQuantity) || 3));
+      const cleanMaxOrder = Math.max(1, Math.min(20, Number(maxOrderQuantity) || 4));
 
       const cleanKokoCount = Number(kokoCount) > 0 ? Number(kokoCount) : 3;
       const cleanKokoAmount = Number(kokoAmount) > 0 ? Number(kokoAmount) : (Number(price) > 0 ? Math.round(Number(price) / cleanKokoCount) : 0);
@@ -189,56 +198,17 @@ export default function ProductEditorModal({
       const cleanPayzyAmount = Number(payzyAmount) > 0 ? Number(payzyAmount) : (Number(price) > 0 ? Math.round(Number(price) / cleanPayzyCount) : 0);
 
       if (productToEdit) {
-        // Update existing product
-        const updatedList = allProducts.map((p) => {
-          if (p.id === productToEdit.id) {
-            return {
-              ...p,
-              title: title.trim(),
-              sinhalaTitle: sinhalaTitle.trim() || undefined,
-              brand: brand.trim() || 'Tyrelink',
-              category,
-              price: Number(price),
-              originalPrice: originalPrice > price ? Number(originalPrice) : undefined,
-              inStock: Boolean(inStock),
-              maxOrderQuantity: cleanMaxOrder,
-              installmentCount: cleanKokoCount,
-              installmentAmount: cleanKokoAmount,
-              kokoInstallmentCount: cleanKokoCount,
-              kokoInstallmentAmount: cleanKokoAmount,
-              payzyInstallmentCount: cleanPayzyCount,
-              payzyInstallmentAmount: cleanPayzyAmount,
-              youtubeReviewId: finalVideoId,
-              featuredImage: featuredImage.trim(),
-              images: imagesArray,
-              warranty: warranty.trim(),
-              isFlashDeal: Boolean(isFlashDeal),
-              isBestSeller: Boolean(isBestSeller),
-              shortDescription: shortDescription.trim() || title.trim(),
-              specs: specsObj,
-            };
-          }
-          return p;
-        });
-
-        const result = await saveLiveProducts(updatedList);
-        if(!result.success) throw new Error(result.error);
-      } else {
-        // Add new product
-        const slug = generateSlug(title);
-        const newId = slug + '-' + Date.now().toString(36);
-
-        const newProduct: Product = {
-          id: newId,
-          slug,
+        const updatedProduct: Product & { sku?: string; size?: string; published?: boolean } = {
+          ...productToEdit,
           title: title.trim(),
           sinhalaTitle: sinhalaTitle.trim() || undefined,
           brand: brand.trim() || 'Tyrelink',
+          sku: sku.trim() || (productToEdit as any).sku,
+          size: size.trim(),
           category,
+          published: Boolean(published),
           price: Number(price),
           originalPrice: originalPrice > price ? Number(originalPrice) : undefined,
-          featuredImage: featuredImage.trim(),
-          images: imagesArray,
           inStock: Boolean(inStock),
           maxOrderQuantity: cleanMaxOrder,
           installmentCount: cleanKokoCount,
@@ -248,19 +218,57 @@ export default function ProductEditorModal({
           payzyInstallmentCount: cleanPayzyCount,
           payzyInstallmentAmount: cleanPayzyAmount,
           youtubeReviewId: finalVideoId,
-          warranty: warranty.trim(),
+          featuredImage: featuredImage.trim(),
+          images: imagesArray,
+          warranty: '',
+          isFlashDeal: Boolean(isFlashDeal),
+          isBestSeller: Boolean(isBestSeller),
+          shortDescription: shortDescription.trim() || title.trim(),
+          specs: specsObj,
+        };
+
+        const result = await saveSingleProduct(updatedProduct, false);
+        if (!result.success) throw new Error(result.error);
+      } else {
+        const slug = generateSlug(title);
+        const newId = slug + '-' + Date.now().toString(36);
+
+        const newProduct: Product & { sku?: string; size?: string; published?: boolean } = {
+          id: newId,
+          slug,
+          sku: sku.trim() || `TL-${Date.now().toString(36).toUpperCase()}`,
+          size: size.trim(),
+          title: title.trim(),
+          sinhalaTitle: sinhalaTitle.trim() || undefined,
+          brand: brand.trim() || 'Tyrelink',
+          category,
+          published: Boolean(published),
+          price: Number(price),
+          originalPrice: originalPrice > price ? Number(originalPrice) : undefined,
+          featuredImage: featuredImage.trim(),
+          images: imagesArray,
+          inStock: Boolean(inStock),
+          stockCount: inStock ? 10 : 0,
+          maxOrderQuantity: cleanMaxOrder,
+          installmentCount: cleanKokoCount,
+          installmentAmount: cleanKokoAmount,
+          kokoInstallmentCount: cleanKokoCount,
+          kokoInstallmentAmount: cleanKokoAmount,
+          payzyInstallmentCount: cleanPayzyCount,
+          payzyInstallmentAmount: cleanPayzyAmount,
+          youtubeReviewId: finalVideoId,
+          warranty: '',
           isFeatured: true,
           isFlashDeal: Boolean(isFlashDeal),
           isBestSeller: Boolean(isBestSeller),
           shortDescription: shortDescription.trim() || title.trim(),
           specs: specsObj,
           rating: 4.8,
-          reviewCount: 1,
+          reviewCount: 0,
         };
 
-        const updatedList = [newProduct, ...allProducts];
-        const result = await saveLiveProducts(updatedList);
-        if(!result.success) throw new Error(result.error);
+        const result = await saveSingleProduct(newProduct, true);
+        if (!result.success) throw new Error(result.error);
       }
 
       if (onSaved) onSaved();
@@ -390,6 +398,39 @@ export default function ProductEditorModal({
                   </option>
                 ))}
               </select>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="font-bold text-slate-300">Tyre Size / Spec Label</label>
+              <input
+                type="text"
+                value={size}
+                onChange={(e) => setSize(e.target.value)}
+                placeholder="e.g. 195/65 R15 or 100L"
+                className="w-full h-11 px-3.5 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder:text-slate-600 focus:outline-none focus:border-brand-500"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="font-bold text-slate-300">SKU Code &amp; Visibility</label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={sku}
+                  onChange={(e) => setSku(e.target.value)}
+                  placeholder="TL-CAR-195-01"
+                  className="flex-1 h-11 px-3.5 rounded-xl bg-slate-950 border border-slate-800 text-white font-mono placeholder:text-slate-600 focus:outline-none focus:border-brand-500"
+                />
+                <label className="h-11 px-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center gap-2 cursor-pointer shrink-0">
+                  <input
+                    type="checkbox"
+                    checked={published}
+                    onChange={(e) => setPublished(e.target.checked)}
+                    className="w-4 h-4 rounded text-emerald-500 bg-slate-900 border-slate-700"
+                  />
+                  <span className="font-bold text-emerald-400">Live</span>
+                </label>
+              </div>
             </div>
           </div>
 
@@ -750,13 +791,13 @@ export default function ProductEditorModal({
           {/* Section 4: Images & Preview */}
           <div className="space-y-4">
             <div className="space-y-1.5">
-              <label className="font-bold text-slate-300">Primary Featured Image URL *</label>
+              <label className="font-bold text-slate-300">Primary Featured Image URL / Path *</label>
               <input
-                type="url"
+                type="text"
                 required
                 value={featuredImage}
                 onChange={(e) => setFeaturedImage(e.target.value)}
-                placeholder="https://images.unsplash.com/photo-..."
+                placeholder="/hero-tyre.png or https://images.unsplash.com/photo-..."
                 className="w-full h-11 px-3.5 rounded-xl bg-slate-950 border border-slate-800 text-white font-mono placeholder:text-slate-600 focus:outline-none focus:border-brand-500"
               />
             </div>
@@ -788,20 +829,9 @@ export default function ProductEditorModal({
             </div>
           </div>
 
-          {/* Section 5: Product details */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <label className="font-bold text-slate-300">Product Warranty</label>
-              <input
-                type="text"
-                value={warranty}
-                onChange={(e) => setWarranty(e.target.value)}
-                placeholder="e.g. 6 Months Genuine Company Warranty"
-                className="w-full h-11 px-3.5 rounded-xl bg-slate-950 border border-slate-800 text-white placeholder:text-slate-600 focus:outline-none focus:border-brand-500"
-              />
-            </div>
-
-            <div className="space-y-1.5 flex items-center gap-6 pt-5">
+          {/* Section 5: Promo Flags */}
+          <div className="flex flex-wrap items-center gap-6">
+            <div className="space-y-1.5 flex items-center gap-6">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"

@@ -1,16 +1,14 @@
 /**
  * Tyrelink Centralized API Client
- * Enterprise-grade fetch wrapper with JWT / Bearer token injection,
- * CORS support, automatic offline resilience, and error serialization.
+ * Fetch wrapper with Bearer JWT + HttpOnly cookie credentials support,
+ * environment-aware base URL, and structured API error serialization.
  */
 
 const getApiBaseUrl = (): string => {
   if (typeof window !== 'undefined') {
-    // 1. Vite / Astro client env override
     const envUrl = (import.meta as any).env?.PUBLIC_API_BASE_URL;
     if (envUrl) return envUrl.replace(/\/$/, '');
 
-    // 2. Local dev check (Go backend default port 8080)
     const hostname = window.location.hostname;
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
       return 'http://localhost:8080';
@@ -74,6 +72,7 @@ export async function request<T = any>(
   try {
     const res = await fetch(url, {
       ...options,
+      credentials: 'include',
       headers,
     });
 
@@ -81,9 +80,10 @@ export async function request<T = any>(
     const data = isJson ? await res.json() : await res.text();
 
     if (!res.ok) {
-      const errMsg = (typeof data === 'object' && data?.error) 
-        ? data.error 
-        : `API error ${res.status}: ${res.statusText}`;
+      const errMsg =
+        typeof data === 'object' && data?.error
+          ? data.error
+          : `API error ${res.status}: ${res.statusText}`;
       const err = new Error(errMsg) as any;
       err.status = res.status;
       err.data = data;
@@ -92,11 +92,9 @@ export async function request<T = any>(
 
     return data as T;
   } catch (err: any) {
-    // Network or connection error: log gracefully
-    if (err.name === 'TypeError' && err.message.includes('fetch')) {
-      console.warn(`[Tyrelink API] Backend unreachable at ${url}. Operating in local fallback mode.`);
+    if (err?.name === 'TypeError' && String(err?.message).includes('fetch')) {
+      console.warn(`[Tyrelink API] Backend unreachable at ${url}`);
     }
     throw err;
   }
 }
-

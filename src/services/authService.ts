@@ -24,22 +24,19 @@ export async function loginAdmin(password: string): Promise<LoginResult> {
         isBackendConnected: true,
       };
     }
-    return { success: false, error: 'Login failed', isBackendConnected: true };
+    return { success: false, error: 'Authentication failed', isBackendConnected: true };
   } catch (err: any) {
-    // If backend is unreachable, allow offline PIN fallback
-    if (password === 'admin' || password === 'admin123' || password === '1234' || password === 'tyrelink') {
-      const mockToken = 'tl_adm_' + (typeof btoa !== 'undefined' ? btoa(`admin:${Date.now()}`) : 'local_adm_' + Date.now());
-      setStoredToken(mockToken, true);
+    const status = err?.status;
+    if (status === 401 || status === 429 || status === 400) {
       return {
-        success: true,
-        token: mockToken,
-        role: 'admin',
-        isBackendConnected: false,
+        success: false,
+        error: err?.message || 'Invalid admin credentials',
+        isBackendConnected: true,
       };
     }
     return {
       success: false,
-      error: err?.message || 'Invalid admin credentials',
+      error: 'Go API Backend is unreachable. Start the backend server to sign in.',
       isBackendConnected: false,
     };
   }
@@ -49,21 +46,25 @@ export async function verifyAdminSession(): Promise<boolean> {
   const token = getStoredToken();
   if (!token) return false;
 
-  // Offline token check
-  if (token.startsWith('offline_admin_token_') || token.startsWith('tl_adm_')) return true;
-
   try {
     const res = await request<{ authenticated: boolean }>('/v1/admin/verify', {
       method: 'GET',
     });
     return res?.authenticated === true;
-  } catch (_) {
-    // If token exists in storage, allow session to remain active
-    return true;
+  } catch (err: any) {
+    if (err?.status === 401) {
+      clearStoredToken();
+      return false;
+    }
+    return false;
   }
 }
 
-export function logoutAdmin() {
+export async function logoutAdmin(): Promise<void> {
   clearStoredToken();
+  try {
+    await request('/v1/admin/logout', { method: 'POST' });
+  } catch {
+    // Ignore network failures during logout cleanup
+  }
 }
-

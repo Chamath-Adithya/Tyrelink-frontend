@@ -16,14 +16,13 @@ import {
 } from 'lucide-react';
 import {
   getAdminSession,
-  saveAdminSession,
   clearAdminSession,
   toggleEditMode,
   subscribeAdmin,
-  getCampaignsData,
   isFlashSaleLive,
   getLiveProducts
 } from '../../utils/adminStore';
+import { logoutAdmin, verifyAdminSession } from '../../services/authService';
 import type { AdminSession, Product } from '../../types';
 import ProductEditorModal from './ProductEditorModal';
 import FlashSaleSchedulerModal from './FlashSaleSchedulerModal';
@@ -40,38 +39,29 @@ export default function AdminControlBar() {
   const [isLiveFlash, setIsLiveFlash] = useState(false);
 
   useEffect(() => {
-    // 1. Initial check
-    let current = getAdminSession();
+    // 1. Initial check against real stored JWT + session
+    const current = getAdminSession();
     if (current) {
-      if (!current.token || !current.token.startsWith('tl_adm_')) {
-        current.token = 'tl_adm_' + (typeof btoa !== 'undefined' ? btoa(`admin:${Date.now()}`) : 'local_adm');
-        saveAdminSession(current);
-      }
       setSession(current);
       document.documentElement.classList.add('tyrelink-admin-logged-in');
       if (current.editMode) {
         document.documentElement.classList.add('tyrelink-admin-edit-mode');
       }
+
+      // Background verification with Go API
+      verifyAdminSession().then((valid) => {
+        if (!valid) {
+          clearAdminSession();
+          setSession(null);
+          document.documentElement.classList.remove('tyrelink-admin-logged-in', 'tyrelink-admin-edit-mode');
+        }
+      });
     }
 
-    // 2. Check URL for ?admin_mode=active or ?admin_preview=1
+    // Clean ?admin_mode=active query param
     if (typeof window !== 'undefined' && window.location.search.includes('admin_mode=active')) {
       const cleanUrl = window.location.origin + window.location.pathname;
       window.history.replaceState({}, '', cleanUrl);
-    }
-    if (typeof window !== 'undefined' && window.location.search.includes('admin_preview=1')) {
-      if (!current) {
-        const previewSession: AdminSession = {
-          token: 'tl_adm_' + (typeof btoa !== 'undefined' ? btoa(`preview:${Date.now()}`) : 'preview_adm'),
-          username: 'admin',
-          loginTime: Date.now(),
-          editMode: true,
-        };
-        saveAdminSession(previewSession);
-        setSession(previewSession);
-        document.documentElement.classList.add('tyrelink-admin-logged-in');
-        document.documentElement.classList.add('tyrelink-admin-edit-mode');
-      }
     }
 
     // 3. Check Flash Sale live status
@@ -134,8 +124,9 @@ export default function AdminControlBar() {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     if (confirm('Exit Tyrelink Admin Edit Mode?')) {
+      await logoutAdmin();
       clearAdminSession();
       document.documentElement.classList.remove('tyrelink-admin-logged-in');
       document.documentElement.classList.remove('tyrelink-admin-edit-mode');
@@ -243,6 +234,15 @@ export default function AdminControlBar() {
               <span>Orders</span>
             </button>
 
+            {/* Merchant Workspace Console */}
+            <a
+              href="/merchant"
+              className="shrink-0 whitespace-nowrap inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-900 border border-sky-500/40 text-sky-300 font-bold text-[11px] active:scale-95"
+            >
+              <ExternalLink className="w-3 h-3 text-sky-400" />
+              <span>Console</span>
+            </a>
+
             {/* Backup JSON */}
             <button
               type="button"
@@ -340,6 +340,15 @@ export default function AdminControlBar() {
               <Package className="w-3.5 h-3.5 text-emerald-400" />
               <span>Customer Orders</span>
             </button>
+
+            {/* Full Merchant Workspace Console */}
+            <a
+              href="/merchant"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-sky-500/40 text-sky-300 font-bold transition-all hover:scale-105 active:scale-95 whitespace-nowrap"
+            >
+              <ExternalLink className="w-3.5 h-3.5 text-sky-400" />
+              <span>Store Console</span>
+            </a>
 
             {/* Export JSON Backup */}
             <button

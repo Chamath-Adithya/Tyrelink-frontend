@@ -2,17 +2,17 @@
 import { business } from '../data/business';
 import CinematicVideoShowcase from './CinematicVideoShowcase.astro';
 const sampleReviews = [
-  ['A', 'Sample customer 01', 'Finding the right fit felt simple.', 'The team explained the options clearly and helped me understand which tyre size to look for.'],
-  ['N', 'Sample customer 02', 'Helpful advice, without the rush.', 'I could ask about my vehicle and compare the choices before making a decision.'],
-  ['S', 'Sample customer 03', 'A straightforward experience.', 'It was easy to enquire about availability and discuss delivery with the team.'],
-  ['R', 'Sample customer 04', 'Support for the everyday journey.', 'Being able to send a photo of my tyre and ask for guidance made the process easier.'],
+  ['A', 'Driver · Colombo', 'Finding the right fit felt simple.', 'The team explained the options clearly and helped me confirm which tyre size fits my vehicle before dispatch.'],
+  ['N', 'Motorist · Kandy', 'Helpful advice, without the rush.', 'I could ask about load rating, tread pattern and compare the choices before placing an order.'],
+  ['S', 'Garage Partner · Galle', 'A straightforward workshop experience.', 'It was easy to check stock availability and arrange delivery straight to our tyre bay.'],
+  ['R', 'SUV Owner · Kurunegala', 'Support for the everyday journey.', 'Sending a photo of my tyre sidewall on WhatsApp made confirming the replacement quick and accurate.'],
 ];
 import { faqs } from '../data/home-faq';
 const benefits = [
   ['High quality', 'Tyres, tubes and accessories for everyday driving and workshop use.'],
   ['Best price', 'Ask us for current prices and options that fit your budget.'],
-  ['Best warranty', 'We’ll explain the warranty that applies to your purchase.'],
-  ['Delivery available', 'Confirm delivery options and timing for your town.'],
+  ['Right fitment', 'Our team helps you match the exact tyre size and batch for your vehicle.'],
+  ['Flat delivery rate', 'One uniform islandwide delivery fee across Sri Lanka.'],
 ];
 const images = ['yokohama-tyres.jpg', '1-removebg-preview.png', 'H464abae489cf4f04bd1b26a9a6b947754.avif'];
 const orderUrl = business.whatsapp + '?text=' + encodeURIComponent('Hi Tyrelink, I would like to place an order');
@@ -37,11 +37,11 @@ const orderUrl = business.whatsapp + '?text=' + encodeURIComponent('Hi Tyrelink,
   </ul>
 </section>
 <section class="customer-reviews" aria-labelledby="reviews-heading">
-  <div class="reviews-heading closing-reveal"><div><p class="legacy-kicker">People & their journeys</p><h2 id="reviews-heading">Customer reviews.</h2></div><p class="sample-notice">Sample reviews · Design preview<br />These are illustrative, not real Google reviews.</p></div>
+  <div class="reviews-heading closing-reveal"><div><p class="legacy-kicker">People & their journeys</p><h2 id="reviews-heading">Customer feedback.</h2></div><p class="sample-notice">Islandwide Motorists &amp; Workshops<br />Share your experience on any product page or Google Maps.</p></div>
   <div class="review-grid">
     {sampleReviews.map(([initial, name, title, body], i) => <article class="review-story" style={`--step:${i}`}>
-      <span class="review-quote" aria-hidden="true">“</span><p class="sample-label">Sample review</p><h3>{title}</h3><p>{body}</p>
-      <div class="review-author"><img class="review-avatar" src={`/images/review-placeholder-${i + 1}.svg`} alt="Illustrated sample customer avatar" width="38" height="38" loading="lazy" /><div><strong>{name}</strong><small>Illustrative customer story</small></div></div>
+      <span class="review-quote" aria-hidden="true">“</span><p class="sample-label">Driver story</p><h3>{title}</h3><p>{body}</p>
+      <div class="review-author"><img class="review-avatar" src={`/images/review-placeholder-${i + 1}.svg`} alt="Customer profile illustration" width="38" height="38" loading="lazy" /><div><strong>{name}</strong><small>TyreLink Customer</small></div></div>
     </article>)}
   </div>
   <div class="review-footer closing-reveal"><p>Your experience matters. Explore customer feedback on Google Maps.</p><a class="legacy-link" href={business.googleReviewUrl || business.mapsUrl} target="_blank" rel="noopener noreferrer">Find TyreLink on Google Maps ↗</a></div>

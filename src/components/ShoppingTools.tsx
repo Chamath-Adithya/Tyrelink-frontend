@@ -62,7 +62,6 @@ export default function ShoppingTools() {
   const rows: {label: string; values: string[]}[] = [
     {label:'Price', values:selected.map(p=>money(p.price))},
     {label:'Availability', values:selected.map(p=>p.inStock ? 'In stock · confirm quantity' : 'Enquire about availability')},
-    {label:'Warranty', values:selected.map(p=>p.warranty || 'Ask our team')},
     {label:'Koko · 3 payments', values:selected.map(p=>money(p.kokoInstallmentAmount || Math.ceil(p.price/(p.kokoInstallmentCount || 3))))},
     {label:'Payzy · 4 payments', values:selected.map(p=>money(p.payzyInstallmentAmount || Math.ceil(p.price/(p.payzyInstallmentCount || 4))))},
     ...[...new Set(selected.flatMap(p=>Object.keys(p.specs).filter(key=>key!=='Warranty')))].map(label=>({label,values:selected.map(p=>p.specs[label] || 'Not specified')})),

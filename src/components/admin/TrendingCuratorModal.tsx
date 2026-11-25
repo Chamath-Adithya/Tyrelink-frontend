@@ -74,16 +74,17 @@ export default function TrendingCuratorModal({
         trending: updatedTrending,
       };
 
-      // 1. Save campaigns config
-      await saveCampaignsData(updatedCampaigns);
+      // 1. Save campaigns config to API (atomically updates product is_best_seller flags in Postgres)
+      const saveRes = await saveCampaignsData(updatedCampaigns);
+      if (!saveRes.success) {
+        throw new Error(saveRes.error || 'Failed to save trending collection to server');
+      }
 
-      // 2. Synchronize isBestSeller on products
       const updatedProducts = products.map((p) => ({
         ...p,
         isBestSeller: selectedProductIds.includes(p.id),
       }));
-
-      await saveLiveProducts(updatedProducts);
+      localStorage.setItem('tyrelink_products_override_v2', JSON.stringify(updatedProducts));
 
       setSuccess(true);
       if (onSaved) onSaved();

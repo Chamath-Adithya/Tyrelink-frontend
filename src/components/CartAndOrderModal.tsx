@@ -21,11 +21,10 @@ import {
   Zap
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { apiRequest } from '../lib/api';
 import { submitOrderLead } from '../services/leadService';
+import { getFlatDeliveryRate } from '../services/customerService';
 import {
   getCart,
-  saveCart,
   updateCartQuantity,
   removeFromCart,
   clearCart,
@@ -55,6 +54,7 @@ export default function CartAndOrderModal() {
   const [phone1, setPhone1] = useState('');
   const [phone2, setPhone2] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('Cash on Delivery (COD)');
+  const [courierFee, setCourierFee] = useState<number>(COURIER_CHARGE);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -62,6 +62,7 @@ export default function CartAndOrderModal() {
   // Initialize and listen to custom events
   useEffect(() => {
     setCartItems(getCart());
+    getFlatDeliveryRate().then((r) => setCourierFee(r.fee)).catch(() => {});
 
     const handleCartUpdated = (e: CustomEvent<CartItem[]>) => {
       setCartItems(e.detail || getCart());
@@ -117,10 +118,10 @@ export default function CartAndOrderModal() {
   }, [isCartOpen, isCheckoutOpen]);
 
   const cartSubtotal = getCartSubtotal(cartItems);
-  const cartGrandTotal = cartItems.length > 0 ? cartSubtotal + COURIER_CHARGE : 0;
+  const cartGrandTotal = cartItems.length > 0 ? cartSubtotal + courierFee : 0;
 
   const checkoutSubtotal = checkoutItems.reduce((acc, i) => acc + i.price * i.quantity, 0);
-  const checkoutGrandTotal = checkoutSubtotal + COURIER_CHARGE;
+  const checkoutGrandTotal = checkoutSubtotal + courierFee;
   const totalCheckoutQuantity = checkoutItems.reduce((acc, i) => acc + i.quantity, 0);
 
   const updateCheckoutQuantity = (itemId: string, delta: number) => {
@@ -223,7 +224,7 @@ export default function CartAndOrderModal() {
       paymentMethod,
       items: checkoutItems,
       subtotal: checkoutSubtotal,
-      courierCharge: COURIER_CHARGE,
+      courierCharge: courierFee,
       grandTotal: checkoutGrandTotal,
       timestamp: new Date().toISOString()
     };
@@ -258,7 +259,7 @@ ${itemsFormatted}
 
 ━━━━━━━━━━━━━━━━━━━━━━━
 💰 *Subtotal:* Rs. ${checkoutSubtotal.toLocaleString('en-US')}
-🚚 *Courier Delivery Charge:* Rs. ${COURIER_CHARGE.toLocaleString('en-US')}
+🚚 *Courier Delivery Charge:* Rs. ${courierFee.toLocaleString('en-US')}
 🔥 *TOTAL PAYABLE AMOUNT:* Rs. ${checkoutGrandTotal.toLocaleString('en-US')}
 ━━━━━━━━━━━━━━━━━━━━━━━
 💳 *Payment Method:* ${paymentMethod}
@@ -426,7 +427,7 @@ ${phone2.trim() ? `📱 *Alternative Mobile:* ${phone2.trim()}\n` : ''}🏷️ *
                         Islandwide Courier (දිවයින පුරා)
                       </span>
                       <span className="font-mono font-bold text-slate-800 text-sm">
-                        Rs. {COURIER_CHARGE.toLocaleString('en-US')}
+                        Rs. {courierFee.toLocaleString('en-US')}
                       </span>
                     </div>
 
@@ -756,7 +757,7 @@ ${phone2.trim() ? `📱 *Alternative Mobile:* ${phone2.trim()}\n` : ''}🏷️ *
                               {/* Estimated Total Bar */}
                                 <div className="pt-2.5 border-t border-red-100 flex items-center justify-between text-xs sm:text-sm">
                                   <div className="text-slate-500 text-[11px] sm:text-xs">
-                                    Delivery: <b className="text-slate-700 font-mono">Rs. {COURIER_CHARGE.toLocaleString('en-US')} (COD)</b>
+                                    Delivery: <b className="text-slate-700 font-mono">Rs. {courierFee.toLocaleString('en-US')} (COD)</b>
                                   </div>
                                   <div className="flex items-baseline gap-2">
                                     <span className="text-slate-600 font-semibold text-xs sm:text-sm">Estimated Total:</span>
@@ -1101,7 +1102,7 @@ ${phone2.trim() ? `📱 *Alternative Mobile:* ${phone2.trim()}\n` : ''}🏷️ *
                                         <Truck className="w-4 h-4" />
                                         <span>Courier Delivery Charge:</span>
                                       </span>
-                                      <span className="font-mono font-bold text-slate-800">Rs. {COURIER_CHARGE.toLocaleString('en-US')}</span>
+                                      <span className="font-mono font-bold text-slate-800">Rs. {courierFee.toLocaleString('en-US')}</span>
                                     </div>
                                     <div className="pt-3 border-t border-dashed border-slate-200 flex items-center justify-between">
                                       <div>
@@ -1138,7 +1139,7 @@ ${phone2.trim() ? `📱 *Alternative Mobile:* ${phone2.trim()}\n` : ''}🏷️ *
                                 {/* 4. Guarantee strip */}
                                 <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-600 bg-slate-50/80 p-3.5 rounded-2xl border border-slate-200/70">
                                   <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
-                                  <span className="font-medium">100% Genuine Company Warranty & Safe Doorstep Dispatch.</span>
+                                  <span className="font-medium">Verified Fresh DOT Batches & Safe Doorstep Dispatch.</span>
                                 </div>
 
                                 {/* 5. Dual Action Buttons (Back + Confirm WhatsApp) */}

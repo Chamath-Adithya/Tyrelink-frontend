@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { X, CheckCircle2, ShieldCheck, Truck, Sparkles, Send, AlertCircle, Phone, MapPin, User, CreditCard } from 'lucide-react';
+import { X, CheckCircle2, Truck, Sparkles, Send, AlertCircle, Phone, MapPin, User, CreditCard } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { apiRequest } from '../lib/api';
+import { submitOrderLead } from '../services/leadService';
+import { getFlatDeliveryRate } from '../services/customerService';
 
 interface QuickOrderModalProps {
   productId: string;
@@ -60,28 +61,23 @@ export default function QuickOrderModal({
 
     setIsSubmitting(true);
     const orderRef = `TL-${Date.now().toString().slice(-8)}`;
+    const flat = await getFlatDeliveryRate().catch(() => ({ town: 'Islandwide', fee: 450, estimate: '' }));
+    const courierFee = flat.fee;
+    const grandTotal = price + courierFee;
 
-    const orderPayload = {
-      productId,
-      productTitle,
-      price,
-      selectedUpgrades,
-      customerName: name.trim(),
-      address: address.trim(),
-      phone1: phone1.trim(),
-      phone2: phone2.trim() || undefined,
-      paymentMethod,
-      timestamp: new Date().toISOString(),
-      orderRef,
-      status: 'pending_whatsapp'
-    };
-
-    // 1. Asynchronously save lead to /api/order backend
     try {
-      await apiRequest('/v1/order-leads', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderPayload)
+      await submitOrderLead({
+        orderRef,
+        customerName: name.trim(),
+        address: address.trim(),
+        phone1: phone1.trim(),
+        phone2: phone2.trim() || undefined,
+        paymentMethod,
+        items: [{ id: productId, title: productTitle, price, quantity: 1, image: featuredImage, selectedUpgrades }],
+        subtotal: price,
+        courierCharge: courierFee,
+        grandTotal,
+        timestamp: new Date().toISOString(),
       });
     } catch (err) {
       console.warn('Backend lead capture offline, proceeding directly to WhatsApp:', err);

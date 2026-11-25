@@ -33,7 +33,9 @@ export interface AdminLeadRecord {
   courierCharge: number;
   grandTotal: number;
   status: string;
+  adminNotes?: string;
   createdAt: string;
+  updatedAt?: string;
   items: Array<{
     id: string;
     title: string;
@@ -43,7 +45,6 @@ export interface AdminLeadRecord {
 }
 
 export async function submitOrderLead(payload: OrderLeadPayload): Promise<{ success: boolean; leadId?: string }> {
-  // Always persist to localStorage for instant local CRM access
   try {
     if (typeof window !== 'undefined') {
       const localLeads: AdminLeadRecord[] = JSON.parse(localStorage.getItem('tyrelink_order_leads') || '[]');
@@ -58,9 +59,9 @@ export async function submitOrderLead(payload: OrderLeadPayload): Promise<{ succ
         subtotal: payload.subtotal,
         courierCharge: payload.courierCharge,
         grandTotal: payload.grandTotal,
-        status: 'pending',
+        status: 'new',
         createdAt: new Date().toISOString(),
-        items: payload.items.map(it => ({
+        items: payload.items.map((it) => ({
           id: it.id,
           title: it.title,
           price: it.price,
@@ -86,19 +87,23 @@ export async function submitOrderLead(payload: OrderLeadPayload): Promise<{ succ
   }
 }
 
-export async function fetchAdminLeads(): Promise<AdminLeadRecord[]> {
+export async function fetchAdminLeads(filters?: { status?: string; q?: string }): Promise<AdminLeadRecord[]> {
   try {
-    const res = await request<{ data: AdminLeadRecord[] }>('/v1/admin/leads', {
+    const params = new URLSearchParams();
+    if (filters?.status && filters.status !== 'all') params.set('status', filters.status);
+    if (filters?.q?.trim()) params.set('q', filters.q.trim());
+    const qs = params.toString() ? `?${params.toString()}` : '';
+
+    const res = await request<{ data: AdminLeadRecord[] }>(`/v1/admin/leads${qs}`, {
       method: 'GET',
     });
-    if (res?.data && res.data.length > 0) {
+    if (Array.isArray(res?.data)) {
       return res.data;
     }
   } catch (err) {
-    console.warn('[leadService] Backend offline, reading from local CRM store:', err);
+    console.warn('[leadService] Backend leads unavailable, falling back to local CRM cache:', err);
   }
 
-  // Graceful fallback to local CRM store
   try {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('tyrelink_order_leads');
@@ -112,3 +117,29 @@ export async function fetchAdminLeads(): Promise<AdminLeadRecord[]> {
   return [];
 }
 
+export async function updateOrderLead(
+  id: string,
+  status: string,
+  adminNotes: string = ''
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    await request(`/v1/admin/leads/${encodeURIComponent(id)}`, {
+      method: 'PUT',
+      body: JSON.stringify({ status, adminNotes }),
+    });
+    return { success: true };
+  } catch (err: any) {
+    return { success: false, error: err?.message || 'Could not update order status' };
+  }
+}
+
+export async function deleteOrderLead(id: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    await request(`/v1/admin/leads/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+    });
+    return { success: true };
+  } catch (err: any) {
+    return { success: false, error: err?.message || 'Could not delete order lead' };
+  }
+}
