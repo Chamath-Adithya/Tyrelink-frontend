@@ -428,8 +428,8 @@ export default function ProductCatalogFilter({
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={isScrolled ? "Search tyres, sizes, brands, tools..." : "Search tyres, tyre sizes, brands, tools..."}
               className={`w-full pl-9 sm:pl-11 pr-8 sm:pr-10 text-xs sm:text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:bg-white transition-all shadow-2xs ${isScrolled
-                ? 'h-9 sm:h-10 rounded-full bg-slate-100/90 border-0'
-                : 'h-11 sm:h-12 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-200/70'
+                  ? 'h-9 sm:h-10 rounded-full bg-slate-100/90 border-0'
+                  : 'h-11 sm:h-12 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-200/70'
                 }`}
             />
             {searchQuery && (
@@ -473,8 +473,8 @@ export default function ProductCatalogFilter({
                         type="button"
                         onClick={() => { setSelectedCategory('all'); setIsCategoryMenuOpen(false); }}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all text-left cursor-pointer ${selectedCategory === 'all'
-                          ? 'bg-slate-900 text-white'
-                          : 'hover:bg-slate-50 text-slate-700'
+                            ? 'bg-slate-900 text-white'
+                            : 'hover:bg-slate-50 text-slate-700'
                           }`}
                       >
                         <span>Shop tyres & tools</span>
@@ -486,8 +486,8 @@ export default function ProductCatalogFilter({
                           type="button"
                           onClick={() => { setSelectedCategory(cat.id); setIsCategoryMenuOpen(false); }}
                           className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all text-left cursor-pointer ${selectedCategory === cat.id
-                            ? 'bg-brand-500 text-white shadow-sm'
-                            : 'hover:bg-slate-50 text-slate-700'
+                              ? 'bg-brand-500 text-white shadow-sm'
+                              : 'hover:bg-slate-50 text-slate-700'
                             }`}
                         >
                           <span>{cat.name}</span>
@@ -506,9 +506,9 @@ export default function ProductCatalogFilter({
                 onClick={() => setIsPriceOpen(!isPriceOpen)}
                 className={`w-full sm:w-auto flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-bold transition-all shadow-2xs group cursor-pointer border ${isScrolled ? 'px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full' : 'px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl'
                   } ${isPriceFiltered
-                    ? 'bg-red-50 text-brand-700 border-brand-500/30'
-                    : 'bg-slate-50 hover:bg-slate-100/90 text-slate-900 border-slate-200/70'
-                  }`}
+                      ? 'bg-red-50 text-brand-700 border-brand-500/30'
+                      : 'bg-slate-50 hover:bg-slate-100/90 text-slate-900 border-slate-200/70'
+                }`}
                 aria-expanded={isPriceOpen}
               >
                 <SlidersHorizontal className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isPriceFiltered ? 'text-brand-500' : 'text-slate-400 group-hover:text-brand-500'} transition-colors shrink-0`} />
@@ -671,9 +671,9 @@ export default function ProductCatalogFilter({
                 onClick={() => setIsSortOpen(!isSortOpen)}
                 className={`w-full sm:w-auto flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-bold transition-all shadow-2xs group cursor-pointer border ${isScrolled ? 'px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full' : 'px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl'
                   } ${sortBy !== 'featured'
-                    ? 'bg-red-50 text-brand-700 border-brand-500/30'
-                    : 'bg-slate-50 hover:bg-slate-100/90 text-slate-900 border-slate-200/70'
-                  }`}
+                      ? 'bg-red-50 text-brand-700 border-brand-500/30'
+                      : 'bg-slate-50 hover:bg-slate-100/90 text-slate-900 border-slate-200/70'
+                }`}
                 aria-expanded={isSortOpen}
               >
                 <ArrowUpDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400 group-hover:text-brand-500 transition-colors shrink-0" />
@@ -703,9 +703,9 @@ export default function ProductCatalogFilter({
                             setIsSortOpen(false);
                           }}
                           className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-left transition-all ${isSelected
-                            ? 'bg-red-50/80 text-brand-700'
-                            : 'hover:bg-slate-50 text-slate-700'
-                            }`}
+                                ? 'bg-red-50/80 text-brand-700'
+                                : 'hover:bg-slate-50 text-slate-700'
+                          }`}
                         >
                           <div className="space-y-0.5 min-w-0 flex-1 pr-2">
                             <span className={`block text-xs truncate ${isSelected ? 'font-bold text-brand-700' : 'font-semibold text-slate-800'}`}>
@@ -735,8 +735,8 @@ export default function ProductCatalogFilter({
             <button
               onClick={() => setSelectedCategory('all')}
               className={`px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl text-xs font-bold whitespace-nowrap shrink-0 transition-all cursor-pointer ${selectedCategory === 'all'
-                ? 'bg-slate-900 text-white shadow-soft'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-900'
+                  ? 'bg-slate-900 text-white shadow-soft'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-900'
                 }`}
             >
               Shop tyres & tools ({products.length})
@@ -746,8 +746,8 @@ export default function ProductCatalogFilter({
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
                 className={`px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl text-xs font-bold whitespace-nowrap shrink-0 transition-all cursor-pointer ${selectedCategory === cat.id
-                  ? 'bg-brand-500 text-white shadow-glow-sm'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-900'
+                    ? 'bg-brand-500 text-white shadow-glow-sm'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200/80 hover:text-slate-900'
                   }`}
               >
                 <span>{cat.name}</span>
@@ -758,7 +758,7 @@ export default function ProductCatalogFilter({
 
         <details className="catalog-brands" open>
           <summary>Shop by brand <span>{selectedBrands.length ? `${selectedBrands.length} selected` : 'All brands'}</span></summary>
-          <div aria-label="Filter by brand"><button type="button" aria-pressed={!selectedBrands.length} onClick={() => setSelectedBrands([])}>All brands</button>{allBrandsWithCounts.map(([brand, count]) => <button type="button" key={brand} aria-pressed={selectedBrands.includes(brand)} onClick={() => toggleBrand(brand)}>{brand} <small>{count}</small></button>)}</div>
+          <div aria-label="Filter by brand"><button type="button" aria-pressed={!selectedBrands.length} onClick={()=>setSelectedBrands([])}>All brands</button>{allBrandsWithCounts.map(([brand,count])=><button type="button" key={brand} aria-pressed={selectedBrands.includes(brand)} onClick={()=>toggleBrand(brand)}>{brand} <small>{count}</small></button>)}</div>
           <a href="/tools">Not sure? Find your tyre size or compare products ↗</a>
         </details>
 
@@ -766,318 +766,318 @@ export default function ProductCatalogFilter({
         {hasActiveFilters && (
           <div
             className={`transition-all duration-300 ease-in-out overflow-hidden ${isScrolled
-              ? 'max-h-0 opacity-0 -translate-y-2 pointer-events-none mt-0'
-              : 'max-h-36 opacity-100 translate-y-0 pt-3 border-t border-slate-100 mt-3.5'
+                ? 'max-h-0 opacity-0 -translate-y-2 pointer-events-none mt-0'
+                : 'max-h-36 opacity-100 translate-y-0 pt-3 border-t border-slate-100 mt-3.5'
               }`}
           >
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Active:</span>
 
               {searchQuery && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-red-50 text-brand-700 text-xs font-bold">
-                  "{searchQuery}"
-                  <X className="w-3 h-3 cursor-pointer" onClick={() => setSearchQuery('')} />
-                </span>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-red-50 text-brand-700 text-xs font-bold">
+                    "{searchQuery}"
+                    <X className="w-3 h-3 cursor-pointer" onClick={() => setSearchQuery('')} />
+                  </span>
               )}
 
-              {selectedCategory !== 'all' && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100 text-slate-800 text-xs font-bold">
-                  Category: {selectedCategory}
-                  <X className="w-3 h-3 cursor-pointer" onClick={() => setSelectedCategory('all')} />
-                </span>
-              )}
+                  {selectedCategory !== 'all' && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100 text-slate-800 text-xs font-bold">
+                      Category: {selectedCategory}
+                      <X className="w-3 h-3 cursor-pointer" onClick={() => setSelectedCategory('all')} />
+                    </span>
+                  )}
 
-              {selectedBrands.map((b) => (
-                <span key={b} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100 text-slate-800 text-xs font-bold">
-                  Brand: {b}
-                  <X className="w-3 h-3 cursor-pointer" onClick={() => toggleBrand(b)} />
-                </span>
-              ))}
+                  {selectedBrands.map((b) => (
+                    <span key={b} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100 text-slate-800 text-xs font-bold">
+                      Brand: {b}
+                      <X className="w-3 h-3 cursor-pointer" onClick={() => toggleBrand(b)} />
+                    </span>
+                  ))}
 
-              {(priceRange[0] > 0 || priceRange[1] < 1000000) && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100 text-slate-800 text-xs font-bold font-mono">
-                  Rs. {priceRange[0].toLocaleString()} – Rs. {priceRange[1].toLocaleString()}
-                  <X className="w-3 h-3 cursor-pointer" onClick={() => setPricePreset(0, 1000000)} />
-                </span>
-              )}
+                  {(priceRange[0] > 0 || priceRange[1] < 1000000) && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100 text-slate-800 text-xs font-bold font-mono">
+                      Rs. {priceRange[0].toLocaleString()} – Rs. {priceRange[1].toLocaleString()}
+                      <X className="w-3 h-3 cursor-pointer" onClick={() => setPricePreset(0, 1000000)} />
+                    </span>
+                  )}
 
-              {flashOnly && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-red-50 text-red-700 text-xs font-bold">
-                  Flash Deals Only
-                  <X className="w-3 h-3 cursor-pointer" onClick={() => setFlashOnly(false)} />
-                </span>
-              )}
+                  {flashOnly && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-red-50 text-red-700 text-xs font-bold">
+                      Flash Deals Only
+                      <X className="w-3 h-3 cursor-pointer" onClick={() => setFlashOnly(false)} />
+                    </span>
+                  )}
 
-              <button
-                onClick={clearAllFilters}
-                className="inline-flex items-center gap-1 text-xs font-bold text-red-600 hover:text-red-700 ml-auto cursor-pointer"
-              >
-                <RotateCcw className="w-3 h-3" />
-                <span>Reset All</span>
-              </button>
-            </div>
+                  <button
+                    onClick={clearAllFilters}
+                    className="inline-flex items-center gap-1 text-xs font-bold text-red-600 hover:text-red-700 ml-auto cursor-pointer"
+                  >
+                    <RotateCcw className="w-3 h-3" />
+                    <span>Reset All</span>
+                  </button>
+                </div>
           </div>
         )}
-      </div>
+          </div>
 
       {/* Main Product Grid Stage - Full Width */}
-      <div id="catalog-products" className="w-full space-y-6 scroll-mt-28 sm:scroll-mt-36">
+        <div id="catalog-products" className="w-full space-y-6 scroll-mt-28 sm:scroll-mt-36">
 
-        <div className="flex items-center justify-between text-xs text-slate-500 font-semibold px-1">
-          <span>
-            Showing <b className="text-slate-900">{visibleProducts.length}</b> of {filteredProducts.length} items
-          </span>
-          <span className="text-emerald-600 font-bold flex items-center gap-1">
-            <ShieldCheck className="w-3.5 h-3.5" /> 100% Verified Warranty
-          </span>
-        </div>
+          <div className="flex items-center justify-between text-xs text-slate-500 font-semibold px-1">
+            <span>
+              Showing <b className="text-slate-900">{visibleProducts.length}</b> of {filteredProducts.length} items
+            </span>
+            <span className="text-emerald-600 font-bold flex items-center gap-1">
+              <ShieldCheck className="w-3.5 h-3.5" /> 100% Verified Warranty
+            </span>
+          </div>
 
-        {filteredProducts.length > 0 ? (
-          <div className="space-y-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
-              {visibleProducts.map((product, idx) => {
-                const bnpl = bnplMap[product.id] ?? {
-                  kokoCount: product.kokoInstallmentCount || product.installmentCount || 3,
-                  kokoAmount: product.kokoInstallmentAmount || product.installmentAmount || Math.round(product.price / 3),
-                  payzyCount: product.payzyInstallmentCount || 4,
-                  payzyAmount: product.payzyInstallmentAmount || Math.round(product.price / 4),
-                };
-                const savings = product.originalPrice ? product.originalPrice - product.price : null;
-                const tyreSize = product.specs?.['Tyre Size'] || product.specs?.['Size'] || product.specs?.['Rim Size'] || '';
-                const vehicleFit = product.specs?.['Vehicle'] || '';
-                return (
-                  <div
-                    key={product.id}
-                    onClick={(e) => {
-                      const target = e.target as HTMLElement;
-                      if (target.closest('a, button')) return;
-                      window.location.href = `/product/${product.slug}`;
-                    }}
-                    style={{ animationDelay: `${(idx % 8) * 60}ms` }}
-                    className="catalog-card product-card tyrelink-product-card bg-white w-full min-h-[168px] flex flex-row items-stretch p-3 sm:p-3.5 gap-3 sm:gap-4 group relative text-left rounded-2xl border border-slate-200 hover:border-[#e31b23]/70 transition-all duration-300 hover:-translate-y-1 overflow-hidden animate-[fadeIn_0.45s_ease_both] cursor-pointer select-none shadow-sm hover:shadow-xl"
-                  >
-                    {/* Admin Quick Edit Button */}
-                    <button
-                      type="button"
-                      className="admin-edit-badge hidden z-30 absolute top-2 right-2 px-2 py-0.5 rounded-full bg-slate-900/95 text-brand-300 border border-brand-500/60 shadow-lg text-[10px] font-bold items-center gap-1 hover:scale-105 active:scale-95 transition-all cursor-pointer backdrop-blur-md"
+          {filteredProducts.length > 0 ? (
+            <div className="space-y-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
+                {visibleProducts.map((product, idx) => {
+                  const bnpl = bnplMap[product.id] ?? {
+                    kokoCount: product.kokoInstallmentCount || product.installmentCount || 3,
+                    kokoAmount: product.kokoInstallmentAmount || product.installmentAmount || Math.round(product.price / 3),
+                    payzyCount: product.payzyInstallmentCount || 4,
+                    payzyAmount: product.payzyInstallmentAmount || Math.round(product.price / 4),
+                  };
+                  const savings = product.originalPrice ? product.originalPrice - product.price : null;
+                  const tyreSize = product.specs?.['Tyre Size'] || product.specs?.['Size'] || product.specs?.['Rim Size'] || '';
+                  const vehicleFit = product.specs?.['Vehicle'] || '';
+                  return (
+                    <div
+                      key={product.id}
                       onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        window.dispatchEvent(new CustomEvent('tyrelink:edit-product', { detail: { product } }));
+                        const target = e.target as HTMLElement;
+                        if (target.closest('a, button')) return;
+                        window.location.href = `/product/${product.slug}`;
                       }}
+                      style={{ animationDelay: `${(idx % 8) * 60}ms` }}
+                      className="catalog-card product-card tyrelink-product-card bg-white w-full min-h-[168px] flex flex-row items-stretch p-3 sm:p-3.5 gap-3 sm:gap-4 group relative text-left rounded-2xl border border-slate-200 hover:border-[#e31b23]/70 transition-all duration-300 hover:-translate-y-1 overflow-hidden animate-[fadeIn_0.45s_ease_both] cursor-pointer select-none shadow-sm hover:shadow-xl"
                     >
-                      <Edit3 className="w-3 h-3 text-brand-400" />
-                      <span>Edit</span>
-                    </button>
+                      {/* Admin Quick Edit Button */}
+                      <button
+                        type="button"
+                        className="admin-edit-badge hidden z-30 absolute top-2 right-2 px-2 py-0.5 rounded-full bg-slate-900/95 text-brand-300 border border-brand-500/60 shadow-lg text-[10px] font-bold items-center gap-1 hover:scale-105 active:scale-95 transition-all cursor-pointer backdrop-blur-md"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          window.dispatchEvent(new CustomEvent('tyrelink:edit-product', { detail: { product } }));
+                        }}
+                      >
+                        <Edit3 className="w-3 h-3 text-brand-400" />
+                        <span>Edit</span>
+                      </button>
 
-                    {/* Left Side: Product Image Stage */}
-                    <a
-                      href={`/product/${product.slug}`}
-                      className="product-image-stage relative w-[115px] sm:w-[130px] rounded-xl overflow-hidden border border-slate-100 flex items-center justify-center p-2.5 bg-[#f5f5f1] shrink-0"
-                    >
-                      <img
-                        src={product.featuredImage}
-                        alt={product.title}
-                        loading="lazy"
-                        className="w-full h-full max-h-[120px] object-contain group-hover:scale-106 transition-transform duration-500 ease-out"
-                      />
+                      {/* Left Side: Product Image Stage */}
+                      <a
+                        href={`/product/${product.slug}`}
+                        className="product-image-stage relative w-[115px] sm:w-[130px] rounded-xl overflow-hidden border border-slate-100 flex items-center justify-center p-2.5 bg-[#f5f5f1] shrink-0"
+                      >
+                        <img
+                          src={product.featuredImage}
+                          alt={product.title}
+                          loading="lazy"
+                          className="w-full h-full max-h-[120px] object-contain group-hover:scale-106 transition-transform duration-500 ease-out"
+                        />
 
-                      {/* Badges */}
-                      <div className="absolute top-1.5 left-1.5 flex flex-col gap-1 z-10 pointer-events-none">
-                        {product.isFlashDeal && product.flashDealDiscount && (
-                          <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-[#e31b23] text-white shadow-sm">
-                            -{product.flashDealDiscount}%
-                          </span>
-                        )}
-                        {savings && savings > 0 && !product.isFlashDeal && (
-                          <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-emerald-600 text-white shadow-sm">
-                            Save Rs. {savings.toLocaleString('en-US')}
-                          </span>
-                        )}
-                      </div>
-                    </a>
-
-                    {/* Right Side: Details, Price & Action */}
-                    <div className="flex-1 flex flex-col justify-between min-w-0 py-0.5">
-                      <div>
-                        <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-                          <span className="text-brand-600 uppercase tracking-widest font-mono text-[9px] font-extrabold bg-brand-50/80 px-1.5 py-0.5 rounded border border-brand-100/60 shrink-0">{product.brand}</span>
-                          {tyreSize ? (
-                            <span className="text-[9px] font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 truncate">{tyreSize}</span>
-                          ) : (
-                            <span className="text-[9px] font-mono font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/80 truncate">GENUINE</span>
+                        {/* Badges */}
+                        <div className="absolute top-1.5 left-1.5 flex flex-col gap-1 z-10 pointer-events-none">
+                          {product.isFlashDeal && product.flashDealDiscount && (
+                            <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-[#e31b23] text-white shadow-sm">
+                              -{product.flashDealDiscount}%
+                            </span>
+                          )}
+                          {savings && savings > 0 && !product.isFlashDeal && (
+                            <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-emerald-600 text-white shadow-sm">
+                              Save Rs. {savings.toLocaleString('en-US')}
+                            </span>
                           )}
                         </div>
+                      </a>
 
-                        <a href={`/product/${product.slug}`} className="block">
-                          <h3 className="text-xs sm:text-sm font-bold text-slate-900 line-clamp-2 group-hover:text-brand-600 transition-colors leading-snug font-sans">
-                            {product.title}
-                          </h3>
-                        </a>
-                        {vehicleFit && (
-                          <p className="text-[10px] text-slate-500 font-medium truncate mt-0.5">
-                            Fits: <span className="text-slate-700 font-semibold">{vehicleFit}</span>
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="pt-2 mt-2 border-t border-slate-100 flex items-end justify-between gap-2">
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-baseline gap-1.5 flex-wrap">
-                            <span className="text-sm sm:text-base font-black text-[#e31b23] font-display tracking-tight leading-none">
-                              Rs. {product.price.toLocaleString('en-US')}
-                            </span>
-                            {product.originalPrice && (
-                              <span className="text-[10px] text-slate-400 line-through font-mono shrink-0">
-                                Rs. {product.originalPrice.toLocaleString('en-US')}
-                              </span>
+                      {/* Right Side: Details, Price & Action */}
+                      <div className="flex-1 flex flex-col justify-between min-w-0 py-0.5">
+                        <div>
+                          <div className="flex items-center gap-1.5 mb-1 flex-wrap">
+                            <span className="text-brand-600 uppercase tracking-widest font-mono text-[9px] font-extrabold bg-brand-50/80 px-1.5 py-0.5 rounded border border-brand-100/60 shrink-0">{product.brand}</span>
+                            {tyreSize ? (
+                              <span className="text-[9px] font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 truncate">{tyreSize}</span>
+                            ) : (
+                              <span className="text-[9px] font-mono font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/80 truncate">GENUINE</span>
                             )}
                           </div>
 
-                          <div className="flex items-center gap-1 text-[9px] text-slate-500 mt-1 font-medium truncate">
-                            <span className="truncate">or {bnpl.kokoCount}× <b className="text-slate-800 font-mono font-bold">Rs. {bnpl.kokoAmount.toLocaleString('en-US')}</b></span>
-                            <div className="flex items-center gap-0.5 shrink-0">
-                              <a href="https://paykoko.com/" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} title="Pay with Koko">
-                                <img src="/images/payments/koko-logo.png" alt="Koko" className="h-2.5 object-contain" />
-                              </a>
-                              <span className="text-slate-300 text-[9px]">/</span>
-                              <a href="https://payzy.lk/" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} title="Pay with PayZy">
-                                <img src="/images/payments/payzy-logo.png" alt="PayZy" className="h-2 object-contain" />
-                              </a>
-                            </div>
-                          </div>
+                          <a href={`/product/${product.slug}`} className="block">
+                            <h3 className="text-xs sm:text-sm font-bold text-slate-900 line-clamp-2 group-hover:text-brand-600 transition-colors leading-snug font-sans">
+                              {product.title}
+                            </h3>
+                          </a>
+                          {vehicleFit && (
+                            <p className="text-[10px] text-slate-500 font-medium truncate mt-0.5">
+                              Fits: <span className="text-slate-700 font-semibold">{vehicleFit}</span>
+                            </p>
+                          )}
                         </div>
 
-                        <div className="w-8 h-8 rounded-xl bg-[#e31b23] hover:bg-red-700 text-white flex items-center justify-center transition-all duration-300 group-hover:scale-105 shrink-0 shadow-xs">
-                          <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                        <div className="pt-2 mt-2 border-t border-slate-100 flex items-end justify-between gap-2">
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-baseline gap-1.5 flex-wrap">
+                              <span className="text-sm sm:text-base font-black text-[#e31b23] font-display tracking-tight leading-none">
+                                Rs. {product.price.toLocaleString('en-US')}
+                              </span>
+                              {product.originalPrice && (
+                                <span className="text-[10px] text-slate-400 line-through font-mono shrink-0">
+                                  Rs. {product.originalPrice.toLocaleString('en-US')}
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="flex items-center gap-1 text-[9px] text-slate-500 mt-1 font-medium truncate">
+                              <span className="truncate">or {bnpl.kokoCount}× <b className="text-slate-800 font-mono font-bold">Rs. {bnpl.kokoAmount.toLocaleString('en-US')}</b></span>
+                              <div className="flex items-center gap-0.5 shrink-0">
+                                <a href="https://paykoko.com/" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} title="Pay with Koko">
+                                  <img src="/images/payments/koko-logo.png" alt="Koko" className="h-2.5 object-contain" />
+                                </a>
+                                <span className="text-slate-300 text-[9px]">/</span>
+                                <a href="https://payzy.lk/" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} title="Pay with PayZy">
+                                  <img src="/images/payments/payzy-logo.png" alt="PayZy" className="h-2 object-contain" />
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="w-8 h-8 rounded-xl bg-[#e31b23] hover:bg-red-700 text-white flex items-center justify-center transition-all duration-300 group-hover:scale-105 shrink-0 shadow-xs">
+                            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
 
-              {/* Skeletons rendered during batch loading */}
-              {isLoadingBatch && (
-                <>
-                  <div className="w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-13.33px)] lg:w-[calc(20%-16px)] max-w-[320px] lg:max-w-none shrink-0"><ProductCardSkeleton /></div>
-                  <div className="w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-13.33px)] lg:w-[calc(20%-16px)] max-w-[320px] lg:max-w-none shrink-0"><ProductCardSkeleton /></div>
-                  <div className="w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-13.33px)] lg:w-[calc(20%-16px)] max-w-[320px] lg:max-w-none shrink-0"><ProductCardSkeleton /></div>
-                  <div className="w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-13.33px)] lg:w-[calc(20%-16px)] max-w-[320px] lg:max-w-none shrink-0"><ProductCardSkeleton /></div>
-                  <div className="w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-13.33px)] lg:w-[calc(20%-16px)] max-w-[320px] lg:max-w-none shrink-0"><ProductCardSkeleton /></div>
-                </>
-              )}
-            </div>
-
-            {/* Infinite Scroll Trigger Sentinel */}
-            <div ref={sentinelRef} className="h-6 w-full pointer-events-none" />
-
-            {/* Progressive Progress & Manual Load Control Bar / Completion Stage */}
-            {
-              hasMore ? (
-                <div className="p-6 sm:p-8 rounded-xl bg-white shadow-[0_10px_30px_-5px_rgba(0,0,0,0.06),0_2px_8px_-2px_rgba(0,0,0,0.04)] border-0 flex flex-col md:flex-row items-center justify-between gap-6">
-                  <div className="space-y-2.5 w-full md:flex-1 text-left">
-                    <div className="flex items-center justify-between text-xs font-bold text-slate-800">
-                      <span className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse" />
-                        Loaded {visibleProducts.length} of {filteredProducts.length} products
-                      </span>
-                      <span className="text-[11px] font-mono font-black text-brand-600 bg-brand-50 px-2.5 py-0.5 rounded-lg">
-                        {Math.round((visibleProducts.length / filteredProducts.length) * 100)}% EXPLORED
-                      </span>
+                {/* Skeletons rendered during batch loading */}
+                {isLoadingBatch && (
+                  <>
+                    <div className="w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-13.33px)] lg:w-[calc(20%-16px)] max-w-[320px] lg:max-w-none shrink-0"><ProductCardSkeleton /></div>
+                    <div className="w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-13.33px)] lg:w-[calc(20%-16px)] max-w-[320px] lg:max-w-none shrink-0"><ProductCardSkeleton /></div>
+                    <div className="w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-13.33px)] lg:w-[calc(20%-16px)] max-w-[320px] lg:max-w-none shrink-0"><ProductCardSkeleton /></div>
+                    <div className="w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-13.33px)] lg:w-[calc(20%-16px)] max-w-[320px] lg:max-w-none shrink-0"><ProductCardSkeleton /></div>
+                    <div className="w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-13.33px)] lg:w-[calc(20%-16px)] max-w-[320px] lg:max-w-none shrink-0"><ProductCardSkeleton /></div>
+                  </>
+                )}
                     </div>
-                    <div className="w-full h-2.5 rounded-full bg-slate-100 overflow-hidden">
-                      <div
-                        className="h-full bg-gradient-to-r from-brand-600 via-brand-500 to-red-500 rounded-full transition-all duration-500 shadow-glow-sm"
-                        style={{ width: `${(visibleProducts.length / filteredProducts.length) * 100}%` }}
-                      />
-                    </div>
-                  </div>
 
-                  <button
-                    type="button"
-                    onClick={handleManualLoadMore}
-                    disabled={isLoadingBatch}
-                    className="w-full md:w-auto shrink-0 inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm transition-all shadow-soft hover:scale-105 active:scale-95 disabled:opacity-60 cursor-pointer"
-                  >
-                    {isLoadingBatch ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin text-brand-400" />
-                        <span>Loading Next Batch...</span>
-                      </>
+              {/* Infinite Scroll Trigger Sentinel */ }
+                  <div ref={sentinelRef} className="h-6 w-full pointer-events-none" />
+
+                  {/* Progressive Progress & Manual Load Control Bar / Completion Stage */ }
+                  {
+                    hasMore ? (
+                      <div className="p-6 sm:p-8 rounded-xl bg-white shadow-[0_10px_30px_-5px_rgba(0,0,0,0.06),0_2px_8px_-2px_rgba(0,0,0,0.04)] border-0 flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div className="space-y-2.5 w-full md:flex-1 text-left">
+                          <div className="flex items-center justify-between text-xs font-bold text-slate-800">
+                            <span className="flex items-center gap-2">
+                              <span className="w-2 h-2 rounded-full bg-brand-500 animate-pulse" />
+                              Loaded {visibleProducts.length} of {filteredProducts.length} products
+                            </span>
+                            <span className="text-[11px] font-mono font-black text-brand-600 bg-brand-50 px-2.5 py-0.5 rounded-lg">
+                              {Math.round((visibleProducts.length / filteredProducts.length) * 100)}% EXPLORED
+                            </span>
+                          </div>
+                          <div className="w-full h-2.5 rounded-full bg-slate-100 overflow-hidden">
+                            <div
+                              className="h-full bg-gradient-to-r from-brand-600 via-brand-500 to-red-500 rounded-full transition-all duration-500 shadow-glow-sm"
+                              style={{ width: `${(visibleProducts.length / filteredProducts.length) * 100}%` }}
+                            />
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={handleManualLoadMore}
+                          disabled={isLoadingBatch}
+                          className="w-full md:w-auto shrink-0 inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm transition-all shadow-soft hover:scale-105 active:scale-95 disabled:opacity-60 cursor-pointer"
+                        >
+                          {isLoadingBatch ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin text-brand-400" />
+                              <span>Loading Next Batch...</span>
+                            </>
+                          ) : (
+                            <>
+                              <PackagePlus className="w-4 h-4 text-brand-400" />
+                              <span>Show more products ({filteredProducts.length - visibleProducts.length} Remaining)</span>
+                              <ArrowRight className="w-4 h-4" />
+                            </>
+                          )}
+                        </button>
+                      </div>
                     ) : (
-                      <>
-                        <PackagePlus className="w-4 h-4 text-brand-400" />
-                        <span>Show more products ({filteredProducts.length - visibleProducts.length} Remaining)</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </>
-                    )}
-                  </button>
-                </div>
-              ) : (
-                <div
-                  className="p-8 sm:p-10 rounded-2xl text-center space-y-4 shadow-[0_16px_36px_rgba(237,28,36,0.22)] relative overflow-hidden"
-                  style={{ background: 'linear-gradient(135deg, #ED1C24 0%, #C9141B 50%, #900D12 100%)' }}
-                >
-                  <div className="w-12 h-12 rounded-2xl bg-white/20 text-white flex items-center justify-center mx-auto shadow-sm backdrop-blur-sm">
-                    <ShieldCheck className="w-6 h-6" />
-                  </div>
+                      <div 
+                        className="p-8 sm:p-10 rounded-2xl text-center space-y-4 shadow-[0_16px_36px_rgba(237,28,36,0.22)] relative overflow-hidden"
+                        style={{ background: 'linear-gradient(135deg, #ED1C24 0%, #C9141B 50%, #900D12 100%)' }}
+                      >
+                        <div className="w-12 h-12 rounded-2xl bg-white/20 text-white flex items-center justify-center mx-auto shadow-sm backdrop-blur-sm">
+                          <ShieldCheck className="w-6 h-6" />
+                        </div>
 
-                  <div className="space-y-1.5 max-w-md mx-auto">
-                    <h4 className="text-base sm:text-lg font-black text-white font-display tracking-tight">
-                      You've Viewed All {filteredProducts.length} Matching products
-                    </h4>
-                    <p className="text-xs sm:text-sm text-white/85">
-                      Need a custom accessory bundle or bulk inquiry? Our Walasmulla team is ready on WhatsApp.
-                    </p>
-                  </div>
+                        <div className="space-y-1.5 max-w-md mx-auto">
+                          <h4 className="text-base sm:text-lg font-black text-white font-display tracking-tight">
+                            You've Viewed All {filteredProducts.length} Matching products
+                          </h4>
+                          <p className="text-xs sm:text-sm text-white/85">
+                            Need a custom accessory bundle or bulk inquiry? Our Walasmulla team is ready on WhatsApp.
+                          </p>
+                        </div>
 
-                  <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
-                    <a
-                      href="https://wa.me/94712500420?text=Hi%20Tyrelink,%20I%20am%20looking%20for%20a%20custom%20setup%20recommendation"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-white hover:bg-slate-100 text-brand-600 font-bold text-xs shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
-                    >
-                      <svg className="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24">
-                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
-                      </svg>
-                      <span>Request Custom Setup on WhatsApp</span>
-                    </a>
+                        <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
+                          <a
+                            href="https://wa.me/94712500420?text=Hi%20Tyrelink,%20I%20am%20looking%20for%20a%20custom%20setup%20recommendation"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-white hover:bg-slate-100 text-brand-600 font-bold text-xs shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                          >
+                            <svg className="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24">
+                              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
+                            </svg>
+                            <span>Request Custom Setup on WhatsApp</span>
+                          </a>
 
-                    <button
-                      type="button"
-                      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                      className="inline-flex items-center gap-1.5 px-5 py-3 rounded-2xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs border border-white/30 backdrop-blur-sm transition-all cursor-pointer"
-                    >
-                      <span>Back to Top</span>
-                      <ArrowRight className="w-3.5 h-3.5 -rotate-90" />
-                    </button>
-                  </div>
-                </div>
-              )
-            }
-          </div>
-        ) : (
-          <div className="bg-white rounded-xl p-12 text-center shadow-[0_10px_30px_-5px_rgba(0,0,0,0.06)] space-y-4 border-0">
-            <Search className="w-12 h-12 text-slate-300 mx-auto" />
-            <div className="space-y-1">
-              <h3 className="text-lg font-bold text-slate-900">No matching hardware found</h3>
-              <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                Try clearing some filter criteria or search with general terms like "tyre size", "brand", or "vehicle".
-              </p>
+                          <button
+                            type="button"
+                            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                            className="inline-flex items-center gap-1.5 px-5 py-3 rounded-2xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs border border-white/30 backdrop-blur-sm transition-all cursor-pointer"
+                          >
+                            <span>Back to Top</span>
+                            <ArrowRight className="w-3.5 h-3.5 -rotate-90" />
+                          </button>
+                        </div>
+                      </div>
+                    )
+                  }
             </div>
-            <button
-              onClick={clearAllFilters}
-              className="px-6 py-2.5 rounded-2xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold shadow-glow-sm transition-all"
-            >
-              Reset All Filters
-            </button>
-          </div>
-        )}
+              ) : (
+              <div className="bg-white rounded-xl p-12 text-center shadow-[0_10px_30px_-5px_rgba(0,0,0,0.06)] space-y-4 border-0">
+                <Search className="w-12 h-12 text-slate-300 mx-auto" />
+                <div className="space-y-1">
+                  <h3 className="text-lg font-bold text-slate-900">No matching hardware found</h3>
+                  <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                    Try clearing some filter criteria or search with general terms like "tyre size", "brand", or "vehicle".
+                  </p>
+                </div>
+                <button
+                  onClick={clearAllFilters}
+                  className="px-6 py-2.5 rounded-2xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold shadow-glow-sm transition-all"
+                >
+                  Reset All Filters
+                </button>
+              </div>
+          )}
 
-      </div>
+            </div>
 
     </div>
-  );
+        );
 }
