@@ -46,44 +46,14 @@ export interface AdminLeadRecord {
 
 export async function submitOrderLead(payload: OrderLeadPayload): Promise<{ success: boolean; leadId?: string }> {
   try {
-    if (typeof window !== 'undefined') {
-      const localLeads: AdminLeadRecord[] = JSON.parse(localStorage.getItem('tyrelink_order_leads') || '[]');
-      const newRecord: AdminLeadRecord = {
-        id: 'lead-' + Date.now(),
-        orderRef: payload.orderRef,
-        customerName: payload.customerName,
-        phone1: payload.phone1,
-        phone2: payload.phone2,
-        address: payload.address,
-        paymentMethod: payload.paymentMethod,
-        subtotal: payload.subtotal,
-        courierCharge: payload.courierCharge,
-        grandTotal: payload.grandTotal,
-        status: 'new',
-        createdAt: new Date().toISOString(),
-        items: payload.items.map((it) => ({
-          id: it.id,
-          title: it.title,
-          price: it.price,
-          quantity: it.quantity,
-        })),
-      };
-      localLeads.unshift(newRecord);
-      localStorage.setItem('tyrelink_order_leads', JSON.stringify(localLeads.slice(0, 50)));
-    }
-  } catch (e) {
-    console.error('[leadService] local storage save error', e);
-  }
-
-  try {
     const res = await request<{ leadId: string }>('/v1/order-leads', {
       method: 'POST',
       body: JSON.stringify(payload),
     });
     return { success: true, leadId: res?.leadId };
   } catch (err) {
-    console.warn('[leadService] Backend offline, order stored in local storage:', err);
-    return { success: true };
+    console.warn('[leadService] Order lead submission failed:', err);
+    return { success: false };
   }
 }
 
@@ -101,18 +71,7 @@ export async function fetchAdminLeads(filters?: { status?: string; q?: string })
       return res.data;
     }
   } catch (err) {
-    console.warn('[leadService] Backend leads unavailable, falling back to local CRM cache:', err);
-  }
-
-  try {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('tyrelink_order_leads');
-      if (stored) {
-        return JSON.parse(stored);
-      }
-    }
-  } catch (e) {
-    console.error('[leadService] error reading local leads', e);
+    console.warn('[leadService] Backend leads unavailable:', err);
   }
   return [];
 }

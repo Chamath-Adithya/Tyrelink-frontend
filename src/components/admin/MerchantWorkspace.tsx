@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import productsSeed from '../../data/products.json';
 import defaultCampaigns from '../../data/campaigns.json';
-import { request, getStoredToken } from '../../services/apiClient';
-import { getFlatDeliveryRate, type Review, type DeliveryRate } from '../../services/customerService';
+import { request } from '../../services/apiClient';
+import { invalidateDeliveryRateCache, getFlatDeliveryRate, type Review, type DeliveryRate } from '../../services/customerService';
 import {
   fetchAdminStats,
   fetchAdminAuditLogs,
@@ -120,13 +120,6 @@ export default function MerchantWorkspace() {
   async function loadAll(): Promise<boolean> {
     setBusy(true);
     try {
-      if (!getStoredToken()) {
-        setLive(false);
-        setItems(productsSeed as unknown as AdminProductItem[]);
-        notify('Preview workspace only — sign in at /admin for live Postgres & Redis management.', 'info');
-        return false;
-      }
-
       const [catalogRes, statsRes, auditRes, campRes] = await Promise.all([
         request<{ data: AdminProductItem[] }>('/v1/admin/catalog'),
         fetchAdminStats().catch(() => null),
@@ -292,6 +285,7 @@ export default function MerchantWorkspace() {
         method: 'PUT',
         body: JSON.stringify({ town: 'Islandwide', fee: Number(rateForm.fee), estimate: rateForm.estimate.trim() }),
       });
+      invalidateDeliveryRateCache();
       const updated = await getFlatDeliveryRate();
       setFlatRate(updated);
       setStats((s) => (s ? { ...s, flatDeliveryFee: updated.fee } : s));

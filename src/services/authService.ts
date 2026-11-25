@@ -1,25 +1,23 @@
-import { request, setStoredToken, clearStoredToken, getStoredToken } from './apiClient';
+import { request, clearStoredToken } from './apiClient';
 
 export interface LoginResult {
   success: boolean;
-  token?: string;
   role?: string;
   error?: string;
   isBackendConnected: boolean;
 }
 
 export async function loginAdmin(password: string): Promise<LoginResult> {
+  clearStoredToken();
   try {
-    const res = await request<{ token: string; role: string }>('/v1/admin/login', {
+    const res = await request<{ success?: boolean; role?: string }>('/v1/admin/login', {
       method: 'POST',
       body: JSON.stringify({ password }),
     });
 
-    if (res?.token) {
-      setStoredToken(res.token, true);
+    if (res?.success) {
       return {
         success: true,
-        token: res.token,
         role: res.role || 'admin',
         isBackendConnected: true,
       };
@@ -43,19 +41,13 @@ export async function loginAdmin(password: string): Promise<LoginResult> {
 }
 
 export async function verifyAdminSession(): Promise<boolean> {
-  const token = getStoredToken();
-  if (!token) return false;
-
   try {
     const res = await request<{ authenticated: boolean }>('/v1/admin/verify', {
       method: 'GET',
     });
     return res?.authenticated === true;
-  } catch (err: any) {
-    if (err?.status === 401) {
-      clearStoredToken();
-      return false;
-    }
+  } catch {
+    clearStoredToken();
     return false;
   }
 }

@@ -29,23 +29,20 @@ export interface ApiResponse<T = any> {
 const TOKEN_KEY = 'tyrelink_admin_jwt';
 
 export function getStoredToken(): string | null {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY);
+  return null;
 }
 
-export function setStoredToken(token: string, remember: boolean = true) {
-  if (typeof window === 'undefined') return;
-  if (remember) {
-    localStorage.setItem(TOKEN_KEY, token);
-  } else {
-    sessionStorage.setItem(TOKEN_KEY, token);
-  }
+export function setStoredToken(_token: string, _remember: boolean = true) {
+  // Authentication uses the backend HttpOnly session cookie exclusively; clear legacy tokens.
+  clearStoredToken();
 }
 
 export function clearStoredToken() {
   if (typeof window === 'undefined') return;
-  localStorage.removeItem(TOKEN_KEY);
-  sessionStorage.removeItem(TOKEN_KEY);
+  try {
+    localStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(TOKEN_KEY);
+  } catch {}
 }
 
 export async function request<T = any>(
@@ -62,11 +59,6 @@ export async function request<T = any>(
 
   if (!(options.body instanceof FormData) && !headers['Content-Type']) {
     headers['Content-Type'] = 'application/json';
-  }
-
-  const token = getStoredToken();
-  if (token && !headers['Authorization']) {
-    headers['Authorization'] = `Bearer ${token}`;
   }
 
   try {

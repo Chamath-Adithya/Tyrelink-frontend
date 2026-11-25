@@ -67,7 +67,7 @@ export default function ProductCarousel({
 
   useEffect(() => {
     syncCampaignStatus();
-    const interval = setInterval(syncCampaignStatus, 1000);
+    const interval = badge === 'HOT' ? null : setInterval(syncCampaignStatus, 1000);
 
     const onCampaignChange = () => syncCampaignStatus();
     window.addEventListener(ADMIN_EVENT_CAMPAIGNS, onCampaignChange);
@@ -77,7 +77,7 @@ export default function ProductCarousel({
     });
 
     return () => {
-      clearInterval(interval);
+      if (interval) clearInterval(interval);
       window.removeEventListener(ADMIN_EVENT_CAMPAIGNS, onCampaignChange);
       unsubAdmin();
     };

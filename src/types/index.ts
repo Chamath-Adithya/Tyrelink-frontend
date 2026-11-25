@@ -110,7 +110,7 @@ export interface CampaignsData {
 }
 
 export interface AdminSession {
-  token: string;
+  token?: string;
   username: string;
   loginTime: number;
   editMode: boolean;

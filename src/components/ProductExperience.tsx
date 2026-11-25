@@ -7,7 +7,7 @@ import {
   type Review,
   type DeliveryRate,
 } from '../services/customerService';
-import { request, getStoredToken } from '../services/apiClient';
+import { request } from '../services/apiClient';
 import { deleteAdminReview } from '../services/productService';
 import { getAdminSession } from '../utils/adminStore';
 import { recordViewed, toggleSaved, readIds, SAVED_KEY } from '../utils/shoppingStore';
@@ -87,10 +87,10 @@ export default function ProductExperience({ product }: { product: Product }) {
     }
 
     // If Admin is signed in, load moderation queue for this product
-    if (getAdminSession() && getStoredToken()) {
-      setIsAdmin(true);
+    if (getAdminSession()) {
       try {
         const res = await request<{ data: Review[] }>('/v1/admin/reviews');
+        if (activeRef.current) setIsAdmin(true);
         if (activeRef.current && Array.isArray(res?.data)) {
           setAdminReviews(
             res.data.filter(
@@ -98,7 +98,9 @@ export default function ProductExperience({ product }: { product: Product }) {
             )
           );
         }
-      } catch {}
+      } catch {
+        if (activeRef.current) setIsAdmin(false);
+      }
     }
   };
 

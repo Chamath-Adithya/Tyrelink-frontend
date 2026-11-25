@@ -27,18 +27,44 @@ export async function submitReview(
     body: JSON.stringify(review),
   });
 }
-export async function getDeliveryRates(): Promise<DeliveryRate[]> {
-  const res = await request<{ data?: DeliveryRate[]; flatRate?: DeliveryRate }>('/v1/delivery-rates');
-  if (res.flatRate) return [res.flatRate];
-  return res.data && res.data.length > 0
-    ? res.data
-    : [{ town: 'Islandwide', fee: 450, estimate: '1–3 working days islandwide' }];
+const DEFAULT_FLAT_RATE: DeliveryRate = {
+  town: 'Islandwide',
+  fee: 450,
+  estimate: '1–3 working days islandwide',
+};
+let flatRateCache: { value: DeliveryRate; expiresAt: number } | null = null;
+let flatRateInFlight: Promise<DeliveryRate> | null = null;
+
+export function invalidateDeliveryRateCache(): void {
+  flatRateCache = null;
+  flatRateInFlight = null;
 }
+
 export async function getFlatDeliveryRate(): Promise<DeliveryRate> {
-  try {
-    const res = await request<{ data?: DeliveryRate[]; flatRate?: DeliveryRate }>('/v1/delivery-rates');
-    if (res.flatRate) return res.flatRate;
-    if (res.data && res.data.length > 0) return res.data[0];
-  } catch {}
-  return { town: 'Islandwide', fee: 450, estimate: '1–3 working days islandwide' };
+  if (flatRateCache && Date.now() < flatRateCache.expiresAt) {
+    return flatRateCache.value;
+  }
+  if (flatRateInFlight) {
+    return flatRateInFlight;
+  }
+
+  flatRateInFlight = (async () => {
+    try {
+      const res = await request<{ data?: DeliveryRate[]; flatRate?: DeliveryRate }>('/v1/delivery-rates');
+      const resolved = res.flatRate || (res.data && res.data.length > 0 ? res.data[0] : DEFAULT_FLAT_RATE);
+      flatRateCache = { value: resolved, expiresAt: Date.now() + 30_000 };
+      return resolved;
+    } catch {
+      return DEFAULT_FLAT_RATE;
+    } finally {
+      flatRateInFlight = null;
+    }
+  })();
+
+  return flatRateInFlight;
+}
+
+export async function getDeliveryRates(): Promise<DeliveryRate[]> {
+  const rate = await getFlatDeliveryRate();
+  return [rate];
 }

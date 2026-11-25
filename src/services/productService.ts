@@ -38,28 +38,75 @@ export interface AuditLogEntry {
   createdAt: string;
 }
 
+const CACHE_TTL_MS = 15_000;
+let productsCache: { value: { products: Product[]; isBackend: boolean }; expiresAt: number } | null = null;
+let productsInFlight: Promise<{ products: Product[]; isBackend: boolean }> | null = null;
+const productByIdCache = new Map<string, { value: Product | null; expiresAt: number }>();
+const productByIdInFlight = new Map<string, Promise<Product | null>>();
+
+export function invalidateProductCache(): void {
+  productsCache = null;
+  productsInFlight = null;
+  productByIdCache.clear();
+  productByIdInFlight.clear();
+}
+
 export async function fetchProducts(): Promise<{ products: Product[]; isBackend: boolean }> {
-  try {
-    const res = await request<{ data: Product[] }>('/v1/products', { method: 'GET' });
-    if (Array.isArray(res?.data) && res.data.length > 0) {
-      return { products: res.data.map(normalize), isBackend: true };
-    }
-  } catch (err) {
-    console.warn('[productService] Backend products fetch failed, using local seed:', err);
+  const now = Date.now();
+  if (productsCache && now < productsCache.expiresAt) {
+    return productsCache.value;
   }
-  return { products: localProducts as unknown as Product[], isBackend: false };
+  if (productsInFlight) {
+    return productsInFlight;
+  }
+
+  productsInFlight = (async () => {
+    try {
+      const res = await request<{ data: Product[] }>('/v1/products', { method: 'GET' });
+      if (Array.isArray(res?.data) && res.data.length > 0) {
+        const result = { products: res.data.map(normalize), isBackend: true };
+        productsCache = { value: result, expiresAt: Date.now() + CACHE_TTL_MS };
+        return result;
+      }
+    } catch (err) {
+      console.warn('[productService] Backend products fetch failed, using local seed:', err);
+    } finally {
+      productsInFlight = null;
+    }
+    return { products: localProducts as unknown as Product[], isBackend: false };
+  })();
+
+  return productsInFlight;
 }
 
 export async function fetchProductById(idOrSlug: string): Promise<Product | null> {
-  try {
-    const p = await request<Product>(`/v1/products/${encodeURIComponent(idOrSlug)}`, { method: 'GET' });
-    if (p?.id) return normalize(p);
-  } catch {}
+  const cached = productByIdCache.get(idOrSlug);
+  if (cached && Date.now() < cached.expiresAt) {
+    return cached.value;
+  }
+  const existing = productByIdInFlight.get(idOrSlug);
+  if (existing) return existing;
 
-  const found = (localProducts as unknown as Product[]).find(
-    (p) => p.id === idOrSlug || p.slug === idOrSlug
-  );
-  return found || null;
+  const job = (async () => {
+    try {
+      const p = await request<Product>(`/v1/products/${encodeURIComponent(idOrSlug)}`, { method: 'GET' });
+      if (p?.id) {
+        const norm = normalize(p);
+        productByIdCache.set(idOrSlug, { value: norm, expiresAt: Date.now() + CACHE_TTL_MS });
+        return norm;
+      }
+    } catch {} finally {
+      productByIdInFlight.delete(idOrSlug);
+    }
+
+    const found = (localProducts as unknown as Product[]).find(
+      (p) => p.id === idOrSlug || p.slug === idOrSlug
+    );
+    return found ? normalize(found) : null;
+  })();
+
+  productByIdInFlight.set(idOrSlug, job);
+  return job;
 }
 
 export async function createAdminProduct(product: Partial<Product>): Promise<{ success: boolean; product?: Product; error?: string }> {

@@ -62,7 +62,10 @@ export default function CartAndOrderModal() {
   // Initialize and listen to custom events
   useEffect(() => {
     setCartItems(getCart());
-    getFlatDeliveryRate().then((r) => setCourierFee(r.fee)).catch(() => {});
+
+    const refreshFlatFee = () => {
+      getFlatDeliveryRate().then((r) => setCourierFee(r.fee)).catch(() => {});
+    };
 
     const handleCartUpdated = (e: CustomEvent<CartItem[]>) => {
       setCartItems(e.detail || getCart());
@@ -71,6 +74,7 @@ export default function CartAndOrderModal() {
     const handleOpenCart = () => {
       setCartItems(getCart());
       setIsCartOpen(true);
+      refreshFlatFee();
     };
 
     const handleCloseCart = () => {
@@ -86,6 +90,7 @@ export default function CartAndOrderModal() {
         setStepDirection('forward');
         setErrorMessage(null);
         setIsCheckoutOpen(true);
+        refreshFlatFee();
       }
     };
 

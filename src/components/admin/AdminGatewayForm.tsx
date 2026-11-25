@@ -52,12 +52,11 @@ export default function AdminGatewayForm() {
     try {
       const res = await loginAdmin(password.trim());
 
-      if (res.success && res.token) {
+      if (res.success) {
         setSuccess(true);
         setBackendStatus(res.isBackendConnected ? 'Go API Backend (Online)' : 'Local Storage Mode');
 
         saveAdminSession({
-          token: res.token,
           username: username.trim(),
           loginTime: Date.now(),
           editMode: true,

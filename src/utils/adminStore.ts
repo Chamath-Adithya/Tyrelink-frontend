@@ -1,8 +1,8 @@
 import type { AdminSession, CampaignsData, FlashSaleConfig, Product } from '../types';
 import defaultCampaigns from '../data/campaigns.json';
 import defaultProducts from '../data/products.json';
-import { request, getStoredToken, clearStoredToken } from '../services/apiClient';
-import { createAdminProduct, updateAdminProduct, deleteAdminProduct, saveCampaignsToApi } from '../services/productService';
+import { request, clearStoredToken } from '../services/apiClient';
+import { createAdminProduct, updateAdminProduct, deleteAdminProduct, saveCampaignsToApi, invalidateProductCache } from '../services/productService';
 
 const SESSION_KEY = 'tyrelink_admin_session_v2';
 const CAMPAIGNS_KEY = 'tyrelink_campaigns_override_v2';
@@ -20,10 +20,10 @@ export function getAdminSession(): AdminSession | null {
     if (!raw) return null;
     const session: AdminSession = JSON.parse(raw);
 
-    // Require active backend JWT alongside session metadata (12h expiry matching backend HMAC)
-    const token = getStoredToken();
+    // Non-secret UI state only; real authorization relies on HttpOnly session cookie (12h expiry)
+    clearStoredToken();
     const MAX_AGE = 12 * 60 * 60 * 1000;
-    if (!token || Date.now() - session.loginTime > MAX_AGE) {
+    if (!session.loginTime || Date.now() - session.loginTime > MAX_AGE) {
       clearAdminSession();
       return null;
     }
@@ -142,6 +142,7 @@ export function getLiveProducts(): Product[] {
 
 export function setLocalProductsCache(products: Product[]): void {
   if (typeof window === 'undefined') return;
+  invalidateProductCache();
   try {
     localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
     window.dispatchEvent(new CustomEvent(ADMIN_EVENT_PRODUCTS, { detail: products }));
