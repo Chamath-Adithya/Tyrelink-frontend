@@ -43,7 +43,19 @@ export default function ProductAdminBar({ product: initialProduct }: ProductAdmi
       setIsEditMode(Boolean(s?.editMode));
     });
 
-    return () => unsub();
+    const handleProductSaved = (ev: Event) => {
+      const updated = (ev as CustomEvent<{ product?: Product }>)?.detail?.product;
+      if (updated && (updated.id === initialProduct.id || updated.slug === initialProduct.slug)) {
+        setCurrentProduct(updated);
+        setInStock(updated.inStock ?? true);
+      }
+    };
+    window.addEventListener('tyrelink:product-saved', handleProductSaved);
+
+    return () => {
+      unsub();
+      window.removeEventListener('tyrelink:product-saved', handleProductSaved);
+    };
   }, [initialProduct.id, initialProduct.slug]);
 
   if (!isAdmin || !isEditMode) {

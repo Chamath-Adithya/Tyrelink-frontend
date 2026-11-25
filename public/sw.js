@@ -1,6 +1,6 @@
 /* Tyrelink Lightweight Offline & Low-Internet Service Worker */
-const STATIC_CACHE = 'tyrelink-static-v2';
-const DATA_CACHE = 'tyrelink-data-v2';
+const STATIC_CACHE = 'tyrelink-static-v3';
+const DATA_CACHE = 'tyrelink-data-v3';
 
 // Auto-cleanup for local development environments
 if (self.location.hostname === 'localhost' || self.location.hostname === '127.0.0.1') {
@@ -87,9 +87,8 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Stale-while-revalidate for immutable Astro bundles & local images/SVGs
+  // Stale-while-revalidate for local static images & branding only (let browser fetch latest /_astro/ hashed JS/CSS)
   if (
-    url.pathname.startsWith('/_astro/') ||
     url.pathname.startsWith('/images/') ||
     url.pathname.startsWith('/branding/') ||
     url.pathname.startsWith('/hero-tyre')
