@@ -1,5 +1,6 @@
 ---
 import categories from '../data/categories.json';
+import ConcentricCategoryBrandWheel from './ConcentricCategoryBrandWheel';
 
 const categoryPhotos: Record<string,string> = {'car-tyres':'u-h-wheel.webp','suv-4x4':'tyrebass.webp','motorcycle':'yes-tube-sri-lanka.webp','commercial':'jcb-tyre.webp','wheels':'valves-sri-lanka.webp','garage-tools':'wrenches-sri-lanka.webp','garage-equipment':'nitrogen-machine.webp'};
 const getCategoryIconSvg = (id: string) => {
@@ -64,7 +65,7 @@ const getCategoryTheme = (id: string) => {
 const allCategories = [...categories, ...categories, ...categories, ...categories];
 ---
 
-<section class="w-full py-6 sm:py-8 reveal overflow-hidden">
+<section class="w-full py-6 sm:py-8 reveal overflow-x-clip">
   <!-- Section Header aligned with container layout -->
   <div class="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 mb-5">
     <div class="flex items-center justify-between px-1">
@@ -93,8 +94,8 @@ const allCategories = [...categories, ...categories, ...categories, ...categorie
     </div>
   </div>
 
-  <!-- Marquee Container with Left & Right Luxury Fade Masks (Edge-to-Edge) -->
-  <div class="relative w-full py-2 overflow-hidden">
+  <!-- Marquee Container (Mobile/Tablet only; Desktop uses the single unified morphing wheel below) -->
+  <div id="category-marquee-stage" class="relative w-full py-2 overflow-hidden lg:hidden">
     <!-- Left fade mask -->
     <div class="absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-[#f7f7f4] via-[#f7f7f4]/80 to-transparent z-10 pointer-events-none"></div>
     <!-- Right fade mask -->
@@ -133,79 +134,6 @@ const allCategories = [...categories, ...categories, ...categories, ...categorie
     </div>
   </div>
 
-  <!-- Shop by Category Grid (Below Marquee — Image 2 Dark Automotive Cards) -->
-  <div class="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-8">
-    <div class="flex items-center justify-end mb-3 sm:mb-4">
-      <a
-        href="/shop"
-        class="inline-flex items-center gap-1.5 text-xs font-bold text-[#e31b23] hover:text-red-700 transition-colors group"
-      >
-        <span>View All Categories</span>
-        <svg class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-        </svg>
-      </a>
-    </div>
-
-    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3 sm:gap-4">
-      {categories.map((cat) => (
-        <a
-          href={`/category/${cat.id}`}
-          class="group relative h-32 sm:h-36 rounded-2xl bg-[#11141a] overflow-hidden border border-slate-800 hover:border-[#e31b23]/70 shadow-md hover:shadow-[0_14px_30px_rgba(227,27,35,0.22)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-end p-3.5 sm:p-4 cursor-pointer"
-        >
-          <!-- Category Image with smooth zoom -->
-          <img
-            src={`/images/legacy/${categoryPhotos[cat.id] || 'u-h-wheel.webp'}`}
-            alt={cat.name}
-            loading="lazy"
-            class="absolute right-0 top-0 h-full w-3/4 object-contain object-right opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 ease-out pointer-events-none p-2"
-          />
-
-          <!-- Dark Gradient Overlay for crisp text readability -->
-          <div class="absolute inset-0 bg-gradient-to-r from-[#0b0e14] via-[#0b0e14]/80 to-transparent pointer-events-none"></div>
-          <div class="absolute inset-0 bg-gradient-to-t from-[#0b0e14]/90 via-transparent to-transparent pointer-events-none"></div>
-
-          <!-- Content with Red Vertical Accent Bar -->
-          <div class="relative z-10 flex items-end justify-between gap-2 w-full">
-            <div class="flex items-start gap-2 min-w-0">
-              <span class="w-1 h-7 bg-[#e31b23] rounded-full shrink-0 mt-0.5 group-hover:h-8 transition-all duration-300"></span>
-              <div class="min-w-0">
-                <span class="block text-xs sm:text-sm font-extrabold text-white leading-tight truncate group-hover:text-red-400 transition-colors">
-                  {cat.name}
-                </span>
-                <span class="block text-[10px] text-slate-400 font-sinhala truncate mt-0.5">
-                  {cat.sinhalaName}
-                </span>
-              </div>
-            </div>
-            <svg class="w-4 h-4 text-slate-400 group-hover:text-white group-hover:translate-x-1 transition-all shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
-          </div>
-        </a>
-      ))}
-    </div>
-
-    <!-- Shop by Brand Strip (Below Categories — Clickable to filter in /shop) -->
-    <div class="mt-6 sm:mt-8 pt-5 border-t border-slate-200/80">
-      <div class="flex items-center justify-between gap-4 mb-3">
-        <span class="text-xs font-extrabold uppercase tracking-wider text-slate-500">
-          Shop by Brand
-        </span>
-        <a href="/tools?tab=compare" class="text-xs font-bold text-[#e31b23] hover:text-red-700 transition-colors">
-          Compare Tyres &amp; Tools →
-        </a>
-      </div>
-      <div class="flex items-center gap-2.5 overflow-x-auto no-scrollbar pb-1">
-        {['CEAT', 'Michelin', 'Dunlop', 'Bridgestone', 'Hankook', 'DSI', 'Tyrelink Pro'].map((brand) => (
-          <a
-            href={`/shop?brand=${encodeURIComponent(brand)}#catalog-products`}
-            class="shrink-0 px-4 py-2 rounded-xl bg-white border border-slate-200 hover:border-[#e31b23] hover:bg-red-50/40 text-xs font-extrabold text-slate-800 hover:text-[#e31b23] transition-all shadow-2xs hover:-translate-y-0.5"
-          >
-            {brand}
-          </a>
-        ))}
-      </div>
-    </div>
-  </div>
+  <!-- Concentric Double-Ring: Outer Categories + Inner 9 Brands + Clear & Go -->
+  <ConcentricCategoryBrandWheel client:load />
 </section>
