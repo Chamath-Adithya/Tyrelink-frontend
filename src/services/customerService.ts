@@ -32,12 +32,36 @@ const DEFAULT_FLAT_RATE: DeliveryRate = {
   fee: 450,
   estimate: '1–3 working days islandwide',
 };
+const FLAT_RATE_LOCAL_KEY = 'tyrelink_flat_delivery_v1';
 let flatRateCache: { value: DeliveryRate; expiresAt: number } | null = null;
 let flatRateInFlight: Promise<DeliveryRate> | null = null;
 
 export function invalidateDeliveryRateCache(): void {
   flatRateCache = null;
   flatRateInFlight = null;
+}
+
+export function saveFlatDeliveryRateLocal(rate: DeliveryRate): void {
+  invalidateDeliveryRateCache();
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem(FLAT_RATE_LOCAL_KEY, JSON.stringify(rate));
+    } catch {}
+  }
+  flatRateCache = { value: rate, expiresAt: Date.now() + 30_000 };
+}
+
+function getLocalFlatDeliveryRate(): DeliveryRate {
+  if (typeof window !== 'undefined') {
+    try {
+      const raw = localStorage.getItem(FLAT_RATE_LOCAL_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed.fee === 'number') return parsed;
+      }
+    } catch {}
+  }
+  return DEFAULT_FLAT_RATE;
 }
 
 export async function getFlatDeliveryRate(): Promise<DeliveryRate> {
@@ -51,11 +75,11 @@ export async function getFlatDeliveryRate(): Promise<DeliveryRate> {
   flatRateInFlight = (async () => {
     try {
       const res = await request<{ data?: DeliveryRate[]; flatRate?: DeliveryRate }>('/v1/delivery-rates');
-      const resolved = res.flatRate || (res.data && res.data.length > 0 ? res.data[0] : DEFAULT_FLAT_RATE);
+      const resolved = res.flatRate || (res.data && res.data.length > 0 ? res.data[0] : getLocalFlatDeliveryRate());
       flatRateCache = { value: resolved, expiresAt: Date.now() + 30_000 };
       return resolved;
     } catch {
-      return DEFAULT_FLAT_RATE;
+      return getLocalFlatDeliveryRate();
     } finally {
       flatRateInFlight = null;
     }

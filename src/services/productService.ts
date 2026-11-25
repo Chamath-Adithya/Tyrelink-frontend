@@ -1,4 +1,4 @@
-import { request } from './apiClient';
+import { request, isBackendUnavailableError } from './apiClient';
 import type { CampaignsData, Product } from '../types';
 import localProducts from '../data/products.json';
 
@@ -109,7 +109,7 @@ export async function fetchProductById(idOrSlug: string): Promise<Product | null
   return job;
 }
 
-export async function createAdminProduct(product: Partial<Product>): Promise<{ success: boolean; product?: Product; error?: string }> {
+export async function createAdminProduct(product: Partial<Product>): Promise<{ success: boolean; product?: Product; error?: string; isOfflineFallback?: boolean }> {
   try {
     const res = await request<{ success: boolean; product: Product }>('/v1/admin/products', {
       method: 'POST',
@@ -117,11 +117,11 @@ export async function createAdminProduct(product: Partial<Product>): Promise<{ s
     });
     return { success: true, product: res?.product ? normalize(res.product) : undefined };
   } catch (err: any) {
-    return { success: false, error: err?.message || 'Failed creating product' };
+    return { success: false, error: err?.message || 'Failed creating product', isOfflineFallback: isBackendUnavailableError(err) };
   }
 }
 
-export async function updateAdminProduct(id: string, product: Partial<Product>): Promise<{ success: boolean; product?: Product; error?: string }> {
+export async function updateAdminProduct(id: string, product: Partial<Product>): Promise<{ success: boolean; product?: Product; error?: string; isOfflineFallback?: boolean }> {
   try {
     const res = await request<{ success: boolean; product?: Product }>(`/v1/admin/products/${encodeURIComponent(id)}`, {
       method: 'PUT',
@@ -129,11 +129,11 @@ export async function updateAdminProduct(id: string, product: Partial<Product>):
     });
     return { success: true, product: res?.product ? normalize(res.product) : undefined };
   } catch (err: any) {
-    return { success: false, error: err?.message || 'Failed updating product' };
+    return { success: false, error: err?.message || 'Failed updating product', isOfflineFallback: isBackendUnavailableError(err) };
   }
 }
 
-export async function deleteAdminProduct(id: string, permanent = false): Promise<{ success: boolean; error?: string }> {
+export async function deleteAdminProduct(id: string, permanent = false): Promise<{ success: boolean; error?: string; isOfflineFallback?: boolean }> {
   try {
     const qs = permanent ? '?permanent=true' : '';
     await request(`/v1/admin/products/${encodeURIComponent(id)}${qs}`, {
@@ -141,7 +141,7 @@ export async function deleteAdminProduct(id: string, permanent = false): Promise
     });
     return { success: true };
   } catch (err: any) {
-    return { success: false, error: err?.message || 'Failed deleting product' };
+    return { success: false, error: err?.message || 'Failed deleting product', isOfflineFallback: isBackendUnavailableError(err) };
   }
 }
 
@@ -153,7 +153,7 @@ export async function fetchCampaignsFromApi(): Promise<CampaignsData | null> {
   }
 }
 
-export async function saveCampaignsToApi(data: CampaignsData): Promise<{ success: boolean; error?: string }> {
+export async function saveCampaignsToApi(data: CampaignsData): Promise<{ success: boolean; error?: string; isOfflineFallback?: boolean }> {
   try {
     await request('/v1/admin/campaigns', {
       method: 'PUT',
@@ -161,7 +161,7 @@ export async function saveCampaignsToApi(data: CampaignsData): Promise<{ success
     });
     return { success: true };
   } catch (err: any) {
-    return { success: false, error: err?.message || 'Failed saving campaigns' };
+    return { success: false, error: err?.message || 'Failed saving campaigns', isOfflineFallback: isBackendUnavailableError(err) };
   }
 }
 

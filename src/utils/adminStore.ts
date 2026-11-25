@@ -119,6 +119,9 @@ export async function saveCampaignsData(data: CampaignsData): Promise<{ success:
   }
   const apiRes = await saveCampaignsToApi(data);
   if (!apiRes.success) {
+    if (apiRes.isOfflineFallback && getAdminSession()) {
+      return { success: true };
+    }
     return {
       success: false,
       error: apiRes.error || 'Saved in browser only. Sign in and ensure API is connected to persist.',
@@ -175,6 +178,9 @@ export async function saveSingleProduct(
   setLocalProductsCache(updatedList);
 
   if (!apiRes.success) {
+    if (apiRes.isOfflineFallback && getAdminSession()) {
+      return { success: true, product: savedProduct };
+    }
     return {
       success: false,
       error: apiRes.error || 'Saved in this browser only. Sign in and connect the API to publish.',
@@ -246,6 +252,9 @@ export async function deleteLiveProduct(productId: string, permanent = false): P
 
   const res = await deleteAdminProduct(productId, permanent);
   if (!res.success) {
+    if (res.isOfflineFallback && getAdminSession()) {
+      return { success: true };
+    }
     return { success: false, error: res.error || 'Could not remove from backend database' };
   }
   return { success: true };

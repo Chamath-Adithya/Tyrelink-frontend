@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import productsSeed from '../../data/products.json';
 import defaultCampaigns from '../../data/campaigns.json';
 import { request } from '../../services/apiClient';
-import { invalidateDeliveryRateCache, getFlatDeliveryRate, type Review, type DeliveryRate } from '../../services/customerService';
+import { invalidateDeliveryRateCache, getFlatDeliveryRate, saveFlatDeliveryRateLocal, type Review, type DeliveryRate } from '../../services/customerService';
 import {
   fetchAdminStats,
   fetchAdminAuditLogs,
@@ -21,6 +21,10 @@ import {
   saveCampaignsData,
   exportDatabaseBackup,
   clearAdminSession,
+  getAdminSession,
+  getLiveProducts,
+  getCampaignsData,
+  setLocalProductsCache,
 } from '../../utils/adminStore';
 import { logoutAdmin } from '../../services/authService';
 import type { CampaignsData, Product } from '../../types';
@@ -137,8 +141,12 @@ export default function MerchantWorkspace() {
       return true;
     } catch (e: any) {
       setLive(false);
-      setItems(productsSeed as unknown as AdminProductItem[]);
-      notify(e?.message || 'Could not authenticate with Go API. Showing local preview.', 'err');
+      setItems(getLiveProducts() as AdminProductItem[]);
+      setCampaigns(getCampaignsData());
+      const localRate = await getFlatDeliveryRate();
+      setFlatRate(localRate);
+      setRateForm({ fee: localRate.fee, estimate: localRate.estimate });
+      notify('Running in Local Preview Mode (Go API offline). Changes persist in this browser.', 'info');
       return false;
     } finally {
       setBusy(false);
@@ -205,8 +213,9 @@ export default function MerchantWorkspace() {
       return;
     }
     if (!live) {
-      localStorage.setItem('tyrelink-merchant-draft', JSON.stringify(changed));
-      notify('Saved preview draft locally in browser only.', 'info');
+      setLocalProductsCache(items);
+      setSelectedIds([]);
+      notify(`Saved ${changed.length} product update(s) in local browser preview.`, 'ok');
       return;
     }
     setBusy(true);
@@ -279,12 +288,24 @@ export default function MerchantWorkspace() {
 
   async function handleRateSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!live) return notify('Sign in at /admin to save delivery rate.', 'err');
+    const nextRate: DeliveryRate = {
+      town: 'Islandwide',
+      fee: Number(rateForm.fee),
+      estimate: rateForm.estimate.trim() || '1–3 working days islandwide',
+    };
+    if (!live) {
+      if (!getAdminSession()) return notify('Sign in at /admin to save delivery rate.', 'err');
+      saveFlatDeliveryRateLocal(nextRate);
+      setFlatRate(nextRate);
+      setStats((s) => (s ? { ...s, flatDeliveryFee: nextRate.fee } : s));
+      notify(`Saved uniform islandwide delivery fee (Rs. ${nextRate.fee.toLocaleString()}) in local preview.`, 'ok');
+      return;
+    }
     setBusy(true);
     try {
       await request('/v1/admin/delivery-rates', {
         method: 'PUT',
-        body: JSON.stringify({ town: 'Islandwide', fee: Number(rateForm.fee), estimate: rateForm.estimate.trim() }),
+        body: JSON.stringify(nextRate),
       });
       invalidateDeliveryRateCache();
       const updated = await getFlatDeliveryRate();

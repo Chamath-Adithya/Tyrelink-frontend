@@ -76,8 +76,17 @@ export async function request<T = any>(
       signal: controller.signal,
     });
 
-    const isJson = res.headers.get('content-type')?.includes('application/json');
+    const contentType = res.headers.get('content-type') || '';
+    const isJson = contentType.includes('application/json');
     const data = isJson ? await res.json() : await res.text();
+
+    // Detect static-server HTML fallback (e.g. Nginx SPA fallback on /api/* when Go API is not running)
+    if (contentType.includes('text/html') || (typeof data === 'string' && data.trimStart().startsWith('<!DOCTYPE'))) {
+      const err = new Error('Go API Backend is not reachable at this origin') as any;
+      err.status = 503;
+      err.isNetworkOrStaticFallback = true;
+      throw err;
+    }
 
     if (!res.ok) {
       const errMsg =
@@ -86,6 +95,7 @@ export async function request<T = any>(
           : `API error ${res.status}: ${res.statusText}`;
       const err = new Error(errMsg) as any;
       err.status = res.status;
+      err.isNetworkOrStaticFallback = [405, 502, 503, 504].includes(res.status);
       err.data = data;
       throw err;
     }
@@ -95,13 +105,24 @@ export async function request<T = any>(
     if (err?.name === 'AbortError') {
       const timeoutErr = new Error('Request timed out on slow connection') as any;
       timeoutErr.status = 408;
+      timeoutErr.isNetworkOrStaticFallback = true;
       throw timeoutErr;
     }
-    if (err?.name === 'TypeError' && String(err?.message).includes('fetch')) {
+    if (err?.name === 'TypeError' && String(err?.message).toLowerCase().includes('fetch')) {
+      err.isNetworkOrStaticFallback = true;
       console.warn(`[Tyrelink API] Backend unreachable at ${url}`);
     }
     throw err;
   } finally {
     if (timer !== null) window.clearTimeout(timer);
   }
+}
+
+export function isBackendUnavailableError(err: any): boolean {
+  if (!err) return false;
+  if (err.isNetworkOrStaticFallback) return true;
+  const s = Number(err.status);
+  if ([405, 408, 502, 503, 504].includes(s)) return true;
+  if (err?.name === 'TypeError' && String(err?.message).toLowerCase().includes('fetch')) return true;
+  return false;
 }
