@@ -1,6 +1,19 @@
 /* Tyrelink Lightweight Offline & Low-Internet Service Worker */
-const STATIC_CACHE = 'tyrelink-static-v1';
-const DATA_CACHE = 'tyrelink-data-v1';
+const STATIC_CACHE = 'tyrelink-static-v2';
+const DATA_CACHE = 'tyrelink-data-v2';
+
+// Auto-cleanup for local development environments
+if (self.location.hostname === 'localhost' || self.location.hostname === '127.0.0.1') {
+  self.addEventListener('install', () => self.skipWaiting());
+  self.addEventListener('activate', (event) => {
+    event.waitUntil(
+      caches.keys()
+        .then((keys) => Promise.all(keys.map((k) => caches.delete(k))))
+        .then(() => self.registration.unregister())
+        .then(() => self.clients.claim())
+    );
+  });
+}
 
 const PRECACHE_URLS = [
   '/',

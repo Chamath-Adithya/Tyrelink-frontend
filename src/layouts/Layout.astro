@@ -249,11 +249,26 @@ const { title, description, image, product, faq, breadcrumbs, itemList } = Astro
         // Re-run for Astro view transitions
         document.addEventListener('astro:page-load', boot);
 
-        // Register offline-resilient Service Worker for slow mobile networks
-        if ('serviceWorker' in navigator && location.hostname !== 'localhost') {
-          window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js').catch(() => {});
-          });
+        // Manage Service Worker: Unregister on localhost/dev to avoid stale cached pages
+        if ('serviceWorker' in navigator) {
+          if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+            navigator.serviceWorker.getRegistrations().then((regs) => {
+              for (const reg of regs) {
+                reg.unregister();
+              }
+            });
+            if ('caches' in window) {
+              caches.keys().then((keys) => {
+                for (const key of keys) {
+                  caches.delete(key);
+                }
+              });
+            }
+          } else {
+            window.addEventListener('load', () => {
+              navigator.serviceWorker.register('/sw.js').catch(() => {});
+            });
+          }
         }
       })();
     </script>
