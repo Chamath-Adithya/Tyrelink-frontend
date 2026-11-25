@@ -130,10 +130,10 @@ const faqData = faqs.map(([question, answer]) => ({question, answer}));
           </div>
         </div>
 
-        <!-- Product grid: balanced responsive presentation (centered when < 5 or uneven rows) -->
-        <div class="max-w-[1440px] mx-auto flex flex-wrap justify-center items-stretch gap-4 sm:gap-5 stagger-children">
-          {bestSellers.map((prod, i) => (
-            <div class="w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-13.33px)] lg:w-[calc(20%-16px)] max-w-[320px] lg:max-w-none flex reveal-scale shrink-0" style={`transition-delay: ${i * 70}ms`}>
+        <!-- Product grid: Horizontal Side-to-Side cards in 4-column layout (matching Mata Best Deals) -->
+        <div class="max-w-[1520px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 stagger-children">
+          {bestSellers.slice(0, 4).map((prod, i) => (
+            <div class="w-full flex reveal-scale" style={`transition-delay: ${i * 70}ms`}>
               <ProductCard product={prod} />
             </div>
           ))}

@@ -140,147 +140,120 @@ export default function HomeExploreProducts() {
           })}
         </div>
 
-        {/* Products Grid: balanced presentation (centered when < 5 or uneven rows) */}
-        <div className="max-w-[1440px] mx-auto flex flex-wrap justify-center items-stretch gap-4 sm:gap-5">
+        {/* Products Grid: Horizontal Side-to-Side Cards */}
+        <div className="max-w-[1520px] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
           {displayedProducts.map((product, idx) => {
             const kokoCount = product.kokoInstallmentCount || product.installmentCount || 3;
             const kokoMonthly = product.kokoInstallmentAmount || product.installmentAmount || Math.round(product.price / kokoCount);
-            const payzyCount = product.payzyInstallmentCount || 4;
-            const payzyMonthly = product.payzyInstallmentAmount || Math.round(product.price / payzyCount);
             const isAdded = !!addedItemIds[product.id];
             const savings = product.originalPrice ? product.originalPrice - product.price : null;
             const tyreSize = product.specs?.['Tyre Size'] || product.specs?.['Size'] || product.specs?.['Rim Size'] || '';
+            const vehicleFit = product.specs?.['Vehicle'] || '';
 
             return (
               <div
                 key={product.id}
-                className="product-card tyrelink-product-card bg-white w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-13.33px)] lg:w-[calc(20%-16px)] max-w-[320px] lg:max-w-none h-[420px] flex flex-col justify-between p-4 rounded-xl border border-slate-200 hover:border-brand-500 transition-all duration-300 hover:-translate-y-1 text-left group relative overflow-hidden shrink-0 select-none"
+                onClick={(e) => {
+                  const target = e.target as HTMLElement;
+                  if (target.closest('a, button')) return;
+                  window.location.href = `/product/${product.slug}`;
+                }}
+                className="product-card tyrelink-product-card bg-white w-full min-h-[168px] flex flex-row items-stretch p-3 sm:p-3.5 gap-3 sm:gap-4 rounded-2xl border border-slate-200 hover:border-[#e31b23]/70 transition-all duration-300 hover:-translate-y-1 text-left group relative overflow-hidden cursor-pointer select-none shadow-sm hover:shadow-xl"
               >
-                <div className="flex-1 flex flex-col min-h-0">
-                  {/* Uniform Fixed-Height Image Stage */}
-                  <a
-                    href={`/product/${product.slug}`}
-                    className="product-image-stage block relative h-[190px] w-full rounded-lg overflow-hidden border border-slate-200/80 mb-2.5 flex items-center justify-center p-3 cursor-pointer bg-slate-50/50 shrink-0"
-                  >
-                    <img
-                      src={product.featuredImage}
-                      alt={product.title}
-                      loading="lazy"
-                      className="w-full h-full object-contain group-hover:scale-106 transition-transform duration-500 ease-out"
-                    />
+                {/* Left Side: Product Image Stage */}
+                <a
+                  href={`/product/${product.slug}`}
+                  className="product-image-stage relative w-[115px] sm:w-[130px] rounded-xl overflow-hidden border border-slate-100 flex items-center justify-center p-2.5 cursor-pointer bg-[#f5f5f1] shrink-0"
+                >
+                  <img
+                    src={product.featuredImage}
+                    alt={product.title}
+                    loading="lazy"
+                    className="w-full h-full max-h-[120px] object-contain group-hover:scale-106 transition-transform duration-500 ease-out"
+                  />
 
-                    {/* Top Left Discount Badges */}
-                    <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10 pointer-events-none">
-                      {product.isFlashDeal && product.flashDealDiscount && (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-red-600 to-rose-500 text-white shadow-sm">
-                          <Flame className="w-2.5 h-2.5 fill-current" />
-                          -{product.flashDealDiscount}% OFF
-                        </span>
-                      )}
-                      {savings && savings > 0 && !product.isFlashDeal && (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500 text-white shadow-sm">
-                          Save Rs. {savings.toLocaleString('en-US')}
-                        </span>
-                      )}
-                    </div>
-                  </a>
-
-                  {/* Brand & Spec Strip (Standardized 24px Height) */}
-                  <div className="flex items-center justify-between text-[11px] h-6 mb-1.5 shrink-0">
-                    <div className="flex items-center gap-1.5 min-w-0">
-                      <span className="text-brand-600 uppercase tracking-widest font-mono text-[10px] font-extrabold bg-brand-50/80 px-2 py-0.5 rounded-md border border-brand-100/60 shrink-0">{product.brand}</span>
-                      {tyreSize ? (
-                        <span className="text-[10px] font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 truncate">{tyreSize}</span>
-                      ) : (
-                        <span className="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/80 truncate">GENUINE</span>
-                      )}
-                    </div>
+                  {/* Top Left Discount Badges */}
+                  <div className="absolute top-1.5 left-1.5 flex flex-col gap-1 z-10 pointer-events-none">
+                    {product.isFlashDeal && product.flashDealDiscount && (
+                      <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-[#e31b23] text-white shadow-sm">
+                        -{product.flashDealDiscount}%
+                      </span>
+                    )}
+                    {savings && savings > 0 && !product.isFlashDeal && (
+                      <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-emerald-600 text-white shadow-sm">
+                        Save Rs. {savings.toLocaleString('en-US')}
+                      </span>
+                    )}
                   </div>
+                </a>
 
-                  {/* Title & Sinhala Title (Standardized 52px Slot) */}
-                  <div className="h-[52px] flex flex-col justify-start overflow-hidden">
+                {/* Right Side: Details, Price & Add to Cart */}
+                <div className="flex-1 flex flex-col justify-between min-w-0 py-0.5">
+                  <div>
+                    {/* Brand & Spec Strip */}
+                    <div className="flex items-center gap-1.5 mb-1 flex-wrap">
+                      <span className="text-brand-600 uppercase tracking-widest font-mono text-[9px] font-extrabold bg-brand-50/80 px-1.5 py-0.5 rounded border border-brand-100/60 shrink-0">{product.brand}</span>
+                      {tyreSize ? (
+                        <span className="text-[9px] font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 truncate">{tyreSize}</span>
+                      ) : (
+                        <span className="text-[9px] font-mono font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/80 truncate">GENUINE</span>
+                      )}
+                    </div>
+
+                    {/* Title */}
                     <a
                       href={`/product/${product.slug}`}
                       className="block text-xs sm:text-sm font-bold text-slate-900 line-clamp-2 hover:text-brand-600 transition-colors leading-snug font-sans"
                     >
                       {product.title}
                     </a>
-                    <p className="text-[11px] text-slate-400 font-sinhala truncate mt-0.5">
-                      {product.sinhalaTitle || 'සත්‍ය සමාගම් වගකීම'}
-                    </p>
+                    {vehicleFit && (
+                      <p className="text-[10px] text-slate-500 font-medium truncate mt-0.5">
+                        Fits: <span className="text-slate-700 font-semibold">{vehicleFit}</span>
+                      </p>
+                    )}
                   </div>
-                </div>
 
-                {/* Price & Full-Width Cart Action Footer (Standardized 88px Slot) */}
-                <div className="pt-2.5 border-t border-slate-100 space-y-2 shrink-0">
-                  <div className="space-y-0.5">
-                    <div className="flex items-baseline gap-1.5 flex-nowrap">
-                      <span className="text-base sm:text-lg font-black text-slate-900 font-display tracking-tight leading-none truncate">
-                        Rs. {product.price.toLocaleString('en-US')}
-                      </span>
-                      {product.originalPrice ? (
-                        <span className="text-[11px] text-slate-400 line-through font-mono shrink-0">
-                          Rs. {product.originalPrice.toLocaleString('en-US')}
+                  {/* Price & Compact Add to Cart Button */}
+                  <div className="pt-2 mt-2 border-t border-slate-100 flex items-end justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-baseline gap-1.5 flex-wrap">
+                        <span className="text-sm sm:text-base font-black text-[#e31b23] font-display tracking-tight leading-none">
+                          Rs. {product.price.toLocaleString('en-US')}
                         </span>
-                      ) : (
-                        <span className="text-[9px] text-emerald-600 font-bold uppercase tracking-wider font-mono shrink-0">
-                          In Stock
-                        </span>
-                      )}
-                    </div>
+                        {product.originalPrice && (
+                          <span className="text-[10px] text-slate-400 line-through font-mono shrink-0">
+                            Rs. {product.originalPrice.toLocaleString('en-US')}
+                          </span>
+                        )}
+                      </div>
 
-                    <div className="flex items-center gap-1 text-[10px] text-slate-500 font-medium truncate">
-                      <span className="truncate">or 3× <b className="text-slate-800 font-mono font-bold">Rs. {kokoMonthly.toLocaleString('en-US')}</b></span>
-                      <div className="flex items-center gap-0.5 shrink-0">
-                        <a
-                          href="https://paykoko.com/"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="inline-flex items-center gap-0.5 hover:opacity-80 transition-opacity"
-                          title="Pay with Koko (opens paykoko.com)"
-                        >
-                          <img src="/images/payments/koko-logo.png" alt="Koko" className="h-2.5 sm:h-3 object-contain" />
-                          <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-slate-800 text-white inline-flex items-center justify-center text-[7px] sm:text-[8px] font-serif font-bold">i</span>
-                        </a>
-                        <span className="text-slate-300 text-[10px]">/</span>
-                        <a
-                          href="https://payzy.lk/"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="inline-flex items-center gap-0.5 hover:opacity-80 transition-opacity"
-                          title="Pay with PayZy (opens payzy.lk)"
-                        >
-                          <img src="/images/payments/payzy-logo.png" alt="PayZy" className="h-2 sm:h-2.5 object-contain" />
-                          <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-slate-800 text-white inline-flex items-center justify-center text-[7px] sm:text-[8px] font-serif font-bold">i</span>
-                        </a>
+                      <div className="flex items-center gap-1 text-[9px] text-slate-500 font-medium truncate mt-1">
+                        <span className="truncate">or 3× <b className="text-slate-800 font-mono font-bold">Rs. {kokoMonthly.toLocaleString('en-US')}</b></span>
+                        <div className="flex items-center gap-0.5 shrink-0">
+                          <a href="https://paykoko.com/" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} title="Pay with Koko">
+                            <img src="/images/payments/koko-logo.png" alt="Koko" className="h-2.5 object-contain" />
+                          </a>
+                          <span className="text-slate-300 text-[9px]">/</span>
+                          <a href="https://payzy.lk/" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} title="Pay with PayZy">
+                            <img src="/images/payments/payzy-logo.png" alt="PayZy" className="h-2 object-contain" />
+                          </a>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Touch-Friendly Full-Width Add to Cart Button */}
-                  <button
-                    type="button"
-                    onClick={(e) => handleQuickAddToCart(e, product)}
-                    aria-label={`Add ${product.title} to cart`}
-                    className={`w-full py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${isAdded
-                        ? 'bg-emerald-600 text-white shadow-sm'
-                        : 'bg-brand-50 hover:bg-brand-500 text-brand-600 hover:text-white border border-brand-200/60 hover:border-transparent active:scale-95 shadow-2xs'
-                      }`}
-                  >
-                    {isAdded ? (
-                      <>
-                        <Check className="w-4 h-4" />
-                        <span>Added!</span>
-                      </>
-                    ) : (
-                      <>
-                        <ShoppingBag className="w-4 h-4" />
-                        <span>Add to Cart</span>
-                      </>
-                    )}
-                  </button>
+                    <button
+                      type="button"
+                      onClick={(e) => handleQuickAddToCart(e, product)}
+                      aria-label={`Add ${product.title} to cart`}
+                      className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all cursor-pointer shrink-0 shadow-xs ${isAdded
+                          ? 'bg-emerald-600 text-white'
+                          : 'bg-[#e31b23] hover:bg-red-700 text-white active:scale-95 hover:scale-105'
+                        }`}
+                    >
+                      {isAdded ? <Check className="w-4 h-4" /> : <ShoppingBag className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
               </div>
             );

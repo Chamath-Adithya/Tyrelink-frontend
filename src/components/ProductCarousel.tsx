@@ -260,20 +260,19 @@ export default function ProductCarousel({
               <ChevronRight className="w-5 h-5 stroke-[2.5]" />
             </button>
 
-            {/* Flash Deals Container: Balanced centered grid layout */}
+            {/* Flash Deals Container: Horizontal Side-to-Side Cards Grid */}
             <div
               ref={scrollRef}
               onScroll={updateScrollState}
-              className="flex flex-wrap justify-center items-stretch gap-4 sm:gap-5 overflow-x-visible pb-4 pt-1 px-4 sm:px-6 lg:px-8 max-w-[1440px] mx-auto"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 pb-4 pt-1 px-4 sm:px-6 lg:px-8 max-w-[1520px] mx-auto"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {products.map((product, i) => {
                 const kokoCount = product.kokoInstallmentCount || product.installmentCount || 3;
                 const kokoMonthly = product.kokoInstallmentAmount || product.installmentAmount || Math.round(product.price / kokoCount);
-                const payzyCount = product.payzyInstallmentCount || 4;
-                const payzyMonthly = product.payzyInstallmentAmount || Math.round(product.price / payzyCount);
                 const savings = product.originalPrice ? product.originalPrice - product.price : null;
                 const tyreSize = product.specs?.['Tyre Size'] || product.specs?.['Size'] || product.specs?.['Rim Size'] || '';
+                const vehicleFit = product.specs?.['Vehicle'] || '';
                 return (
                   <div
                     key={product.id}
@@ -282,110 +281,90 @@ export default function ProductCarousel({
                       if (target.closest('a, button')) return;
                       window.location.href = `/product/${product.slug}`;
                     }}
-                    className="tyrelink-product-card relative overflow-hidden w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-13.33px)] lg:w-[calc(20%-16px)] max-w-[320px] lg:max-w-none h-[410px] flex flex-col justify-between p-4 group text-left rounded-xl border border-slate-200 bg-white hover:border-brand-500 transition-all duration-300 hover:-translate-y-1 cursor-pointer shrink-0 select-none"
+                    className="tyrelink-product-card relative overflow-hidden w-full min-h-[168px] flex flex-row items-stretch p-3 sm:p-3.5 gap-3 sm:gap-4 group text-left rounded-2xl border border-slate-200 bg-white hover:border-[#e31b23]/70 transition-all duration-300 hover:-translate-y-1 cursor-pointer select-none shadow-sm hover:shadow-xl"
                     style={{ animationDelay: `${i * 60}ms` }}
                   >
-                    <div className="flex-1 flex flex-col min-h-0">
-                      {/* Uniform Fixed-Height Image Stage */}
-                      <a
-                        href={`/product/${product.slug}`}
-                        className="product-image-stage block relative h-[190px] w-full rounded-lg overflow-hidden mb-2.5 border border-slate-200/80 bg-slate-50/50 flex items-center justify-center p-3 shrink-0"
-                      >
-                        <img
-                          src={product.featuredImage}
-                          alt={product.title}
-                          loading="lazy"
-                          className="w-full h-full object-contain group-hover:scale-106 transition-transform duration-500 ease-out"
-                        />
+                    {/* Left Side: Product Image Stage */}
+                    <a
+                      href={`/product/${product.slug}`}
+                      className="product-image-stage relative w-[115px] sm:w-[130px] rounded-xl overflow-hidden border border-slate-100 bg-[#f5f5f1] flex items-center justify-center p-2.5 shrink-0"
+                    >
+                      <img
+                        src={product.featuredImage}
+                        alt={product.title}
+                        loading="lazy"
+                        className="w-full h-full max-h-[120px] object-contain group-hover:scale-106 transition-transform duration-500 ease-out"
+                      />
 
-                        {/* Badges */}
-                        {product.flashDealDiscount && (
-                          <span className="absolute top-2.5 left-2.5 z-20 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-red-600 to-rose-500 text-white shadow-md">
-                            <Zap className="w-2.5 h-2.5 fill-current" />
-                            -{product.flashDealDiscount}% OFF
-                          </span>
-                        )}
-                        {savings && savings > 0 && !product.flashDealDiscount && (
-                          <span className="absolute top-2.5 left-2.5 z-20 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500 text-white shadow-sm">
-                            Save Rs. {savings.toLocaleString('en-US')}
-                          </span>
-                        )}
-                      </a>
+                      {/* Badges */}
+                      {product.flashDealDiscount && (
+                        <span className="absolute top-1.5 left-1.5 z-20 inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-[#e31b23] text-white shadow-sm">
+                          -{product.flashDealDiscount}%
+                        </span>
+                      )}
+                      {savings && savings > 0 && !product.flashDealDiscount && (
+                        <span className="absolute top-1.5 left-1.5 z-20 inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-emerald-600 text-white shadow-sm">
+                          Save Rs. {savings.toLocaleString('en-US')}
+                        </span>
+                      )}
+                    </a>
 
-                      {/* Brand & Spec Strip (Standardized 24px Height) */}
-                      <div className="flex items-center justify-between text-[11px] h-6 mb-1.5 shrink-0">
-                        <div className="flex items-center gap-1.5 min-w-0">
-                          <span className="text-brand-600 uppercase tracking-widest font-mono text-[10px] font-extrabold bg-brand-50/80 px-2 py-0.5 rounded-md border border-brand-100/60 shrink-0">{product.brand}</span>
+                    {/* Right Side: Details, Pricing & CTA */}
+                    <div className="flex-1 flex flex-col justify-between min-w-0 py-0.5">
+                      <div>
+                        {/* Brand & Spec Strip */}
+                        <div className="flex items-center gap-1.5 mb-1 flex-wrap">
+                          <span className="text-brand-600 uppercase tracking-widest font-mono text-[9px] font-extrabold bg-brand-50/80 px-1.5 py-0.5 rounded border border-brand-100/60 shrink-0">{product.brand}</span>
                           {tyreSize ? (
-                            <span className="text-[10px] font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 truncate">{tyreSize}</span>
+                            <span className="text-[9px] font-mono font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200 truncate">{tyreSize}</span>
                           ) : (
-                            <span className="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/80 truncate">GENUINE</span>
+                            <span className="text-[9px] font-mono font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200/80 truncate">GENUINE</span>
                           )}
                         </div>
-                      </div>
 
-                      {/* Product Title & Sinhala Subtitle (Standardized 52px Slot) */}
-                      <div className="h-[52px] flex flex-col justify-start overflow-hidden">
+                        {/* Product Title */}
                         <a href={`/product/${product.slug}`} className="block">
                           <h3 className="text-xs sm:text-sm font-bold text-slate-900 line-clamp-2 group-hover:text-brand-600 transition-colors leading-snug font-sans">
                             {product.title}
                           </h3>
                         </a>
-                        <p className="text-[11px] text-slate-400 font-sinhala truncate mt-0.5">
-                          {product.sinhalaTitle || 'සත්‍ය සමාගම් වගකීම'}
-                        </p>
+                        {vehicleFit && (
+                          <p className="text-[10px] text-slate-500 font-medium truncate mt-0.5">
+                            Fits: <span className="text-slate-700 font-semibold">{vehicleFit}</span>
+                          </p>
+                        )}
                       </div>
-                    </div>
 
-                    {/* Price & Action Footer (Standardized 64px Height) */}
-                    <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2 h-[64px] shrink-0">
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-baseline gap-1.5 flex-nowrap">
-                          <span className="text-base sm:text-lg font-black text-slate-900 font-display tracking-tight leading-none truncate">
-                            Rs. {product.price.toLocaleString('en-US')}
-                          </span>
-                          {product.originalPrice ? (
-                            <span className="text-[11px] text-slate-400 line-through font-mono shrink-0">
-                              Rs. {product.originalPrice.toLocaleString('en-US')}
+                      {/* Price & Action Footer */}
+                      <div className="pt-2 mt-2 border-t border-slate-100 flex items-end justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-baseline gap-1.5 flex-wrap">
+                            <span className="text-sm sm:text-base font-black text-[#e31b23] font-display tracking-tight leading-none">
+                              Rs. {product.price.toLocaleString('en-US')}
                             </span>
-                          ) : (
-                            <span className="text-[9px] text-emerald-600 font-bold uppercase tracking-wider font-mono shrink-0">
-                              In Stock
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-1 text-[10px] text-slate-500 mt-1 font-medium truncate">
-                          <span className="truncate">or {kokoCount}× <b className="text-slate-800 font-mono font-bold">Rs. {kokoMonthly.toLocaleString('en-US')}</b></span>
-                          <div className="flex items-center gap-0.5 shrink-0">
-                            <a
-                              href="https://paykoko.com/"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={(e) => e.stopPropagation()}
-                              className="inline-flex items-center gap-0.5 hover:opacity-80 transition-opacity"
-                              title="Pay with Koko (opens paykoko.com)"
-                            >
-                              <img src="/images/payments/koko-logo.png" alt="Koko" class="h-2.5 sm:h-3 object-contain" />
-                              <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-slate-800 text-white inline-flex items-center justify-center text-[7px] sm:text-[8px] font-serif font-bold">i</span>
-                            </a>
-                            <span className="text-slate-300 text-[10px]">/</span>
-                            <a
-                              href="https://payzy.lk/"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={(e) => e.stopPropagation()}
-                              className="inline-flex items-center gap-0.5 hover:opacity-80 transition-opacity"
-                              title="Pay with PayZy (opens payzy.lk)"
-                            >
-                              <img src="/images/payments/payzy-logo.png" alt="PayZy" class="h-2 sm:h-2.5 object-contain" />
-                              <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-slate-800 text-white inline-flex items-center justify-center text-[7px] sm:text-[8px] font-serif font-bold">i</span>
-                            </a>
+                            {product.originalPrice && (
+                              <span className="text-[10px] text-slate-400 line-through font-mono shrink-0">
+                                Rs. {product.originalPrice.toLocaleString('en-US')}
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-1 text-[9px] text-slate-500 mt-1 font-medium truncate">
+                            <span className="truncate">or {kokoCount}× <b className="text-slate-800 font-mono font-bold">Rs. {kokoMonthly.toLocaleString('en-US')}</b></span>
+                            <div className="flex items-center gap-0.5 shrink-0">
+                              <a href="https://paykoko.com/" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} title="Pay with Koko">
+                                <img src="/images/payments/koko-logo.png" alt="Koko" className="h-2.5 object-contain" />
+                              </a>
+                              <span className="text-slate-300 text-[9px]">/</span>
+                              <a href="https://payzy.lk/" target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} title="Pay with PayZy">
+                                <img src="/images/payments/payzy-logo.png" alt="PayZy" className="h-2 object-contain" />
+                              </a>
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      <div className="w-8 h-8 sm:w-8.5 sm:h-8.5 rounded-xl bg-white/80 hover:bg-brand-500 text-slate-600 hover:text-white backdrop-blur-md border border-white/70 flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_8px_20px_rgba(227,27,35,0.35)] shrink-0">
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-300" />
+                        <div className="w-8 h-8 rounded-xl bg-[#e31b23] hover:bg-red-700 text-white flex items-center justify-center transition-all duration-300 group-hover:scale-105 shrink-0 shadow-xs">
+                          <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-300" />
+                        </div>
                       </div>
                     </div>
                   </div>

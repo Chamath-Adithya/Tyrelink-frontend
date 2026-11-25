@@ -324,5 +324,86 @@
     "rating": 4.9,
     "reviewCount": 3,
     "maxOrderQuantity": 1
+  },
+  {
+    "id": "tl-impact-wrench-half",
+    "slug": "twin-hammer-air-impact-wrench",
+    "title": "1/2\" Twin Hammer Air Impact Wrench",
+    "sinhalaTitle": "වෘත්තීය එයාර් ඉම්පැක්ට් රෙන්ච්",
+    "brand": "Tyrelink Pro",
+    "category": "garage-tools",
+    "price": 17500,
+    "originalPrice": 19800,
+    "featuredImage": "/images/legacy/wrenches-sri-lanka.webp",
+    "images": [
+      "/images/legacy/wrenches-sri-lanka.webp"
+    ],
+    "inStock": true,
+    "stockCount": 14,
+    "warranty": "1 Year Workshop Warranty",
+    "isFeatured": true,
+    "isBestSeller": true,
+    "shortDescription": "High-torque 1/2-inch twin hammer pneumatic impact wrench built for daily tyre-bay lug nut service.",
+    "specs": {
+      "Drive": "1/2 inch Square",
+      "Mechanism": "Twin Hammer Pneumatic",
+      "Vehicle": "Cars, SUVs & Light Vans",
+      "Warranty": "1 year"
+    },
+    "rating": 4.9,
+    "reviewCount": 34,
+    "maxOrderQuantity": 5
+  },
+  {
+    "id": "tl-nitrogen-inflator",
+    "slug": "digital-nitrogen-tyre-inflator",
+    "title": "Digital Nitrogen Tyre Inflator",
+    "sinhalaTitle": "ඩිජිටල් නයිට්‍රජන් ටයර් ඉන්ෆ්ලේටර්",
+    "brand": "Tyrelink Pro",
+    "category": "garage-equipment",
+    "price": 145000,
+    "originalPrice": 158000,
+    "featuredImage": "/images/legacy/nitrogen-machine.webp",
+    "images": [
+      "/images/legacy/nitrogen-machine.webp"
+    ],
+    "inStock": true,
+    "stockCount": 3,
+    "warranty": "1 Year Equipment Warranty",
+    "isFeatured": true,
+    "shortDescription": "Automatic digital nitrogen generation and tyre inflation station for modern service bays.",
+    "specs": {
+      "Display": "Dual Digital LED",
+      "Application": "Passenger & Commercial Bays",
+      "Warranty": "1 year"
+    },
+    "rating": 4.8,
+    "reviewCount": 11,
+    "maxOrderQuantity": 2
+  },
+  {
+    "id": "tl-tr13-valve-kit",
+    "slug": "heavy-duty-tr13-valve-set",
+    "title": "Heavy-Duty TR13 Tubeless Valve Set",
+    "sinhalaTitle": "TR13 ටියුබ්ලස් වෑල්ව් කට්ටලය",
+    "brand": "Tyrelink",
+    "category": "wheels",
+    "price": 2400,
+    "featuredImage": "/images/legacy/valves-sri-lanka.webp",
+    "images": [
+      "/images/legacy/valves-sri-lanka.webp"
+    ],
+    "inStock": true,
+    "stockCount": 50,
+    "warranty": "6 Month Replacement Warranty",
+    "shortDescription": "High-pressure brass core TR13 snap-in valve stems for passenger cars and vans.",
+    "specs": {
+      "Type": "TR13 Snap-in Brass Core",
+      "Vehicle": "All Passenger & Van Rims",
+      "Warranty": "6 months"
+    },
+    "rating": 4.8,
+    "reviewCount": 22,
+    "maxOrderQuantity": 10
   }
 ]
