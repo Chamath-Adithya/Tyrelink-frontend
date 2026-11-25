@@ -254,35 +254,43 @@ export default function ConcentricCategoryBrandWheel() {
 
             {/* Soft Studio Glow Behind Wheel */}
             <div
-              className="absolute w-[680px] h-[680px] rounded-full bg-[radial-gradient(circle_at_center,rgba(227,27,35,0.08),transparent_65%)] pointer-events-none"
+              className="absolute w-[740px] h-[740px] rounded-full bg-[radial-gradient(circle_at_center,rgba(225,29,42,0.18)_0%,rgba(225,29,42,0.06)_42%,transparent_70%)] pointer-events-none"
               style={{ opacity: innerProgress }}
             />
 
             {/* Concentric Ring Guides (Fade in as wheel forms) */}
             <div
-              className="absolute w-[640px] h-[640px] rounded-full border border-dashed border-slate-500/40 pointer-events-none transition-transform duration-150"
+              className={`absolute w-[670px] h-[670px] rounded-full border border-dashed pointer-events-none transition-[transform,border-color,box-shadow] duration-150 ${
+                bgDarkness > 0.45
+                  ? 'border-white/25 shadow-[0_0_50px_rgba(225,29,42,0.12)]'
+                  : 'border-slate-500/40'
+              }`}
               style={{
                 opacity: innerProgress,
                 transform: `scale(${0.75 + 0.25 * innerProgress})`,
               }}
             />
             <div
-              className="absolute w-[376px] h-[376px] rounded-full border border-dashed border-slate-500/40 pointer-events-none transition-transform duration-150"
+              className={`absolute w-[370px] h-[370px] rounded-full border border-dashed pointer-events-none transition-[transform,border-color,box-shadow] duration-150 ${
+                bgDarkness > 0.45
+                  ? 'border-[#e11d2a]/45 shadow-[0_0_32px_rgba(225,29,42,0.16)]'
+                  : 'border-slate-500/40'
+              }`}
               style={{
                 opacity: innerProgress,
                 transform: `scale(${0.75 + 0.25 * innerProgress})`,
               }}
             />
 
-            {/* THE 7 CATEGORY CARDS: Morph smoothly from horizontal marquee row to outer circle */}
+            {/* THE 7 CATEGORY CARDS: Morph smoothly & adapt to dark theme on scroll */}
             {categoriesData.map((cat, idx) => {
-              // Start: Horizontal row right below Hero & Find Your Tyre (visible immediately!)
-              const startX = (idx - 3) * 188 + marqueeDrift * (1 - ease);
+              // Start: Horizontal row right below Hero & Find Your Tyre
+              const startX = (idx - 3) * 182 + marqueeDrift * (1 - ease);
               const startY = -270;
 
-              // End: Outer ring of the circle (320px radius — top card clears sticky header cleanly)
+              // End: Outer ring (335px radius — guaranteed zero overlap with 185px inner ring)
               const angle = (idx / categoriesData.length) * 2 * Math.PI - Math.PI / 2;
-              const radius = 320;
+              const radius = 335;
               const endX = Math.cos(angle) * radius;
               const endY = Math.sin(angle) * radius;
 
@@ -290,6 +298,7 @@ export default function ConcentricCategoryBrandWheel() {
               const y = startY + (endY - startY) * ease;
               const rot = Math.sin(ease * Math.PI) * (idx % 2 === 0 ? 7 : -7);
               const isSelected = selectedCategories.includes(cat.id);
+              const isDark = bgDarkness > 0.45;
 
               return (
                 <button
@@ -299,40 +308,47 @@ export default function ConcentricCategoryBrandWheel() {
                   style={{
                     transform: `translate(${x}px, ${y}px) rotate(${rot}deg) scale(${isSelected ? 1.05 : 1})`,
                   }}
-                  className={`absolute z-20 w-[180px] p-3.5 rounded-2xl border-2 transition-[border-color,box-shadow,background-color] duration-150 flex flex-col items-center text-center cursor-pointer shadow-[0_10px_28px_rgba(15,23,42,0.08)] hover:shadow-xl will-change-transform ${
+                  className={`group absolute z-20 w-[152px] p-2.5 rounded-2xl border transition-[background-color,border-color,box-shadow] duration-200 flex flex-col items-center text-center cursor-pointer will-change-transform ${
                     isSelected
-                      ? 'bg-red-50 border-[#e31b23] ring-4 ring-[#e31b23]/20'
-                      : 'bg-white border-slate-200/90 hover:border-slate-400'
+                      ? isDark
+                        ? 'bg-gradient-to-b from-[#3d1118] to-[#1f0f13] border-[#ff3342] ring-4 ring-[#e11d2a]/40 shadow-[0_0_34px_rgba(225,29,42,0.6),inset_0_1px_0_rgba(255,255,255,0.28)] text-white'
+                        : 'bg-red-50 border-[#e31b23] ring-4 ring-[#e31b23]/20 shadow-[0_12px_30px_rgba(227,27,35,0.2)] text-slate-900'
+                      : isDark
+                        ? 'bg-[#1c1c24]/95 border-white/25 shadow-[0_0_24px_rgba(225,29,42,0.16),0_14px_30px_rgba(0,0,0,0.85),inset_0_1px_0_rgba(255,255,255,0.22)] hover:bg-[#251a1f] hover:border-[#ff3342] hover:shadow-[0_0_30px_rgba(225,29,42,0.45),0_16px_34px_rgba(0,0,0,0.9),inset_0_1px_0_rgba(255,255,255,0.3)] text-white'
+                        : 'bg-white border-slate-200/90 hover:border-slate-400 shadow-[0_12px_30px_rgba(0,0,0,0.22)] hover:shadow-xl text-slate-900'
                   }`}
                 >
                   {isSelected && (
-                    <span className="absolute -top-2.5 -right-2.5 w-6 h-6 rounded-full bg-[#e31b23] text-white flex items-center justify-center shadow-md animate-in zoom-in-50 duration-200">
-                      <Check className="w-3.5 h-3.5 stroke-[3]" />
+                    <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-[#e11d2a] text-white flex items-center justify-center shadow-md animate-in zoom-in-50 duration-200">
+                      <Check className="w-3 h-3 stroke-[3]" />
                     </span>
                   )}
-                  <img
-                    src={CATEGORY_PHOTOS[cat.id] || '/images/legacy/u-h-wheel.webp'}
-                    alt={cat.name}
-                    className="w-26 h-16 object-contain mb-1.5"
-                    loading="lazy"
-                  />
-                  <span className="text-xs font-extrabold text-slate-900 leading-tight line-clamp-1">
+                  <div className={`w-full rounded-xl p-1 mb-1.5 flex items-center justify-center transition-colors duration-200 ${isDark ? 'bg-white shadow-[0_2px_10px_rgba(255,255,255,0.14)] ring-1 ring-white/40' : 'bg-transparent'}`}>
+                    <img
+                      src={CATEGORY_PHOTOS[cat.id] || '/images/legacy/u-h-wheel.webp'}
+                      alt={cat.name}
+                      className="w-20 h-12 object-contain"
+                      loading="lazy"
+                    />
+                  </div>
+                  <span className={`text-[11px] font-extrabold leading-tight line-clamp-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>
                     {cat.name}
                   </span>
-                  <span className="text-[10px] text-slate-500 font-medium mt-0.5">
+                  <span className={`text-[10px] font-semibold mt-0.5 ${isDark ? 'text-slate-300' : 'text-slate-500'}`}>
                     {cat.itemCount || '10+'} Items
                   </span>
                 </button>
               );
             })}
 
-            {/* INNER RING: 9 Brands (188px radius) */}
+            {/* INNER RING: 9 Brands (185px radius — zero overlap with center or outer ring) */}
             {BRANDS_9.map((brand, idx) => {
               const angle = (idx / BRANDS_9.length) * 2 * Math.PI - Math.PI / 2;
-              const radius = 188;
+              const radius = 185;
               const x = Math.cos(angle) * radius * (0.4 + 0.6 * innerProgress);
               const y = Math.sin(angle) * radius * (0.4 + 0.6 * innerProgress);
               const isSelected = selectedBrands.includes(brand.id);
+              const isDark = bgDarkness > 0.45;
 
               return (
                 <button
@@ -344,27 +360,33 @@ export default function ConcentricCategoryBrandWheel() {
                     opacity: innerProgress,
                     pointerEvents: innerProgress > 0.35 ? 'auto' : 'none',
                   }}
-                  className={`absolute z-20 w-[114px] h-[58px] p-2 rounded-2xl border-2 transition-[border-color,box-shadow,background-color] duration-150 flex items-center justify-center cursor-pointer shadow-sm hover:shadow-lg will-change-transform ${
+                  className={`absolute z-20 w-[98px] h-[48px] p-1.5 rounded-xl border transition-[background-color,border-color,box-shadow] duration-200 flex items-center justify-center cursor-pointer will-change-transform ${
                     isSelected
-                      ? 'bg-red-50 border-[#e31b23] ring-4 ring-[#e31b23]/20'
-                      : 'bg-white border-slate-200 hover:border-slate-400'
+                      ? isDark
+                        ? 'bg-gradient-to-b from-[#3d1118] to-[#1f0f13] border-[#ff3342] ring-4 ring-[#e11d2a]/40 shadow-[0_0_28px_rgba(225,29,42,0.6),inset_0_1px_0_rgba(255,255,255,0.28)] text-white'
+                        : 'bg-red-50 border-[#e31b23] ring-4 ring-[#e31b23]/20 shadow-md text-slate-900'
+                      : isDark
+                        ? 'bg-[#1f1f28]/95 border-white/30 shadow-[0_0_20px_rgba(225,29,42,0.16),0_10px_24px_rgba(0,0,0,0.85),inset_0_1px_0_rgba(255,255,255,0.24)] hover:bg-[#2a1c21] hover:border-[#ff3342] hover:shadow-[0_0_26px_rgba(225,29,42,0.45)] text-white'
+                        : 'bg-white border-slate-200 hover:border-slate-400 shadow-md hover:shadow-lg text-slate-900'
                   }`}
                   title={brand.name}
                 >
                   {isSelected && (
-                    <span className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-[#e31b23] text-white flex items-center justify-center shadow-md">
-                      <Check className="w-3 h-3 stroke-[3]" />
+                    <span className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-[#e11d2a] text-white flex items-center justify-center shadow-md">
+                      <Check className="w-2.5 h-2.5 stroke-[3]" />
                     </span>
                   )}
                   {brand.img ? (
-                    <img
-                      src={brand.img}
-                      alt={brand.name}
-                      className="max-w-full max-h-9 object-contain"
-                      loading="lazy"
-                    />
+                    <div className={`w-full h-full rounded-lg flex items-center justify-center px-1.5 ${isDark ? 'bg-white shadow-[0_2px_8px_rgba(255,255,255,0.15)]' : ''}`}>
+                      <img
+                        src={brand.img}
+                        alt={brand.name}
+                        className="max-w-full max-h-7 object-contain"
+                        loading="lazy"
+                      />
+                    </div>
                   ) : (
-                    <span className="text-[11px] font-black text-slate-900 tracking-wider">
+                    <span className={`text-[10.5px] font-black tracking-wider ${isDark ? 'text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]' : 'text-slate-900'}`}>
                       {brand.name}
                     </span>
                   )}
@@ -372,29 +394,37 @@ export default function ConcentricCategoryBrandWheel() {
               );
             })}
 
-            {/* CENTER HUB: Clear & Go Buttons (170px diameter — generous clearance) */}
+            {/* CENTER HUB: Clear & Go Buttons (154px diameter — adapts to dark theme) */}
             <div
               style={{
                 opacity: innerProgress,
                 transform: `scale(${0.65 + 0.35 * innerProgress})`,
                 pointerEvents: innerProgress > 0.4 ? 'auto' : 'none',
               }}
-              className="relative z-30 w-[170px] h-[170px] rounded-full bg-white border-2 border-slate-200 shadow-[0_18px_45px_rgba(15,23,42,0.12)] flex flex-col items-center justify-center p-4 text-center"
+              className={`relative z-30 w-[154px] h-[154px] rounded-full border-2 flex flex-col items-center justify-center p-3 text-center transition-[background-color,border-color,box-shadow] duration-300 ${
+                bgDarkness > 0.45
+                  ? 'bg-[#1c1c24]/95 border-[#e11d2a]/75 shadow-[0_0_42px_rgba(225,29,42,0.32),0_18px_45px_rgba(0,0,0,0.88),inset_0_1px_1px_rgba(255,255,255,0.24)] text-white'
+                  : 'bg-white border-slate-200 shadow-[0_18px_45px_rgba(0,0,0,0.35)] text-slate-900'
+              }`}
             >
-              <span className="text-[10px] font-black uppercase tracking-widest text-[#e31b23] mb-1">
+              <span className="text-[10px] font-black uppercase tracking-widest text-[#e11d2a] mb-1">
                 Quick Filter
               </span>
-              <p className="text-xs font-bold text-slate-800 leading-snug mb-3.5">
+              <p className={`text-[11px] font-bold leading-snug mb-3 ${bgDarkness > 0.45 ? 'text-slate-200' : 'text-slate-800'}`}>
                 {hasSelection
                   ? `${selectedCategories.length} Cat · ${selectedBrands.length} Brand`
                   : 'Pick Categories & Brands'}
               </p>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 <button
                   type="button"
                   onClick={handleClear}
                   disabled={!hasSelection}
-                  className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 disabled:opacity-40 text-slate-700 text-xs font-bold flex items-center gap-1 transition-all cursor-pointer disabled:cursor-not-allowed"
+                  className={`px-2.5 py-1.5 rounded-xl text-[11px] font-bold flex items-center gap-1 transition-all cursor-pointer disabled:cursor-not-allowed disabled:opacity-40 ${
+                    bgDarkness > 0.45
+                      ? 'bg-[#222229] hover:bg-[#2c2c35] text-slate-200'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                  }`}
                 >
                   <RotateCcw className="w-3 h-3" />
                   <span>Clear</span>
@@ -402,10 +432,10 @@ export default function ConcentricCategoryBrandWheel() {
                 <button
                   type="button"
                   onClick={handleGo}
-                  className="px-4 py-1.5 rounded-xl bg-[#e31b23] hover:bg-red-700 text-white text-xs font-bold flex items-center gap-1 shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                  className="px-3.5 py-1.5 rounded-xl bg-[#e11d2a] hover:bg-red-700 text-white text-[11px] font-bold flex items-center gap-1 shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
                 >
                   <span>Go</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <ArrowRight className="w-3 h-3" />
                 </button>
               </div>
             </div>
