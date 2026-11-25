@@ -54,3 +54,4 @@ export function resolveProductFaqs(product: Pick<Product, 'title' | 'category' |
   }
   return getDefaultProductFaqs(product);
 }
+
