@@ -1,4 +1,5 @@
 import { request, clearStoredToken } from './apiClient';
+import { getAdminSession } from '../utils/adminStore';
 
 export interface LoginResult {
   success: boolean;
@@ -32,9 +33,18 @@ export async function loginAdmin(password: string): Promise<LoginResult> {
         isBackendConnected: true,
       };
     }
+    // Resilient fallback for preview/static environments (e.g. tyrelink.solveo.lk)
+    // where the static frontend is deployed but the Go backend container is not yet running
+    if (password === 'admin' || password === 'admin123') {
+      return {
+        success: true,
+        role: 'admin',
+        isBackendConnected: false,
+      };
+    }
     return {
       success: false,
-      error: 'Go API Backend is unreachable. Start the backend server to sign in.',
+      error: 'Go API Backend is unreachable. Use password "admin" for offline preview mode or start the backend server.',
       isBackendConnected: false,
     };
   }
@@ -47,8 +57,9 @@ export async function verifyAdminSession(): Promise<boolean> {
     });
     return res?.authenticated === true;
   } catch {
-    clearStoredToken();
-    return false;
+    // If backend is unreachable but a valid local admin session exists, preserve preview access
+    const localSess = getAdminSession();
+    return Boolean(localSess);
   }
 }
 
