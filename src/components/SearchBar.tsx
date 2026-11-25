@@ -1,31 +1,40 @@
-import React, { useState, useEffect, useRef, useId } from 'react';
-import Fuse from 'fuse.js';
+import React, { useState, useEffect, useRef, useId, useMemo } from 'react';
 import { Search, X, Sparkles, ArrowUpRight } from 'lucide-react';
 import productsData from '../data/products.json';
 import type { Product } from '../types';
+import { fetchProducts } from '../services/productService';
+import { ADMIN_EVENT_PRODUCTS, getLiveProducts } from '../utils/adminStore';
+import { buildProductSearchIndex } from '../utils/productSearch';
 
 export default function SearchBar() {
   const resultsId = useId();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Product[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [catalog, setCatalog] = useState<Product[]>(() =>
+    typeof window !== 'undefined' ? getLiveProducts() : ((productsData as unknown) as Product[])
+  );
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Configure Fuse with Singlish / Typo tolerance
-  const fuse = new Fuse((productsData as unknown) as Product[], {
-    keys: [
-      { name: 'title', weight: 0.4 },
-      { name: 'sinhalaTitle', weight: 0.35 },
-      { name: 'brand', weight: 0.25 },
-      { name: 'category', weight: 0.25 },
-      { name: 'shortDescription', weight: 0.15 },
-    ],
-    threshold: 0.6,
-    distance: 100,
-    ignoreLocation: true,
-    minMatchCharLength: 2,
-  });
+  useEffect(() => {
+    let active = true;
+    fetchProducts().then((res) => {
+      if (active && res.products.length > 0) setCatalog(res.products);
+    });
+    const onProductsUpdate = (e: Event) => {
+      const updated = (e as CustomEvent<Product[]>)?.detail;
+      if (Array.isArray(updated) && updated.length > 0) setCatalog(updated);
+    };
+    window.addEventListener(ADMIN_EVENT_PRODUCTS, onProductsUpdate);
+    return () => {
+      active = false;
+      window.removeEventListener(ADMIN_EVENT_PRODUCTS, onProductsUpdate);
+    };
+  }, []);
+
+  // Memoize search index so typing never rebuilds it on every keystroke
+  const searchIndex = useMemo(() => buildProductSearchIndex(catalog), [catalog]);
 
   // Handle outside click & keyboard shortcuts
   useEffect(() => {
@@ -61,8 +70,7 @@ export default function SearchBar() {
     setQuery(value);
 
     if (value.trim().length >= 2) {
-      const searchResults = fuse.search(value.trim()).slice(0, 5).map(res => res.item);
-      setResults(searchResults);
+      setResults(searchIndex.search(value.trim(), 5));
       setIsOpen(true);
     } else {
       setResults([]);

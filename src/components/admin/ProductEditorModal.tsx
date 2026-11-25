@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Plus, Trash2, Sparkles, Check, AlertCircle, Video, ShieldCheck, CreditCard, Calculator } from 'lucide-react';
+import { X, Plus, Trash2, Sparkles, Check, AlertCircle, Video, ShieldCheck, CreditCard, Calculator, Upload } from 'lucide-react';
 import categoriesData from '../../data/categories.json';
 import type { Product, ProductCategory } from '../../types';
 import {
@@ -7,6 +7,7 @@ import {
   deleteLiveProduct,
   extractYouTubeId,
 } from '../../utils/adminStore';
+import { compressProductImageFile } from '../../utils/imageCompress';
 
 interface ProductEditorModalProps {
   isOpen: boolean;
@@ -47,6 +48,7 @@ export default function ProductEditorModal({
     { key: 'Manufacture date', value: '' },
   ]);
   const [faqs, setFaqs] = useState<Array<{ question: string; answer: string }>>([]);
+  const [compressingImg, setCompressingImg] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -808,7 +810,33 @@ export default function ProductEditorModal({
           {/* Section 4: Images & Preview */}
           <div className="space-y-4">
             <div className="space-y-1.5">
-              <label className="font-bold text-slate-300">Primary Featured Image URL / Path *</label>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <label className="font-bold text-slate-300">Primary Featured Image URL / Path *</label>
+                <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-300 text-[11px] font-bold cursor-pointer transition-colors">
+                  <Upload className="w-3.5 h-3.5" />
+                  <span>{compressingImg ? 'Compressing WebP...' : 'Upload & Auto-Compress Photo'}</span>
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      e.target.value = '';
+                      if (!file) return;
+                      setCompressingImg(true);
+                      setError(null);
+                      try {
+                        const res = await compressProductImageFile(file);
+                        setFeaturedImage(res.dataUrl);
+                      } catch {
+                        setError('Could not process selected photo. Try another JPG/PNG/WebP.');
+                      } finally {
+                        setCompressingImg(false);
+                      }
+                    }}
+                  />
+                </label>
+              </div>
               <input
                 type="text"
                 required

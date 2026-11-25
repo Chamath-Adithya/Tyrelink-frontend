@@ -99,6 +99,7 @@ export default function MerchantWorkspace() {
   // Filters & Modals
   const [catalogSearch, setCatalogSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
+  const [stockFilter, setStockFilter] = useState<'all' | 'low' | 'out' | 'unpublished'>('all');
   const [leadFilter, setLeadFilter] = useState('all');
   const [leadSearch, setLeadSearch] = useState('');
   const [notesDraft, setNotesDraft] = useState<Record<string, string>>({});
@@ -305,6 +306,10 @@ export default function MerchantWorkspace() {
 
   const filteredItems = items.filter((p) => {
     if (categoryFilter !== 'all' && p.category !== categoryFilter) return false;
+    const stk = Number(p.stockCount ?? (p.inStock ? 5 : 0));
+    if (stockFilter === 'low' && !(p.inStock && stk > 0 && stk <= 3)) return false;
+    if (stockFilter === 'out' && p.inStock && stk > 0) return false;
+    if (stockFilter === 'unpublished' && p.published !== false) return false;
     if (!catalogSearch.trim()) return true;
     const q = catalogSearch.toLowerCase();
     return `${p.title} ${p.brand} ${p.category} ${p.size || ''} ${p.sku || ''}`.toLowerCase().includes(q);
@@ -581,6 +586,17 @@ export default function MerchantWorkspace() {
                   <option value="wheels">Wheels &amp; Valves</option>
                   <option value="garage-tools">Garage Tools</option>
                   <option value="garage-equipment">Workshop Equipment</option>
+                </select>
+                <select
+                  aria-label="Stock alert filter"
+                  value={stockFilter}
+                  onChange={(e) => setStockFilter(e.target.value as any)}
+                  className="h-9 px-3 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white"
+                >
+                  <option value="all">All Stock Levels</option>
+                  <option value="low">Low Stock (≤ 3)</option>
+                  <option value="out">Out of Stock</option>
+                  <option value="unpublished">Hidden / Drafts</option>
                 </select>
               </div>
 

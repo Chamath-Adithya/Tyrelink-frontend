@@ -248,6 +248,13 @@ const { title, description, image, product, faq, breadcrumbs, itemList } = Astro
 
         // Re-run for Astro view transitions
         document.addEventListener('astro:page-load', boot);
+
+        // Register offline-resilient Service Worker for slow mobile networks
+        if ('serviceWorker' in navigator && location.hostname !== 'localhost') {
+          window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js').catch(() => {});
+          });
+        }
       })();
     </script>
   </body>

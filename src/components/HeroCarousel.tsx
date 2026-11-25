@@ -4,7 +4,8 @@ import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 const bannerSlides = [
   {
     id: 'banner-1',
-    image: 'https://images.unsplash.com/photo-1578844251758-2f71da64c96f?w=1800&auto=format&fit=crop&q=90',
+    image: 'https://images.unsplash.com/photo-1578844251758-2f71da64c96f?w=1280&auto=format&fit=crop&fm=webp&q=76',
+    lowResImage: 'https://images.unsplash.com/photo-1578844251758-2f71da64c96f?w=720&auto=format&fit=crop&fm=webp&q=62',
     link: '/shop',
     badge: "SRI LANKA'S TRUSTED TYRE PARTNER",
     title: 'The Right Tyre. Made Simple.',
@@ -14,17 +15,19 @@ const bannerSlides = [
   },
   {
     id: 'banner-2',
-    image: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=1800&auto=format&fit=crop&q=90',
+    image: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=1280&auto=format&fit=crop&fm=webp&q=76',
+    lowResImage: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=720&auto=format&fit=crop&fm=webp&q=62',
     link: '/category/car-tyres',
     badge: 'PASSENGER CAR TYRES',
     title: 'CEAT · DSI · Michelin · Bridgestone',
-    sinhala: '100% Genuine සමාගම් වගකීමක් සහිත සත්‍ය DOT දින',
+    sinhala: 'දිවයින පුරා එකම ගාස්තුවකට සහ සත්‍ය DOT නිෂ්පාදන දින සමඟ',
     cta: 'Explore Car Tyres',
     alt: 'Passenger Car Tyres with 1-Click WhatsApp Order',
   },
   {
     id: 'banner-3',
-    image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=1800&auto=format&fit=crop&q=90',
+    image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=1280&auto=format&fit=crop&fm=webp&q=76',
+    lowResImage: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=720&auto=format&fit=crop&fm=webp&q=62',
     link: '/category/suv-4x4',
     badge: 'SUV & 4X4 ALL-TERRAIN',
     title: 'Tackle Any Sri Lankan Terrain',
@@ -34,7 +37,8 @@ const bannerSlides = [
   },
   {
     id: 'banner-4',
-    image: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=1800&auto=format&fit=crop&q=90',
+    image: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=1280&auto=format&fit=crop&fm=webp&q=76',
+    lowResImage: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=720&auto=format&fit=crop&fm=webp&q=62',
     link: '/category/garage-equipment',
     badge: 'TYRELINK WORKSHOP SYSTEMS',
     title: 'Commercial Garage Equipment & Tools',
@@ -48,7 +52,15 @@ export default function HeroCarousel() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [current, setCurrent] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [saveDataMode, setSaveDataMode] = useState(false);
   const SLIDE_DURATION = 5000;
+
+  useEffect(() => {
+    const conn = (navigator as any).connection;
+    const isNarrow = window.innerWidth < 768;
+    const isSlow = Boolean(conn?.saveData || conn?.effectiveType === 'slow-2g' || conn?.effectiveType === '2g');
+    setSaveDataMode(isNarrow || isSlow);
+  }, []);
 
   // Auto-play slide rotation (pauses on hover)
   useEffect(() => {
@@ -149,10 +161,18 @@ export default function HeroCarousel() {
           }}
         >
           <img
-            src={slide.image}
+            src={
+              idx === 0 || idx === current || !saveDataMode
+                ? saveDataMode
+                  ? slide.lowResImage
+                  : slide.image
+                : undefined
+            }
             alt={slide.alt}
             className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-700 ease-out"
             loading={idx === 0 ? 'eager' : 'lazy'}
+            decoding="async"
+            fetchPriority={idx === 0 ? 'high' : 'low'}
           />
 
           {/* Deep Cinematic Black Gradient Overlay */}

@@ -47,25 +47,33 @@ export function clearStoredToken() {
 
 export async function request<T = any>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit & { timeoutMs?: number } = {}
 ): Promise<T> {
+  const { timeoutMs = 10_000, ...fetchOpts } = options;
   const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
   const url = `${API_BASE_URL}${cleanEndpoint}`;
 
   const headers: Record<string, string> = {
     Accept: 'application/json',
-    ...(options.headers as Record<string, string>),
+    ...(fetchOpts.headers as Record<string, string>),
   };
 
-  if (!(options.body instanceof FormData) && !headers['Content-Type']) {
+  if (!(fetchOpts.body instanceof FormData) && !headers['Content-Type']) {
     headers['Content-Type'] = 'application/json';
+  }
+
+  const controller = new AbortController();
+  const timer = typeof window !== 'undefined' ? window.setTimeout(() => controller.abort(), timeoutMs) : null;
+  if (fetchOpts.signal) {
+    fetchOpts.signal.addEventListener('abort', () => controller.abort(), { once: true });
   }
 
   try {
     const res = await fetch(url, {
-      ...options,
+      ...fetchOpts,
       credentials: 'include',
       headers,
+      signal: controller.signal,
     });
 
     const isJson = res.headers.get('content-type')?.includes('application/json');
@@ -84,9 +92,16 @@ export async function request<T = any>(
 
     return data as T;
   } catch (err: any) {
+    if (err?.name === 'AbortError') {
+      const timeoutErr = new Error('Request timed out on slow connection') as any;
+      timeoutErr.status = 408;
+      throw timeoutErr;
+    }
     if (err?.name === 'TypeError' && String(err?.message).includes('fetch')) {
       console.warn(`[Tyrelink API] Backend unreachable at ${url}`);
     }
     throw err;
+  } finally {
+    if (timer !== null) window.clearTimeout(timer);
   }
 }

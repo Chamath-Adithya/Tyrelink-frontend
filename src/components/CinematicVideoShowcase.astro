@@ -70,8 +70,16 @@
     window.addEventListener('resize', schedule, {passive: true});
     motion.addEventListener('change', schedule);
     update();
-    if (!motion.matches) video.play().catch(() => {});
-    else video.pause();
+    const conn = (navigator as any).connection;
+    const lowBandwidth = Boolean(conn?.saveData || conn?.effectiveType === 'slow-2g' || conn?.effectiveType === '2g');
+    if (lowBandwidth) {
+      video.preload = 'none';
+      video.pause();
+    } else if (!motion.matches) {
+      video.play().catch(() => {});
+    } else {
+      video.pause();
+    }
     cleanupCinema = () => { cancelAnimationFrame(pending); window.removeEventListener('scroll',schedule); window.removeEventListener('resize',schedule); motion.removeEventListener('change',schedule); };
   }
   initCinema();
