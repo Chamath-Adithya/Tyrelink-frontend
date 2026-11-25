@@ -4,6 +4,7 @@ import LegacyCollections from '../components/LegacyCollections.astro';
 import LegacyFeatured from '../components/LegacyFeatured.astro';
 import HeroCarousel from '../components/HeroCarousel';
 import HeroTyreFinder from '../components/HeroTyreFinder';
+import HeroVortexField from '../components/HeroVortexField';
 import CategoryStrip from '../components/CategoryStrip.astro';
 import ProductCard from '../components/ProductCard.astro';
 import ProductCarousel from '../components/ProductCarousel';
@@ -36,15 +37,20 @@ const faqData = faqs.map(([question, answer]) => ({question, answer}));
   description="Find, compare and fit tyres with confidence. 1-Click WhatsApp Quick Order, Islandwide Cash on Delivery (COD), verified manufacture dates, and genuine company warranty in Sri Lanka."
   faq={faqData}
 >
-  <!-- Hero Stage: confident, editorial, and immediately useful. -->
-  <section aria-labelledby="home-hero-heading" class="w-full pt-3 sm:pt-6 pb-4 px-3 sm:px-6 lg:px-8 max-w-[1680px] mx-auto">
-    <h1 id="home-hero-heading" class="sr-only">Find the right tyres and garage equipment in Sri Lanka</h1>
-    <HeroCarousel client:load />
-    <HeroTyreFinder client:load />
-  </section>
+  <!-- Opening Hero & Light Marquee Stage: Unified Vortex Flow Backdrop (fades cleanly before Dark Wheel & lower sections) -->
+  <div class="relative w-full overflow-x-clip bg-[#fafaf8]">
+    <HeroVortexField client:load />
 
-  <!-- Categories Strip (Full Screen Width Edge-to-Edge) -->
-  <CategoryStrip />
+    <!-- Hero Stage: confident, editorial, and immediately useful. -->
+    <section aria-labelledby="home-hero-heading" class="relative z-20 w-full pt-3 sm:pt-5 pb-3 px-3 sm:px-6 lg:px-8 max-w-[1680px] mx-auto">
+      <h1 id="home-hero-heading" class="sr-only">Find the right tyres and garage equipment in Sri Lanka</h1>
+      <HeroCarousel client:load />
+      <HeroTyreFinder client:load />
+    </section>
+
+    <!-- Categories Strip (Full Screen Width Edge-to-Edge) -->
+    <CategoryStrip />
+  </div>
 
   <!-- ============================================================
        FLASH DEALS SECTION — FREEZES IN PLACE (Sticky on Desktop)

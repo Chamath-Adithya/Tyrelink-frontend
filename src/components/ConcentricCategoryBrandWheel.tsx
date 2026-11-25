@@ -28,15 +28,23 @@ export default function ConcentricCategoryBrandWheel() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
   const [marqueeDrift, setMarqueeDrift] = useState(0);
+  const [viewportWidth, setViewportWidth] = useState(1440);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+
+  useEffect(() => {
+    const syncViewport = () => setViewportWidth(window.innerWidth);
+    syncViewport();
+    window.addEventListener('resize', syncViewport, { passive: true });
+    return () => window.removeEventListener('resize', syncViewport);
+  }, []);
 
   useEffect(() => {
     let animId = 0;
     let startTime = performance.now();
     const tick = (now: number) => {
       const elapsed = (now - startTime) / 1000;
-      setMarqueeDrift(Math.sin(elapsed * 0.7) * 45);
+      setMarqueeDrift(Math.sin(elapsed * 0.7) * 16);
       animId = requestAnimationFrame(tick);
     };
     animId = requestAnimationFrame(tick);
@@ -118,9 +126,7 @@ export default function ConcentricCategoryBrandWheel() {
     <div
       className="w-full transition-colors duration-300"
       style={{
-        backgroundColor: `rgb(${Math.round(250 - 239 * bgDarkness)}, ${Math.round(
-          250 - 239 * bgDarkness
-        )}, ${Math.round(248 - 235 * bgDarkness)})`,
+        backgroundColor: `rgba(11, 11, 13, ${bgDarkness.toFixed(3)})`,
       }}
     >
       {/* Workshop SVG Keyframe Animations */}
@@ -153,14 +159,18 @@ export default function ConcentricCategoryBrandWheel() {
       `}</style>
       <div className="max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Desktop Scroll-Driven Morphing Stage: Horizontal Row -> Concentric Wheel (Pinned Hold) */}
-        <div ref={wrapperRef} className="hidden lg:block relative h-[200vh] min-h-[1450px]">
+        <div id="category-wheel-wrapper" ref={wrapperRef} className="hidden lg:block relative h-[200vh] min-h-[1450px]">
           <div className="sticky top-[calc(var(--header-height,96px)+8px)] h-[calc(100vh-104px)] min-h-[780px] flex flex-col items-center justify-center pt-4 overflow-visible">
             {/* Morphing Coordinate Stage */}
             <div className="relative w-full max-w-[1380px] h-[740px] flex items-center justify-center">
-              {/* Animated Colorful Workshop Scene Illustration (Full width along bottom floor) */}
+              {/* Animated Colorful Workshop Scene Illustration (Full width along bottom floor, softly blurred for depth) */}
               <div
-                className="absolute inset-x-0 -bottom-6 flex items-end justify-center pointer-events-none select-none overflow-hidden"
-                style={{ opacity: 0.25 + 0.65 * bgDarkness }}
+                className="absolute inset-x-0 -bottom-6 flex items-end justify-center pointer-events-none select-none overflow-hidden will-change-[filter,opacity]"
+                style={{
+                  opacity: 0.22 + 0.52 * bgDarkness,
+                  filter: `blur(${(0.8 + innerProgress * 2.4).toFixed(2)}px)`,
+                  transform: 'scale(1.01)',
+                }}
               >
                 <svg className="w-full max-w-[1440px] h-auto max-h-[240px]" viewBox="0 0 1440 300" aria-hidden="true">
                   <defs>
@@ -282,11 +292,17 @@ export default function ConcentricCategoryBrandWheel() {
               }}
             />
 
-            {/* THE 7 CATEGORY CARDS: Morph smoothly & adapt to dark theme on scroll */}
+            {/* THE 7 CATEGORY CARDS: Extra-large showcase row initially -> smoothly shrinks to 152px wheel cards on scroll */}
             {categoriesData.map((cat, idx) => {
-              // Start: Horizontal row right below Hero & Find Your Tyre
-              const startX = (idx - 3) * 182 + marqueeDrift * (1 - ease);
-              const startY = -270;
+              const cardGap = viewportWidth >= 1560 ? 18 : 14;
+              const sideMargin = viewportWidth >= 1560 ? 96 : 80;
+              const maxCardW = (viewportWidth - sideMargin - cardGap * 6) / 7;
+              const rowScale = Math.min(1.62, Math.max(1.06, maxCardW / 152));
+              const rowPitch = 152 * rowScale + cardGap;
+
+              // Start: Extra-large horizontal showcase row cleanly visible below Find Your Tyre
+              const startX = (idx - 3) * rowPitch + marqueeDrift * (1 - ease);
+              const startY = -282;
 
               // End: Outer ring (335px radius — guaranteed zero overlap with 185px inner ring)
               const angle = (idx / categoriesData.length) * 2 * Math.PI - Math.PI / 2;
@@ -297,6 +313,7 @@ export default function ConcentricCategoryBrandWheel() {
               const x = startX + (endX - startX) * ease;
               const y = startY + (endY - startY) * ease;
               const rot = Math.sin(ease * Math.PI) * (idx % 2 === 0 ? 7 : -7);
+              const morphScale = rowScale + (1 - rowScale) * ease;
               const isSelected = selectedCategories.includes(cat.id);
               const isDark = bgDarkness > 0.45;
 
@@ -306,7 +323,7 @@ export default function ConcentricCategoryBrandWheel() {
                   type="button"
                   onClick={() => toggleCategory(cat.id)}
                   style={{
-                    transform: `translate(${x}px, ${y}px) rotate(${rot}deg) scale(${isSelected ? 1.05 : 1})`,
+                    transform: `translate(${x}px, ${y}px) rotate(${rot}deg) scale(${(morphScale * (isSelected ? 1.05 : 1)).toFixed(3)})`,
                   }}
                   className={`group absolute z-20 w-[152px] p-2.5 rounded-2xl border transition-[background-color,border-color,box-shadow] duration-200 flex flex-col items-center text-center cursor-pointer will-change-transform ${
                     isSelected
