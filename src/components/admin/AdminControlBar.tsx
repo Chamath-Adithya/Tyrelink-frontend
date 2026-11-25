@@ -39,9 +39,16 @@ export default function AdminControlBar() {
   const [isLiveFlash, setIsLiveFlash] = useState(false);
 
   useEffect(() => {
-    // 1. Initial check against real stored JWT + session
-    const current = getAdminSession();
+    const wantsAdminMode =
+      typeof window !== 'undefined' && window.location.search.includes('admin_mode=active');
+
+    // 1. Initial check against real stored session
+    let current = getAdminSession();
     if (current) {
+      if (wantsAdminMode && !current.editMode) {
+        toggleEditMode(true);
+        current = { ...current, editMode: true };
+      }
       setSession(current);
       document.documentElement.classList.add('tyrelink-admin-logged-in');
       if (current.editMode) {
@@ -56,10 +63,13 @@ export default function AdminControlBar() {
           document.documentElement.classList.remove('tyrelink-admin-logged-in', 'tyrelink-admin-edit-mode');
         }
       });
+    } else if (wantsAdminMode) {
+      window.location.replace('/admin');
+      return;
     }
 
     // Clean ?admin_mode=active query param
-    if (typeof window !== 'undefined' && window.location.search.includes('admin_mode=active')) {
+    if (wantsAdminMode) {
       const cleanUrl = window.location.origin + window.location.pathname;
       window.history.replaceState({}, '', cleanUrl);
     }
