@@ -246,12 +246,12 @@ export default function ProductExperience({ product }: { product: Product }) {
   }
 
   const approvedReviews = reviews.filter((r) => !r.localPending);
-  const avgScore =
+  const avgScoreNum =
     approvedReviews.length > 0
-      ? (approvedReviews.reduce((acc, r) => acc + r.rating, 0) / approvedReviews.length).toFixed(1)
-      : product.rating > 0
-      ? product.rating.toFixed(1)
-      : '—';
+      ? approvedReviews.reduce((acc, r) => acc + r.rating, 0) / approvedReviews.length
+      : 0;
+  const avgScore = approvedReviews.length > 0 ? avgScoreNum.toFixed(1) : '0.0';
+  const filledStars = Math.round(avgScoreNum);
 
   const photoCount = reviews.filter((r) => Boolean(r.photoDataUrl)).length;
 
@@ -354,9 +354,9 @@ export default function ProductExperience({ product }: { product: Product }) {
               <span className="text-4xl font-black text-[#18191b] font-mono">{avgScore}</span>
               <span className="text-sm text-[#676b64] font-semibold">/ 5.0</span>
             </div>
-            <p className="experience-stars text-lg mt-1">
-              {'★'.repeat(Math.round(Number(avgScore) || 5))}
-              {'☆'.repeat(5 - Math.round(Number(avgScore) || 5))}
+            <p className={`text-lg mt-1 tracking-[3px] ${approvedReviews.length > 0 ? 'experience-stars' : 'text-[#d1d4cc]'}`}>
+              {'★'.repeat(filledStars)}
+              {'☆'.repeat(5 - filledStars)}
             </p>
             <p className="text-xs text-[#676b64] mt-1">
               {approvedReviews.length > 0
@@ -413,7 +413,7 @@ export default function ProductExperience({ product }: { product: Product }) {
               aria-label="Sort reviews"
               value={sortMode}
               onChange={(e) => setSortMode(e.target.value as 'newest' | 'highest')}
-              className="h-9 px-3 rounded-lg bg-[#f6f6f3] border border-[#deded8] text-xs font-semibold text-[#202320]"
+              className="review-sort-select self-start md:self-end cursor-pointer"
             >
               <option value="newest">Sort: Newest First</option>
               <option value="highest">Sort: Highest Rating</option>

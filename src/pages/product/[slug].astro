@@ -8,8 +8,10 @@ import ProductStickyBuyBar from '../../components/ProductStickyBuyBar';
 import ProductAdminBar from '../../components/admin/ProductAdminBar';
 import ProductKokoBanner from '../../components/ProductKokoBanner';
 import ProductExperience from '../../components/ProductExperience';
+import ProductFaqSection from '../../components/ProductFaqSection';
 import productsData from '../../data/products.json';
 import type { Product } from '../../types';
+import { resolveProductFaqs } from '../../utils/productFaq';
 import '../../styles/product-detail.css';
 export function getStaticPaths() {
   return (productsData as Product[]).map(product => ({ params: { slug: product.slug }, props: { product } }));
@@ -17,11 +19,7 @@ export function getStaticPaths() {
 const { product } = Astro.props as { product: Product };
 const relatedProducts = (productsData as Product[]).filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
 const category = product.category.replaceAll('-', ' ');
-const faqs = [
-  { question: `Will ${product.title} fit my vehicle?`, answer: `Check the listed specifications against your vehicle requirements. Send our team a photo of your current tyre sidewall or equipment requirements to confirm compatibility before ordering.` },
-  { question: 'Can I pay in instalments?', answer: 'Koko and Payzy options are shown with the price. Provider eligibility and terms apply; confirm the available payment option when placing your order.' },
-  { question: 'How do I confirm delivery and manufacture date?', answer: 'Our flat islandwide delivery fee and estimated dispatch timing are shown below. Confirm stock and the available DOT manufacture date with our team before you pay.' },
-];
+const faqs = resolveProductFaqs(product);
 const breadcrumbs = [
   { name: 'Home', item: new URL('/', Astro.url).href },
   { name: category, item: new URL(`/category/${product.category}`, Astro.url).href },
@@ -62,7 +60,7 @@ const breadcrumbs = [
     </section>
     <div class="pd-video" data-pd-reveal><ProductVideoReview client:load productId={product.id} productTitle={product.title} youtubeId={product.youtubeReviewId} sampleYoutubeId={['car-tyres', 'suv-4x4', 'commercial'].includes(product.category) ? 'DB7VTBPJ5BQ' : undefined} /></div>
     <ProductExperience client:load product={product} />
-    <section class="pd-faq" aria-labelledby="pd-faq-title"><div data-pd-reveal><span class="pd-eyebrow">Before you choose</span><h2 id="pd-faq-title">A little clarity.<br/><span>A better journey.</span></h2></div><div>{faqs.map((faq, i) => <details data-pd-reveal><summary><span>0{i+1}</span>{faq.question}<b>+</b></summary><p>{faq.answer}</p></details>)}</div></section>
+    <ProductFaqSection client:load product={product} defaultFaqs={faqs} />
     <MoreProducts client:visible current={product} />
   </article>
   <!-- =====================================================

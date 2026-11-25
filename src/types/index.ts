@@ -24,6 +24,11 @@ export interface LaptopConfig {
   condition: ProductCondition;
 }
 
+export interface ProductFAQ {
+  question: string;
+  answer: string;
+}
+
 export interface Product {
   id: string;
   slug: string;
@@ -52,6 +57,7 @@ export interface Product {
   shortDescription: string;
   sinhalaDescription?: string;
   specs: Record<string, string>;
+  faqs?: ProductFAQ[];
   videoShortUrl?: string;
   youtubeReviewId?: string;
   rating: number;

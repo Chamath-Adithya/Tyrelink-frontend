@@ -46,6 +46,7 @@ export default function ProductEditorModal({
     { key: 'Brand', value: '' },
     { key: 'Manufacture date', value: '' },
   ]);
+  const [faqs, setFaqs] = useState<Array<{ question: string; answer: string }>>([]);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -88,6 +89,11 @@ export default function ProductEditorModal({
           value: String(value),
         }));
       setSpecs(specList.length > 0 ? specList : [{ key: '', value: '' }]);
+      setFaqs(
+        Array.isArray(productToEdit.faqs)
+          ? productToEdit.faqs.map((f) => ({ question: f.question || '', answer: f.answer || '' }))
+          : []
+      );
     } else {
       // Defaults for new product
       setTitle('');
@@ -115,6 +121,7 @@ export default function ProductEditorModal({
         { key: 'Vehicle', value: '' },
         { key: 'Manufacture date', value: '' },
       ]);
+      setFaqs([]);
     }
     setError(null);
   }, [productToEdit, isOpen]);
@@ -225,10 +232,14 @@ export default function ProductEditorModal({
           isBestSeller: Boolean(isBestSeller),
           shortDescription: shortDescription.trim() || title.trim(),
           specs: specsObj,
+          faqs: faqs
+            .map((f) => ({ question: f.question.trim(), answer: f.answer.trim() }))
+            .filter((f) => f.question.length > 0 && f.answer.length > 0),
         };
 
         const result = await saveSingleProduct(updatedProduct, false);
         if (!result.success) throw new Error(result.error);
+        window.dispatchEvent(new CustomEvent('tyrelink:product-saved', { detail: { product: result.product || updatedProduct } }));
       } else {
         const slug = generateSlug(title);
         const newId = slug + '-' + Date.now().toString(36);
@@ -263,12 +274,18 @@ export default function ProductEditorModal({
           isBestSeller: Boolean(isBestSeller),
           shortDescription: shortDescription.trim() || title.trim(),
           specs: specsObj,
-          rating: 4.8,
+          faqs: faqs
+            .map((f) => ({ question: f.question.trim(), answer: f.answer.trim() }))
+            .filter((f) => f.question.length > 0 && f.answer.length > 0),
+          rating: 0,
           reviewCount: 0,
         };
 
         const result = await saveSingleProduct(newProduct, true);
         if (!result.success) throw new Error(result.error);
+        if (result.product) {
+          window.dispatchEvent(new CustomEvent('tyrelink:product-saved', { detail: { product: result.product } }));
+        }
       }
 
       if (onSaved) onSaved();
@@ -908,6 +925,67 @@ export default function ProductEditorModal({
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Section 7: Customer FAQs */}
+          <div className="space-y-3 pt-2 border-t border-slate-800/80">
+            <div className="flex items-center justify-between">
+              <div>
+                <label className="font-bold text-slate-300">Product FAQs (“Before You Choose”)</label>
+                <p className="text-[11px] text-slate-500">
+                  Leave empty to use smart category defaults, or add custom Q&amp;A rows for this product.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setFaqs([...faqs, { question: '', answer: '' }])}
+                className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-[11px] font-bold transition-colors cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Add FAQ
+              </button>
+            </div>
+
+            {faqs.length > 0 && (
+              <div className="space-y-2.5">
+                {faqs.map((faq, idx) => (
+                  <div key={idx} className="p-3 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[10px] font-mono uppercase text-slate-500">FAQ #{idx + 1}</span>
+                      <button
+                        type="button"
+                        onClick={() => setFaqs(faqs.filter((_, i) => i !== idx))}
+                        className="text-[11px] text-red-400 hover:text-red-300 font-bold cursor-pointer"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      value={faq.question}
+                      onChange={(e) => {
+                        const next = [...faqs];
+                        next[idx] = { ...next[idx], question: e.target.value };
+                        setFaqs(next);
+                      }}
+                      placeholder="Question (e.g. Does this come with setup guidance?)"
+                      className="w-full h-9 px-3 rounded-lg bg-slate-900 border border-slate-700 text-white text-xs"
+                    />
+                    <textarea
+                      rows={2}
+                      value={faq.answer}
+                      onChange={(e) => {
+                        const next = [...faqs];
+                        next[idx] = { ...next[idx], answer: e.target.value };
+                        setFaqs(next);
+                      }}
+                      placeholder="Answer shown to customers..."
+                      className="w-full p-2.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-200 text-xs"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </form>
 
